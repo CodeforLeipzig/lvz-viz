@@ -1,54 +1,50 @@
 package de.codefor.le.crawler;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import de.codefor.le.crawler.model.Nominatim;
 
 @Component
-public class NominatimAsker extends Thread {
+public class NominatimAsker {
     private static final Logger logger = LoggerFactory.getLogger(NominatimAsker.class);
 
     private RestTemplate restTemplate;
-    private List<Nominatim> nominatim;
-    private String adress;
 
     public NominatimAsker() {
         restTemplate = new RestTemplate();
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
-    }
-
-    public List<Nominatim> getNominatim() {
-        return nominatim;
-    }
-
-    @Override
-    public void run() {
+    @Async
+    public Future<List<Nominatim>> execute(String adress) {
+        List<Nominatim> result = new ArrayList<>();
         try {
-            getCoords();
+            result = getCoords(adress);
             Thread.sleep(5000);
-            logger.debug("finshed getting coords");
+            logger.info("finshed getting coords");
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return new AsyncResult<List<Nominatim>>(result);
     }
 
-    private void getCoords() {
+    private List<Nominatim> getCoords(String adress) {
+        List<Nominatim> result = new ArrayList<>();
         String url = "http://nominatim.openstreetmap.org/search?q=" + adress + "&format=json";
         logger.debug("url {}", url);
 
-        nominatim = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
-        logger.debug("p {}", nominatim.toString());
+        result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
+        logger.debug("p {}", result.toString());
+        return result;
     }
-
 
 }

@@ -3,12 +3,15 @@ package de.codefor.le.crawler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
 import de.codefor.le.model.PoliceTicker;
@@ -30,10 +33,9 @@ import de.codefor.le.model.PoliceTicker;
  * @author spinner0815
  */
 @Component
-public class LVBPoliceTickerDetailViewCrawler extends Thread {
+public class LVBPoliceTickerDetailViewCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LVBPoliceTickerDetailViewCrawler.class);
-    private List<String> detailUrls;
     private List<PoliceTicker> policeTickers;
 
     public LVBPoliceTickerDetailViewCrawler() {
@@ -41,26 +43,18 @@ public class LVBPoliceTickerDetailViewCrawler extends Thread {
 
     }
 
-    @Override
-    public void run() {
+    @Async
+    public Future<List<PoliceTicker>> execute(List<String> detailURLs) {
         logger.info("start crawling the detailed pages");
         try {
-            for (String url : detailUrls) {
+            for (String url : detailURLs) {
                 Thread.sleep(5000);
                 crawl(url);
             }
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    public void setDetailUrls(List<String> detailUrls) {
-        this.detailUrls = detailUrls;
-    }
-
-    public List<PoliceTicker> getDetails() {
-        return policeTickers;
+        return new AsyncResult<List<PoliceTicker>>(policeTickers);
     }
 
     // link \t ueberschrift \t inhalt_plain \t copyright \t Datum der Veroeffentlichung
@@ -158,7 +152,7 @@ public class LVBPoliceTickerDetailViewCrawler extends Thread {
                 String article = e.ownText();
                 String[] split = article.split("\\s");
                 StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < 20; i++) {
+                for (int i = 0; i < Math.min(20, split.length); i++) {
                     sb.append(split[i]).append(" ");
                 }
                 String abstractDesc = sb.toString().trim() + "...";

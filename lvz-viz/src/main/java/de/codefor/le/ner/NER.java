@@ -1,13 +1,11 @@
 package de.codefor.le.ner;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -70,14 +68,15 @@ public class NER {
     }
 
     private void getBlackListedLocations() {
-        URL u = getClass().getClassLoader().getResource("locationBlacklist");
-        logger.info("u {}", u);
         blackListedLocations = new ArrayList<>();
-        try {
-            Path p = Paths.get(u.toURI());
-            blackListedLocations = Files.readAllLines(p, Charset.forName("UTF-8"));
-        } catch (IOException | URISyntaxException e) {
-            logger.error("could not find the location Blacklist", e);
+
+        String line;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader()
+                .getResourceAsStream("locationBlacklist")))) {
+            while ((line = br.readLine()) != null) {
+                blackListedLocations.add(line);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

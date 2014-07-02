@@ -1,12 +1,15 @@
 package de.codefor.le.crawler;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.elasticsearch.common.geo.GeoPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -37,32 +40,35 @@ public class CrawlScheduler {
     NominatimAsker nominatimAsker;
 
     // 1_800_000ms = 30min
-//    @Scheduled(fixedDelay = 1_800_000)
-    public void crawlSchedule() throws InterruptedException {
-        logger.info("pause");
-        // Thread.sleep(5000);
-        logger.info("Test");
+    @Scheduled(fixedDelay = 1_800_000)
+    public void crawlSchedule() throws ExecutionException, InterruptedException {
+        logger.info("start crawling");
 
         Stopwatch watch = Stopwatch.createStarted();
-        crawler.setMaxPages(1);
-        crawler.start();
-        crawler.join();
-        watch.stop();
-        logger.debug("crawl was done in {} ms", watch.elapsed(TimeUnit.MILLISECONDS));
-        List<String> policeNewsPages = crawler.getPoliceNewsPages();
+        Future<List<String>> execute = crawler.execute(3);
+        List<String> detailPageUrls = execute.get();
 
-        detailCrawler.setDetailUrls(policeNewsPages);
-        detailCrawler.start();
-        detailCrawler.join();
-        List<PoliceTicker> details = detailCrawler.getDetails();
+        watch.stop();
+        logger.info("crawling of the mainpages was done in {} ms", watch.elapsed(TimeUnit.MILLISECONDS));
+        Future<List<PoliceTicker>> detailFuture = detailCrawler.execute(detailPageUrls);
+        List<PoliceTicker> details = detailFuture.get();
+        addCoordsToPoliceTickerInformation(details);
+
+        logger.debug("details {}", details);
+        if (details != null && !details.isEmpty()) {
+            policeTickerRepository.save(details);
+        }
+    }
+
+    private void addCoordsToPoliceTickerInformation(List<PoliceTicker> details) throws InterruptedException,
+            ExecutionException {
         for (PoliceTicker policeTicker : details) {
             List<String> locations = ner.getLocations(policeTicker.getArticle(), true);
             for (String string : locations) {
                 logger.debug("{}", string);
-                nominatimAsker.setAdress("Leipzig, " + string);
-                nominatimAsker.run();
-                nominatimAsker.join();
-                List<Nominatim> nominatim = nominatimAsker.getNominatim();
+                Future<List<Nominatim>> nomFutures = nominatimAsker.execute("Leipzig, " + string);
+
+                List<Nominatim> nominatim = nomFutures.get();
                 logger.debug("coords: {}", nominatim);
                 if (!nominatim.isEmpty()) {
                     Nominatim firstNominatim = nominatim.get(0);
@@ -70,12 +76,9 @@ public class CrawlScheduler {
                             .getLon()));
                     logger.debug("{} ", g.toString());
                     policeTicker.setCoords(g);
+                    break; // TODO - remove this hacky break;
                 }
             }
-        }
-        logger.debug("details {}", details);
-        if (details != null && !details.isEmpty()) {
-            policeTickerRepository.save(details);
         }
     }
 }

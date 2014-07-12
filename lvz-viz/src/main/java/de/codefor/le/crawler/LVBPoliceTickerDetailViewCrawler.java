@@ -48,6 +48,7 @@ public class LVBPoliceTickerDetailViewCrawler {
     @Async
     public Future<List<PoliceTicker>> execute(List<String> detailURLs) {
         logger.info("start crawling the detailed pages");
+        policeTickers = new ArrayList<>();
         try {
             for (String url : detailURLs) {
                 Thread.sleep(5000);
@@ -64,7 +65,7 @@ public class LVBPoliceTickerDetailViewCrawler {
         PoliceTicker result = new PoliceTicker();
         Document doc = null;
         try {
-            doc = Jsoup.connect(url).userAgent("codefor.de/leipzig crawler")
+            doc = Jsoup.connect(url).userAgent("leipzig crawler")
                     .data("name", "larwes", "language", "java", "language", "german").get();
             if (doc != null) {
                 result = convertToDataModel(doc);

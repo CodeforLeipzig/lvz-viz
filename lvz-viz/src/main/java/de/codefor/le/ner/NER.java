@@ -40,7 +40,7 @@ public class NER {
         for (List<CoreLabel> list : classify) {
             for (CoreLabel coreLabel : list) {
                 if (coreLabel.get(AnswerAnnotation.class).equals("I-LOC")) {
-                    logger.info("{}", coreLabel.originalText());
+                    logger.debug("{}", coreLabel.originalText());
                     result.add(coreLabel.originalText());
                 }
             }
@@ -61,7 +61,7 @@ public class NER {
         while (iterator.hasNext()) {
             String next = iterator.next();
             if (blackListedLocations.contains(next)) {
-                logger.info("found {} in blacklist. remove it", next);
+                logger.debug("found {} in blacklist. remove it", next);
                 iterator.remove();
             }
         }

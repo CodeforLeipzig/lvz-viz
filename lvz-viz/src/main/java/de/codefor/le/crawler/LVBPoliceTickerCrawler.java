@@ -34,16 +34,14 @@ public class LVBPoliceTickerCrawler {
 
     @Async
     public Future<List<String>> execute(int page) {
+        crawledNews = new ArrayList<>();
         try {
             crawlPage(page);
-            Thread.sleep(5000);
-            logger.info("page {} crawled", page);
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
-        logger.info("crawling of the mainpage done");
+        logger.info("page {} crawled", page);
+        logger.debug("crawling of the mainpage done");
         return new AsyncResult<List<String>>(crawledNews);
     }
 
@@ -57,10 +55,15 @@ public class LVBPoliceTickerCrawler {
      */
     private void crawlPage(int page) throws IOException {
 
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append("http://www.lvz-online.de/leipzig/polizeiticker/polizeiticker-leipzig/r-polizeiticker-leipzig-seite-");
+        stringBuilder.append(page);
+        stringBuilder.append(".html");
         // read everytime the file for getting all inserted links: already exists check
-        Document doc = Jsoup.connect(
-                "http://www.lvz-online.de/leipzig/polizeiticker/polizeiticker-leipzig/r-polizeiticker-leipzig-seite-"
-                        + page + ".html").userAgent("codefor.de/leipzig crawler")
+        String url = stringBuilder.toString();
+        logger.info("url: {}", url);
+        Document doc = Jsoup.connect(url).userAgent("leipzig crawler")
                 .data("name", "larwes", "language", "java", "language", "german").get();
         for (Element e : doc.select("a:contains(mehr...)")) {
             String detailLink = "http://www.lvz-online.de" + e.attr("href");

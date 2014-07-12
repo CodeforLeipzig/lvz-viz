@@ -3,6 +3,9 @@ package de.codefor.le.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +33,12 @@ public class PoliceTickerController {
         return policeTickerRepository.findAll();
     }
 
+    @RequestMapping(value = "/getx", method = RequestMethod.GET)
+    @ResponseBody
+    public Iterable<PoliceTicker> getx(@RequestParam int page, @RequestParam int x) {
+        return policeTickerRepository.findAll(new PageRequest(page, x));
+    }
+
     @RequestMapping(value = "/extractlocations", method = RequestMethod.POST)
     @ResponseBody
     public Iterable<String> getLocations(@RequestBody String locations) {
@@ -37,17 +46,16 @@ public class PoliceTickerController {
         return ner.getLocations(locations, false);
     }
 
-    @RequestMapping(value = "/deleteAll", method = RequestMethod.DELETE)
-    @ResponseBody
-    public void deleteAll() {
-        policeTickerRepository.deleteAll();
-    }
+    // @RequestMapping(value = "/deleteAll", method = RequestMethod.DELETE)
+    // @ResponseBody
+    // public void deleteAll() {
+    // policeTickerRepository.deleteAll();
+    // }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
-    public Iterable<PoliceTicker> search(@RequestParam String query) {
-        return policeTickerRepository.findByArticleContaining(query);
+    public Page<PoliceTicker> search(@RequestParam String query, @RequestParam int page, @RequestParam int limit) {
+        return policeTickerRepository.findByArticleContaining(query, new PageRequest(page, limit));
     }
-    
-    
+
 }

@@ -1,0 +1,32 @@
+<html ng-app="lvzViz">
+    <head>
+        <meta charset="utf8" />
+        <title>Hallo du da</title>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+        <link rel="stylesheet" href="css/map.css" />
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <script src="js/angular.min.js"></script>
+        <script src="js/jquery-2.1.1.min.js"></script>
+        <script src="js/angular-resource.min.js"></script>
+        <script src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    </head>
+    <body ng-controller="lvzVizCtrl">
+        <form>
+            <input type="text" ng-model="query">
+            <button class="btn" ng-click="search()">suchen</button>
+        </form>
+        <div class="row">
+            <div class="col-md-6"id="map"></div>
+            <div class ="col-md-6">
+                <table class="table">
+                    <tr ng-repeat="(key, value) in data.content">
+                        <td><a href="{{value.url}}">{{value.title}}</a></td>
+                    </tr>
+                </table>
+              <pagination total-items="data.totalElements" ng-model="data.number" ng-change="pageChanged()" items-per-page="data.size" num-pages></pagination>
+            </div> 
+        </div>
+        <script src="js/map.js"></script>
+    </body>
+</html>

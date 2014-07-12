@@ -12,7 +12,7 @@
             },
             "title": {
                 "type": "string",
-                "index": "not_analyzed"
+                "index": "analyzed"
             },
             "article": {
                 "type": "string",

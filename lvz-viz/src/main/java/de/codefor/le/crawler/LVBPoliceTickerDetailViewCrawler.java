@@ -10,11 +10,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
 import de.codefor.le.model.PoliceTicker;
+import de.codefor.le.repositories.PoliceTickerRepository;
 
 /**
  * TODO - create a thread which sleeps 5sec after a page was crawled
@@ -62,7 +64,8 @@ public class LVBPoliceTickerDetailViewCrawler {
         PoliceTicker result = new PoliceTicker();
         Document doc = null;
         try {
-            doc = Jsoup.connect(url).get();
+            doc = Jsoup.connect(url).userAgent("codefor.de/leipzig crawler")
+                    .data("name", "larwes", "language", "java", "language", "german").get();
             if (doc != null) {
                 result = convertToDataModel(doc);
                 result.setUrl(url);
@@ -116,7 +119,8 @@ public class LVBPoliceTickerDetailViewCrawler {
      *            the datamodel for the information which are needed
      */
     private void extractTitle(Document doc, PoliceTicker dm) {
-        dm.setTitle(doc.select("title").first().ownText());
+        String ownText = doc.select("title").first().ownText();
+        dm.setTitle(ownText);
     }
 
     /**
@@ -156,11 +160,9 @@ public class LVBPoliceTickerDetailViewCrawler {
                     sb.append(split[i]).append(" ");
                 }
                 String abstractDesc = sb.toString().trim() + "...";
-
                 dm.setArticle(article);
                 dm.setSnippet(abstractDesc);
             }
         }
     }
-
 }

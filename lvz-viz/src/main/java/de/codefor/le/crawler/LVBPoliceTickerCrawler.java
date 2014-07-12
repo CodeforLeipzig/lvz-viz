@@ -27,21 +27,17 @@ public class LVBPoliceTickerCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LVBPoliceTickerCrawler.class);
 
-    @Autowired
-    private PoliceTickerRepository policeTickerRepository;
-
     private List<String> crawledNews = new ArrayList<>();
 
+    @Autowired
+    PoliceTickerRepository policeTickerRepository;
+
     @Async
-    public Future<List<String>> execute(int maxPages) {
-        int i = 1;
+    public Future<List<String>> execute(int page) {
         try {
-            boolean more = true;
-            while (more && i <= maxPages) {
-                more = crawlPage(i++);
-                Thread.sleep(5000);
-            }
-            logger.info("{} pages crawled", i);
+            crawlPage(page);
+            Thread.sleep(5000);
+            logger.info("page {} crawled", page);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -59,34 +55,16 @@ public class LVBPoliceTickerCrawler {
      * @throws IOException
      *             if there are problems while writing the detail links to a file
      */
-    private boolean crawlPage(int page) throws IOException {
-        boolean result = false;
+    private void crawlPage(int page) throws IOException {
 
         // read everytime the file for getting all inserted links: already exists check
         Document doc = Jsoup.connect(
                 "http://www.lvz-online.de/leipzig/polizeiticker/polizeiticker-leipzig/r-polizeiticker-leipzig-seite-"
-                        + page + ".html").get();
+                        + page + ".html").userAgent("codefor.de/leipzig crawler")
+                .data("name", "larwes", "language", "java", "language", "german").get();
         for (Element e : doc.select("a:contains(mehr...)")) {
             String detailLink = "http://www.lvz-online.de" + e.attr("href");
-            // logger.info("link to detail page {}", detailLink);
-
-            // Iterator<PoliceTicker> search = policeTickerRepository.search(QueryBuilders.boolQuery().must(
-            // QueryBuilders.termQuery("url", detailLink))).iterator();
-            // logger.info("{}", detailLink);
-            // while (search.hasNext()) {
-            // logger.info("allready crawled {}", detailLink.toString());
-            // result = false;
-            // return result;// FIXME - ugly return at this point.
-            // }
             crawledNews.add(detailLink);
         }
-
-        // if (policeTickerRepository.findByUrlIn(crawledNews).isEmpty()
-        // && crawledNews.size() == doc.select("a:contains(mehr...)").size()) {
-        // logger.debug("there is more to crawl!");
-        // result = true;
-        // }
-
-        return result;
     }
 }

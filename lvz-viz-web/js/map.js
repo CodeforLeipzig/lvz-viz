@@ -10,7 +10,7 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
     var markers = new L.FeatureGroup();
     getx.get({
         page: 0,
-        x: 6
+        x: 30
     }, function(data) {
         data.number = data.number + 1;
         $scope.data = data
@@ -21,7 +21,7 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
         search.get({
             'query': $scope.query,
             'page': number,
-            'limit': 6
+            'limit': 30
         }, function(data) {
             data.number = data.number + 1;
             $scope.data = data
@@ -45,7 +45,7 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
         if($scope.query===undefined){
         getx.get({
             page: $scope.data.number - 1,
-            x: 6
+            x: 30
         }, function(data) {
             data.number = data.number + 1;
             $scope.data = data

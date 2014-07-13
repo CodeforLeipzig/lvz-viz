@@ -3,6 +3,7 @@
         <meta charset="utf8" />
         <title>LVZ Polizeiticker</title>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+          <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
         <link rel="stylesheet" href="css/map.css" />
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <script src="js/angular.min.js"></script>
@@ -12,25 +13,28 @@
         <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     </head>
     <body ng-controller="lvzVizCtrl">
+    <div class="row">
+    <div class="col-md-12">
+      <a href="http://codefor.de"><image class="img-responsive" src="images/cfl.png" alt="codefor.de"></image></a>
+    </div>
+    </div>
         <div class="row text-center">
-            <div  id="map"></div>
+            <div id="map"></div>
         </div>
         <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-3">
+            <div class="col-md-3"></div>
+            <div class="col-md-4">
                 <form class="form-inline" role="form">
                     <input class="form-control"type="text" ng-model="query" placeholder="Suchphrase eingeben">
                     <button class="btn btn-default glyphicon glyphicon-search" ng-click="search(0)"></button>
                 </form>
             </div>
-    <!--         <div class="col-md-4">
-                <div ng-hide="searchquery">
-                    <span class="badge">{{data.totalElements}}</span> Artikel
-                </div>
-                <div ng-show="searchquery">
-                    <span class="badge">{{data.totalElements}}</span> Artikel über <span class="label label-info">{{searchquery}}</span>
-                </div>
-            </div> -->
+            <div ng-hide="searchquery" class="col-md-4">
+            {{data.totalElements}} Artikel 
+            </div>
+         <div ng-show="searchquery" class="col-md-4">
+            {{data.totalElements}} Artikel über {{searchquery}}
+            </div>
         </div>
         <div clas="row">
             <div class="col-md-4"></div>
@@ -49,9 +53,27 @@
                     <div class="panel-body">
                         {{value.snippet}}
                     </div>
+                    <div class="panel-footer">
+                        <a href="http://www.lvz-online.de/nachrichten/service/impressum/leipziger-verlags-und-druckereigesellschaft-mbh-co-kg/r-impressum-a-97953.html">{{value.copyright}}</a> veröffentlicht am: {{value.datePublished}} 
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="row text-center">
+        Unser Impressum findet ihr hier:
+        <a href="http://codefor.de/impressum.html">Impressum</a>.<br>
+        Des Weiteren beziehen wir uns auf die <a href="http://www.lvz-online.de/nachrichten/service/impressum/servicetexte/leistungsschutzrecht/r-servicetexte-a-199230.html">lvz</a> und hoffen niemanden weh zu tun. <br>
+        Entwickler sind <a href="https://github.com/RicardoUsbeck">Ricardo</a> und <a href="https://github.com/spinner0815">Lars</a> <br>
+
+        </div>
         <script src="js/map.js"></script>
+        <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-52779189-1', 'auto');
+        ga('send', 'pageview');
+        </script>
     </body>
 </html>

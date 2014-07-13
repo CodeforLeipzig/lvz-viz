@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.repositories.PoliceTickerRepository;
+import de.codefor.le.utilities.Utils;
 
 /**
  * TODO - create a thread which sleeps 5sec after a page was crawled
@@ -70,6 +71,7 @@ public class LVBPoliceTickerDetailViewCrawler {
             if (doc != null) {
                 result = convertToDataModel(doc);
                 result.setUrl(url);
+                result.setArticleId(Utils.getArticleId(url));
                 logger.info("crawled {}", url);
                 debugPrint(result);
                 policeTickers.add(result);

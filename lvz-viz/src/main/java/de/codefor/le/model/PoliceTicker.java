@@ -11,13 +11,14 @@ public class PoliceTicker {
 
     @Id
     private String id;
+    private String articleId;
     private String url;
     private String title;
     private String article;
     private String snippet;
     private String copyright;
     private String datePublished;
-    private GeoPoint location;
+    private GeoPoint coords;
 
     public String getId() {
         return id;
@@ -25,6 +26,14 @@ public class PoliceTicker {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(String articleId) {
+        this.articleId = articleId;
     }
 
     public String getUrl() {
@@ -76,11 +85,36 @@ public class PoliceTicker {
     }
 
     public GeoPoint getCoords() {
-        return location;
+        return coords;
     }
 
-    public void setCoords(GeoPoint location) {
-        this.location = location;
+    public void setCoords(GeoPoint coords) {
+        this.coords = coords;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("PoliceTicker [id=");
+        builder.append(id);
+        builder.append(", articleId=");
+        builder.append(articleId);
+        builder.append(", url=");
+        builder.append(url);
+        builder.append(", title=");
+        builder.append(title);
+        builder.append(", article=");
+        builder.append(article);
+        builder.append(", snippet=");
+        builder.append(snippet);
+        builder.append(", copyright=");
+        builder.append(copyright);
+        builder.append(", datePublished=");
+        builder.append(datePublished);
+        builder.append(", location=");
+        builder.append(coords);
+        builder.append("]");
+        return builder.toString();
     }
 
     @Override
@@ -88,10 +122,11 @@ public class PoliceTicker {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((article == null) ? 0 : article.hashCode());
-        result = prime * result + ((location == null) ? 0 : location.hashCode());
+        result = prime * result + ((articleId == null) ? 0 : articleId.hashCode());
         result = prime * result + ((copyright == null) ? 0 : copyright.hashCode());
         result = prime * result + ((datePublished == null) ? 0 : datePublished.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((coords == null) ? 0 : coords.hashCode());
         result = prime * result + ((snippet == null) ? 0 : snippet.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + ((url == null) ? 0 : url.hashCode());
@@ -112,10 +147,10 @@ public class PoliceTicker {
                 return false;
         } else if (!article.equals(other.article))
             return false;
-        if (location == null) {
-            if (other.location != null)
+        if (articleId == null) {
+            if (other.articleId != null)
                 return false;
-        } else if (!location.equals(other.location))
+        } else if (!articleId.equals(other.articleId))
             return false;
         if (copyright == null) {
             if (other.copyright != null)
@@ -131,6 +166,11 @@ public class PoliceTicker {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
+            return false;
+        if (coords == null) {
+            if (other.coords != null)
+                return false;
+        } else if (!coords.equals(other.coords))
             return false;
         if (snippet == null) {
             if (other.snippet != null)
@@ -148,29 +188,6 @@ public class PoliceTicker {
         } else if (!url.equals(other.url))
             return false;
         return true;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("PoliceTicker [id=");
-        builder.append(id);
-        builder.append(", url=");
-        builder.append(url);
-        builder.append(", title=");
-        builder.append(title);
-        builder.append(", article=");
-        builder.append(article);
-        builder.append(", snippet=");
-        builder.append(snippet);
-        builder.append(", copyright=");
-        builder.append(copyright);
-        builder.append(", datePublished=");
-        builder.append(datePublished);
-        builder.append(", coords=");
-        builder.append(location);
-        builder.append("]");
-        return builder.toString();
     }
 
 }

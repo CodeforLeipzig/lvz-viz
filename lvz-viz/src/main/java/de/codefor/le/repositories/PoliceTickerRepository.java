@@ -19,4 +19,7 @@ public interface PoliceTickerRepository extends ElasticsearchRepository<PoliceTi
     List<PoliceTicker> findByTitle(String title);
 
     List<PoliceTicker> findByArticle(String article);
+    
+    List<PoliceTicker> findByArticleId(String articleId);
+    
 }

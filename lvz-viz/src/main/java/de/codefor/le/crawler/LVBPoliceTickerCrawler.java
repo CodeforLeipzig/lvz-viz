@@ -15,7 +15,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
+import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.repositories.PoliceTickerRepository;
+import de.codefor.le.utilities.Utils;
 
 /**
  * 
@@ -31,12 +33,13 @@ public class LVBPoliceTickerCrawler {
 
     @Autowired
     PoliceTickerRepository policeTickerRepository;
+    private boolean crawlMore = true;
 
     @Async
     public Future<List<String>> execute(int page) {
         crawledNews = new ArrayList<>();
         try {
-            crawlPage(page);
+            crawlMore = crawlPage(page);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,8 +56,8 @@ public class LVBPoliceTickerCrawler {
      * @throws IOException
      *             if there are problems while writing the detail links to a file
      */
-    private void crawlPage(int page) throws IOException {
-
+    private boolean crawlPage(int page) throws IOException {
+        boolean result = true;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
                 .append("http://www.lvz-online.de/leipzig/polizeiticker/polizeiticker-leipzig/r-polizeiticker-leipzig-seite-");
@@ -67,7 +70,23 @@ public class LVBPoliceTickerCrawler {
                 .data("name", "larwes", "language", "java", "language", "german").get();
         for (Element e : doc.select("a:contains(mehr...)")) {
             String detailLink = "http://www.lvz-online.de" + e.attr("href");
-            crawledNews.add(detailLink);
+            String articleId = Utils.getArticleId(detailLink);
+            if (!articleId.isEmpty()) {
+                List<PoliceTicker> findByArticleId = policeTickerRepository.findByArticleId(articleId);
+                if (findByArticleId == null || findByArticleId.isEmpty()) {
+                    logger.info("article not stored yet {}", detailLink);
+                    crawledNews.add(detailLink);
+                } else {
+                    logger.info("article allready stored {}", detailLink);
+                    result = false;
+                }
+            }
         }
+        return result;
     }
+
+    public boolean isMoreToCrawl() {
+        return crawlMore;
+    }
+
 }

@@ -1,7 +1,7 @@
-<html ng-app="lvzViz">
+<html lang="en" ng-app="lvzViz">
     <head>
         <meta charset="utf8" />
-        <title>Hallo du da</title>
+        <title>LVZ Polizeiticker</title>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
         <link rel="stylesheet" href="css/map.css" />
         <link rel="stylesheet" href="css/bootstrap.min.css" />
@@ -12,20 +12,45 @@
         <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     </head>
     <body ng-controller="lvzVizCtrl">
-        <form>
-            <input type="text" ng-model="query">
-            <button class="btn" ng-click="search()">suchen</button>
-        </form>
+        <div class="row text-center">
+            <div  id="map"></div>
+        </div>
         <div class="row">
-            <div class="col-md-6"id="map"></div>
+            <div class="col-md-4"></div>
+            <div class="col-md-3">
+                <form class="form-inline" role="form">
+                    <input class="form-control"type="text" ng-model="query" placeholder="Suchphrase eingeben">
+                    <button class="btn btn-default glyphicon glyphicon-search" ng-click="search(0)"></button>
+                </form>
+            </div>
+    <!--         <div class="col-md-4">
+                <div ng-hide="searchquery">
+                    <span class="badge">{{data.totalElements}}</span> Artikel
+                </div>
+                <div ng-show="searchquery">
+                    <span class="badge">{{data.totalElements}}</span> Artikel über <span class="label label-info">{{searchquery}}</span>
+                </div>
+            </div> -->
+        </div>
+        <div clas="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <pagination total-items="data.totalElements" ng-model="data.number" ng-change="pageChanged()" items-per-page="data.size"  boundary-links="true" rotate="false" max-size=5></pagination>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-3"></div>
             <div class ="col-md-6">
-                <table class="table">
-                    <tr ng-repeat="(key, value) in data.content">
-                        <td><a href="{{value.url}}">{{value.title}}</a></td>
-                    </tr>
-                </table>
-              <pagination total-items="data.totalElements" ng-model="data.number" ng-change="pageChanged()" items-per-page="data.size" num-pages></pagination>
-            </div> 
+                <!-- <table class="table"> -->
+                <div class="panel panel-info text-center" ng-repeat="(key, value) in data.content">
+                    <div class="panel-heading">
+                        <a href="{{value.url}}">{{value.title}}</a>
+                    </div>
+                    <div class="panel-body">
+                        {{value.snippet}}
+                    </div>
+                </div>
+            </div>
         </div>
         <script src="js/map.js"></script>
     </body>

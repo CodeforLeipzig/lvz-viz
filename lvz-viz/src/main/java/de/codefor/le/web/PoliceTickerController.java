@@ -27,12 +27,6 @@ public class PoliceTickerController {
     @Autowired
     private NER ner;
 
-//    @RequestMapping(value = "/all", method = RequestMethod.GET)
-//    @ResponseBody
-//    public Iterable<PoliceTicker> findAll() {
-//        return policeTickerRepository.findAll();
-//    }
-
     @RequestMapping(value = "/getx", method = RequestMethod.GET)
     @ResponseBody
     public Iterable<PoliceTicker> getx(@RequestParam int page, @RequestParam int x) {

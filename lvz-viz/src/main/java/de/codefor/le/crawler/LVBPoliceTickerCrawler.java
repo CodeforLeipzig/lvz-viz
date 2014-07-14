@@ -66,8 +66,7 @@ public class LVBPoliceTickerCrawler {
         // read everytime the file for getting all inserted links: already exists check
         String url = stringBuilder.toString();
         logger.info("url: {}", url);
-        Document doc = Jsoup.connect(url).userAgent("leipzig crawler")
-                .data("name", "larwes", "language", "java", "language", "german").get();
+        Document doc = Jsoup.connect(url).userAgent("leipzig crawler").get();
         for (Element e : doc.select("a:contains(mehr...)")) {
             String detailLink = "http://www.lvz-online.de" + e.attr("href");
             String articleId = Utils.getArticleId(detailLink);

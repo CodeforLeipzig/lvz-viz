@@ -10,13 +10,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
 import de.codefor.le.model.PoliceTicker;
-import de.codefor.le.repositories.PoliceTickerRepository;
 import de.codefor.le.utilities.Utils;
 
 /**
@@ -66,8 +64,7 @@ public class LVBPoliceTickerDetailViewCrawler {
         PoliceTicker result = new PoliceTicker();
         Document doc = null;
         try {
-            doc = Jsoup.connect(url).userAgent("leipzig crawler")
-                    .data("name", "larwes", "language", "java", "language", "german").get();
+            doc = Jsoup.connect(url).userAgent("leipzig crawler").get();
             if (doc != null) {
                 result = convertToDataModel(doc);
                 result.setUrl(url);

@@ -145,7 +145,6 @@ public class LVBPoliceTickerDetailViewCrawler {
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd.MM.YYYY, HH:mm 'Uhr'");
 
         Date date2 = DateTime.parse(date, fmt).toDateTimeISO().toDate();
-        logger.info("FOUND DATE {}", date2);
         dm.setDatePublished(date2);
     }
 

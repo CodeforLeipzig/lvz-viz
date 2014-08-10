@@ -77,9 +77,12 @@ public class LVBPoliceTickerCrawler {
                     crawledNews.add(detailLink);
                 } else {
                     logger.info("article allready stored {}", detailLink);
-                    result = false;
                 }
             }
+        }
+        if (crawledNews.isEmpty()) {
+            logger.info("everything on this page is crawled > no more to crawl end it");
+            result = false;
         }
         return result;
     }

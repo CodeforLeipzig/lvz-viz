@@ -68,7 +68,7 @@ public class LVBPoliceTickerDetailViewCrawler {
         PoliceTicker result = new PoliceTicker();
         Document doc = null;
         try {
-            doc = Jsoup.connect(url).userAgent("leipzig crawler").get();
+            doc = Jsoup.connect(url).userAgent("leipzig crawler").timeout(10000).get();
             if (doc != null) {
                 result = convertToDataModel(doc);
                 result.setUrl(url);

@@ -2,9 +2,13 @@ package de.codefor.le.crawler;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -136,7 +140,13 @@ public class LVBPoliceTickerDetailViewCrawler {
 
     private void extractDatePublished(Document doc, PoliceTicker dm) {
         String copyrightAndDatePublished = extractCopyrightAndDatePublished(doc);
-        dm.setDatePublished(copyrightAndDatePublished.substring(copyrightAndDatePublished.indexOf(",") + 1).trim());
+
+        String date = copyrightAndDatePublished.substring(copyrightAndDatePublished.indexOf(",") + 1).trim();
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("dd.MM.YYYY, HH:mm 'Uhr'");
+
+        Date date2 = DateTime.parse(date, fmt).toDateTimeISO().toDate();
+        logger.info("FOUND DATE {}", date2);
+        dm.setDatePublished(date2);
     }
 
     private String extractCopyrightAndDatePublished(Document doc) {

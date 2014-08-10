@@ -50,6 +50,8 @@ public class CrawlScheduler {
                 policeTickerRepository.save(details);
             }
         }
+        // else the crawler will not start again after the delay
+        crawler.setMoreToCrawl(true);
     }
 
     private List<String> crawlMainPage(int i) throws InterruptedException, ExecutionException {

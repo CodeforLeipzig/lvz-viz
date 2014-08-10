@@ -2,7 +2,7 @@ var app = angular.module("lvzViz", ['ngResource', 'ui.bootstrap']);
 app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
     $scope.totalItems = 64;
     $scope.currentPage = 4;
-    var map = L.map('map').setView([51.339695, 12.373075], 11);
+    var map = L.map('map').setView([51.339695, 12.373075], 10);
     // // add an OpenStreetMap tile layer
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -10,7 +10,8 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
     var markers = new L.FeatureGroup();
     getx.get({
         page: 0,
-        x: 30
+        size: 30,
+        sort: 'datePublished,desc'
     }, function(data) {
         data.number = data.number + 1;
         $scope.data = data
@@ -20,8 +21,9 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
         $scope.searchquery = $scope.query
         search.get({
             'query': $scope.query,
-            'page': number,
-            'limit': 30
+            page: $scope.data.number - 1,
+            size: 30,
+            sort: 'datePublished,desc'
         }, function(data) {
             data.number = data.number + 1;
             $scope.data = data
@@ -35,22 +37,24 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
         for (var i = content.length - 1; i >= 0; i--) {
             var c = content[i];
             if (c.coords === null) {} else {
-                var marker = new L.marker([c.coords.lat, c.coords.lon]).bindPopup("<a href=" + c.url + ">" + c.title + "</a><br>"+c.snippet);
+                var marker = new L.marker([c.coords.lat, c.coords.lon]).bindPopup("<a href=" + c.url + ">" + c.title + "</a><br>" + c.snippet);
                 markers.addLayer(marker);
             }
         };
         map.addLayer(markers)
     }
     $scope.pageChanged = function() {
-        if($scope.query===undefined){
-        getx.get({
-            page: $scope.data.number - 1,
-            x: 30
-        }, function(data) {
-            data.number = data.number + 1;
-            $scope.data = data
-            addtoMap(data);
-        })}else{
+        if ($scope.query === undefined) {
+            getx.get({
+                page: $scope.data.number - 1,
+                size: 30,
+                sort: 'datePublished,desc'
+            }, function(data) {
+                data.number = data.number + 1;
+                $scope.data = data
+                addtoMap(data);
+            })
+        } else {
             $scope.search($scope.data.number - 1);
         }
     };
@@ -58,13 +62,18 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
 app.factory('search', function($resource) {
     return $resource('api/search', {
         'query': '@query',
-        'page': '@page',
-        'limit': '@limit'
+        page: '@page',
+        size: '@size',
+        sort: '@sort'
     });
 })
 app.factory('getx', function($resource) {
     return $resource('api/getx', {
         page: '@page',
-        x: '@x'
+        size: '@size',
+        sort: '@sort'
     });
+
+
+    
 })

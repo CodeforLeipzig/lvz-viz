@@ -1,13 +1,17 @@
 package de.codefor.le.repositories;
 
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.stereotype.Repository;
 
 import de.codefor.le.model.PoliceTicker;
 
+@Repository
 public interface PoliceTickerRepository extends ElasticsearchRepository<PoliceTicker, Long> {
 
     Page<PoliceTicker> findByArticleContaining(String article, Pageable page);
@@ -19,7 +23,8 @@ public interface PoliceTickerRepository extends ElasticsearchRepository<PoliceTi
     List<PoliceTicker> findByTitle(String title);
 
     List<PoliceTicker> findByArticle(String article);
-    
+
     List<PoliceTicker> findByArticleId(String articleId);
-    
+
+    Page<PoliceTicker> findByDatePublishedBetween(Date fromDate, Date toDate, Pageable page);
 }

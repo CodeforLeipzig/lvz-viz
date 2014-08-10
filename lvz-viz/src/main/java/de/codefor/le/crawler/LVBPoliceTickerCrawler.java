@@ -84,6 +84,10 @@ public class LVBPoliceTickerCrawler {
         return result;
     }
 
+    public void setMoreToCrawl(boolean moreToCrawl) {
+        this.crawlMore = moreToCrawl;
+    }
+
     public boolean isMoreToCrawl() {
         return crawlMore;
     }

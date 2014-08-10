@@ -1,0 +1,77 @@
+<html lang="de">
+
+<head>
+    <link rel="stylesheet" href="css/iThing-min.css" type="text/css" />
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-resource.min.js"></script>
+    <script src="js/jquery-2.1.1.min.js"></script>
+     <script src="js/jquery-ui.min.js"></script>
+    <script src="js/jQDateRangeSlider-min.js"></script>
+
+</head>
+
+<body>
+
+    <div ng-app="myApp" ng-controller="ctrl">
+
+        <h1>Hello World</h1>
+        <div id="slider"></div>
+
+    </div>
+
+    <script type="text/javascript">
+    var app = angular.module('myApp', ['ngResource']);
+    var dates = {}
+    var last7days = {}
+
+    function ctrl($scope, $filter, $resource) {
+        $resource('api/minmaxdate').query({
+            isArray: true
+        }, function(data) {
+            console.log(data)
+            dates = data
+            $resource('api/last7days').query({
+                isArray: true
+            }, function(data) {
+                console.log(data)
+                last7days = data
+                createSlider($resource);
+            })
+        });
+
+        function createSlider() {
+            $("#slider ").dateRangeSlider({
+                arrows: false,
+                bounds: {
+                    min: new Date(dates[0].year, dates[0].monthOfYear - 1, dates[0].dayOfMonth),
+                    max: new Date(dates[1].year, dates[1].monthOfYear - 1, dates[1].dayOfMonth)
+                },
+                step: {
+                    days: 1
+                },
+                defaultValues: {
+                    min: new Date(last7days[0].year, last7days[0].monthOfYear - 1, last7days[0].dayOfMonth),
+                    max: new Date(last7days[1].year, last7days[1].monthOfYear - 1, last7days[1].dayOfMonth)
+
+                }
+            }).bind("valuesChanged", function(e, data) {
+                console.log(data.values)
+                getResources(data.values.min.toISOString(), data.values.max.toISOString())
+            });
+        }
+
+        function getResources(from, to) {
+            console.log("get resources")
+            $resource('api/between').get({
+                    from: from.toString(),
+                    to: to.toString()
+                },
+                function(data) {
+                    console.log(data)
+                });
+        }
+    }
+    </script>
+</body>
+
+</html>

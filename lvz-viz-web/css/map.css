@@ -1,1 +1,38 @@
-#map { height: 420px; padding: 15px;}
+#map {
+    height: 620px;
+}
+
+nav {
+    padding: 1em 0;
+}
+.main {
+}
+footer {
+    background-color: #3c8abf;
+    color: #fff;
+    padding: 2em 0;
+}
+
+.footer ul li a {
+	color: #fff;
+	text-decoration: underline;
+}
+.footer ul li a:hover{
+	color: #245c82;
+	text-decoration: underline;
+}
+
+h1{
+	font-size: 24px!important;
+	font-weight: bold;
+	color: #3c8abf!important;
+}
+
+
+@media (max-width: 991px) {
+ .search{
+ 	margin-top: 2em;
+ }
+}
+
+

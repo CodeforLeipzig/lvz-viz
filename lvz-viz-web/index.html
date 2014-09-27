@@ -18,9 +18,9 @@
 <body ng-controller="lvzVizCtrl">
     <nav>
         <div class="container">
-            <a href="http://codefor.de">
+          <!--   <a href="http://codefor.de"> -->
                 <img class="img-responsive" src="images/polizeiticker.png" alt="polizeiticker-logo">
-            </a>
+            <!-- </a> -->
         </div>
     </nav>
 
@@ -41,51 +41,11 @@
                 </div>
                 <div class="results-list">
                     <div ng-hide="searchquery">
-                        {{data.totalElements}}
-                        <h1>Artikel</h1>
+                        <h1>{{data.totalElements}} Artikel</h1>
                     </div>
                     <div ng-show="searchquery">
-                        {{data.totalElements}}
-                        <h1>Artikel über {{searchquery}}</h1>
+                        <h1>{{data.totalElements}} Artikel über {{searchquery}}</h1>
                     </div>
-                    <div class="list-group">
-                        <a href="#" class="list-group-item">
-                        Auto erfasst 13-Jährigen in Leipzig-Schönefeld: Junge wird schwer verletzt
-                      </a>
-                        <a href="#" class="list-group-item">Festnahme im ICE nach Leipzig: 25-Jähriger mit Haftbefehl beim Schwarzfahren erwischt</a>
-                        <a href="#" class="list-group-item">Leipziger überfallen Braunschweig-Fans – Reiterstaffel auf der Suche nach Sechsjährigem</a>
-                        <a href="#" class="list-group-item">Ölspur verursacht Vollsperrung zum Feierabend-Verkehr in der Merseburger Straße </a>
-                        <a href="#" class="list-group-item">
-                        Auto erfasst 13-Jährigen in Leipzig-Schönefeld: Junge wird schwer verletzt
-                      </a>
-                        <a href="#" class="list-group-item">Festnahme im ICE nach Leipzig: 25-Jähriger mit Haftbefehl beim Schwarzfahren erwischt</a>
-                        <a href="#" class="list-group-item">Leipziger überfallen Braunschweig-Fans – Reiterstaffel auf der Suche nach Sechsjährigem</a>
-                        <a href="#" class="list-group-item">Ölspur verursacht Vollsperrung zum Feierabend-Verkehr in der Merseburger Straße </a>
-                    </div>
-                    <!-- Placholder 
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <a href="http://www.lvz-online.de/leipzig/polizeiticker/polizeiticker-leipzig/festnahme-im-ice-nach-leipzig-25-jaehriger-mit-haftbefehl-beim-schwarzfahren-erwischt/r-polizeiticker-leipzig-a-254996.html" class="ng-binding">Festnahme im ICE nach Leipzig: 25-Jähriger mit Haftbefehl beim Schwarzfahren erwischt - Leipzig - Polizeiticker - LVZ-Online</a>
-                        </div>
-                        <div class="panel-body ng-binding">
-                            Leipzig. Eine Schwarzfahrt von Dresden nach Leipzig endete für einen 25-Jährigen am Sonntag im Gefängnis. Der Mann war nach Angaben...
-                        </div>
-                        <div class="panel-footer ng-binding">
-                            <a href="http://www.lvz-online.de/nachrichten/service/impressum/leipziger-verlags-und-druckereigesellschaft-mbh-co-kg/r-impressum-a-97953.html" class="ng-binding">© LVZ-Online</a> veröffentlicht am: 15.09.2014, 13:32 Uhr
-                        </div>
-                    </div>
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <a href="http://www.lvz-online.de/leipzig/polizeiticker/polizeiticker-leipzig/festnahme-im-ice-nach-leipzig-25-jaehriger-mit-haftbefehl-beim-schwarzfahren-erwischt/r-polizeiticker-leipzig-a-254996.html" class="ng-binding">Festnahme im ICE nach Leipzig: 25-Jähriger mit Haftbefehl beim Schwarzfahren erwischt - Leipzig - Polizeiticker - LVZ-Online</a>
-                        </div>
-                        <div class="panel-body ng-binding">
-                            Leipzig. Eine Schwarzfahrt von Dresden nach Leipzig endete für einen 25-Jährigen am Sonntag im Gefängnis. Der Mann war nach Angaben...
-                        </div>
-                        <div class="panel-footer ng-binding">
-                            <a href="http://www.lvz-online.de/nachrichten/service/impressum/leipziger-verlags-und-druckereigesellschaft-mbh-co-kg/r-impressum-a-97953.html" class="ng-binding">© LVZ-Online</a> veröffentlicht am: 15.09.2014, 13:32 Uhr
-                        </div>
-                    </div>
-                    end Placeholder-->
                     <div class="panel panel-info text-center" ng-repeat="(key, value) in data.content">
                         <div class="panel-heading">
                             <a href="{{value.url}}">{{value.title}}</a>

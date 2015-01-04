@@ -1,0 +1,34 @@
+<div class="search">
+    <form class="input-group" ng-submit="search(0)">
+        <input type="text" class="form-control" ng-model="query" placeholder="Suchphrase eingeben">
+        <span class="input-group-btn">
+        <button class="btn btn-default" type="button">
+        <span class="glyphicon glyphicon-search"></span>Suchen</button>
+        </span>
+    </form>
+</div>
+<div class="results-list">
+    <div ng-hide="searchquery">
+        <h1>{{data.totalElements}} Artikel</h1>
+    </div>
+    <div ng-show="searchquery">
+        <h1>{{data.totalElements}} Artikel über {{searchquery}}</h1>
+    </div>
+    <div class="text-center">
+        <pagination total-items="data.totalElements" ng-model="data.number" ng-change="pageChanged()" items-per-page="data.size" boundary-links="true" rotate="false" max-size=3></pagination>
+    </div>
+    <div class="panel panel-info text-center" ng-repeat="(key, value) in data.content">
+        <div class="panel-heading">
+            <a href="{{value.url}}">{{value.title}}</a>
+        </div>
+        <div class="panel-body">
+            {{value.snippet}}
+        </div>
+        <div class="panel-footer">
+            <a href="http://www.lvz-online.de/nachrichten/service/impressum/leipziger-verlags-und-druckereigesellschaft-mbh-co-kg/r-impressum-a-97953.html">{{value.copyright}}</a> veröffentlicht am: {{value.datePublished | date:'dd.MM.yyyy, HH:mm'}} Uhr
+        </div>
+    </div>
+    <div class="text-center">
+        <pagination total-items="data.totalElements" ng-model="data.number" ng-change="pageChanged()" items-per-page="data.size" boundary-links="true" rotate="false" max-size=3></pagination>
+    </div>
+</div>

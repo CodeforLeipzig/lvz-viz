@@ -5,7 +5,7 @@
 
 	<groupId>de.codefor.le</groupId>
 	<artifactId>lvz-viz</artifactId>
-	<version>0.1.0</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>lvz-viz</name>

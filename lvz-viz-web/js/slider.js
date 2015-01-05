@@ -12,6 +12,7 @@ app.controller('sliderctrl', function($scope, $filter, $resource, $interval) {
         radius: 25,
         minOpacity: 0.5
     });
+
     $scope.create = function() {
         $resource('api/minmaxdate').query({
             isArray: true
@@ -63,6 +64,8 @@ app.controller('sliderctrl', function($scope, $filter, $resource, $interval) {
         }
     }
     $scope.runforwardautomatic = function() {
+        
+        // console.log("test "+ text)
         var upperbound = new Date($("#slider ").dateRangeSlider("bounds").max).getTime();
         var maxcheck = new Date($("#slider ").dateRangeSlider("values").max).getTime();
         if (maxcheck < upperbound) {
@@ -72,6 +75,7 @@ app.controller('sliderctrl', function($scope, $filter, $resource, $interval) {
         }
     }
     var runforwardnow = function() {
+        // var text = $('#step').val();
         var upperbound = new Date($("#slider ").dateRangeSlider("bounds").max).getTime();
         var maxcheck = new Date($("#slider ").dateRangeSlider("values").max).getTime();
         if (maxcheck < upperbound) {
@@ -104,6 +108,7 @@ app.controller('sliderctrl', function($scope, $filter, $resource, $interval) {
         }
     }
     var runbackwardnow = function() {
+        // var text = $('#step').val();
         var sl = $("#slider ").dateRangeSlider("values");
         var lowerbound = new Date($("#slider ").dateRangeSlider("bounds").min).getTime();
         var mincheck = new Date(sl.min).getTime();

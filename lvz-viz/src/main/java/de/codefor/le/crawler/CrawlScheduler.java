@@ -79,8 +79,7 @@ public class CrawlScheduler {
         return details;
     }
 
-    private void addCoordsToPoliceTickerInformation(List<PoliceTicker> details) throws InterruptedException,
-            ExecutionException {
+    void addCoordsToPoliceTickerInformation(List<PoliceTicker> details) throws InterruptedException, ExecutionException {
         for (final PoliceTicker policeTicker : details) {
             boolean coordsFound = false;
             final List<String> locations = ner.getLocations(policeTicker.getArticle(), true);

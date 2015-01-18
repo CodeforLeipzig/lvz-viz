@@ -78,10 +78,11 @@ public class LVBPoliceTickerCrawler {
                 }
             }
         }
+        boolean result = true;
         if (crawledNews.isEmpty()) {
             logger.info("No new articles found on this page");
+            result = false;
         }
-        boolean result = true;
         if (links.isEmpty()) {
             logger.info("No links found on this page, this should be the last available page");
             result = false;

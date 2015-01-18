@@ -26,15 +26,14 @@ public class NominatimAsker {
 
     @Async
     public Future<List<Nominatim>> execute(final String address) {
-        List<Nominatim> result = new ArrayList<>();
+        List<Nominatim> result = null;
         try {
             result = getCoords(address);
-            Thread.sleep(5000);
-            logger.info("finished getting coords");
+            Thread.sleep(1);
         } catch (final InterruptedException e) {
             logger.error(e.toString(), e);
         }
-        return new AsyncResult<List<Nominatim>>(result);
+        return new AsyncResult<List<Nominatim>>(result != null ? result : new ArrayList<Nominatim>());
     }
 
     private List<Nominatim> getCoords(final String address) {
@@ -42,7 +41,7 @@ public class NominatimAsker {
         logger.debug("url {}", url);
 
         final List<Nominatim> result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
-        logger.debug("p {}", result.toString());
+        logger.debug("nominatim search result: {}", result);
         return result;
     }
 

@@ -30,10 +30,18 @@ public class LVBPoliceTickerCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LVBPoliceTickerCrawler.class);
 
-    private static final String LVZ_BASE_URL = "http://www.lvz-online.de";
+    protected static final String USER_AGENT = "leipzig crawler";
 
-    private static final String LVZ_POLICE_BASE_URL = LVZ_BASE_URL
-            + "/leipzig/polizeiticker/polizeiticker-leipzig/r-polizeiticker-leipzig-seite-";
+    protected static final String FILE_ENDING_HTML = ".html";
+
+    protected static final String LVZ_BASE_URL = "http://www.lvz-online.de";
+
+    protected static final String LVZ_POLICE_TICKER_BASE_URL = LVZ_BASE_URL
+            + "/leipzig/polizeiticker/polizeiticker-leipzig";
+
+    protected static final String REF_TOKEN = "r-polizeiticker-leipzig";
+
+    protected static final String LVZ_POLICE_TICKER_PAGE_URL = LVZ_POLICE_TICKER_BASE_URL + "/" + REF_TOKEN + "-seite-";
 
     @Autowired
     PoliceTickerRepository policeTickerRepository;
@@ -57,20 +65,19 @@ public class LVBPoliceTickerCrawler {
      * @throws IOException if there are problems while writing the detail links to a file
      */
     private boolean crawlNewsFromPage(List<String> crawledNews, int page) throws IOException {
-        final StringBuilder stringBuilder = new StringBuilder(LVZ_POLICE_BASE_URL);
-        stringBuilder.append(page);
-        stringBuilder.append(".html");
-        // read everytime the file for getting all inserted links: already exists check
-        final String url = stringBuilder.toString();
+        final String url = generateUrl(page);
         logger.info("Start crawling page {} at url {}", page, url);
-        final Document doc = Jsoup.connect(url).userAgent("leipzig crawler").timeout(10000).get();
+        final Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(10000).get();
         final Elements links = doc.select("a:contains(mehr...)");
         for (final Element link : links) {
             final String detailLink = LVZ_BASE_URL + link.attr("href");
             final String articleId = Utils.getArticleId(detailLink);
             if (!articleId.isEmpty()) {
-                final List<PoliceTicker> findByArticleId = policeTickerRepository.findByArticleId(articleId);
-                if (findByArticleId == null || findByArticleId.isEmpty()) {
+                List<PoliceTicker> articles = null;
+                if (policeTickerRepository != null) {
+                    articles = policeTickerRepository.findByArticleId(articleId);
+                }
+                if (articles == null || articles.isEmpty()) {
                     logger.debug("article not stored yet: {}", detailLink);
                     crawledNews.add(detailLink);
                 } else {
@@ -89,6 +96,13 @@ public class LVBPoliceTickerCrawler {
         }
         logger.info("Crawled page {}", page);
         return result;
+    }
+
+    private String generateUrl(int page) {
+        final StringBuilder sb = new StringBuilder(LVZ_POLICE_TICKER_PAGE_URL);
+        sb.append(page);
+        sb.append(FILE_ENDING_HTML);
+        return sb.toString();
     }
 
     public void resetCrawler() {

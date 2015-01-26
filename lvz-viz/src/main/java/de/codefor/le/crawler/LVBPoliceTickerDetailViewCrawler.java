@@ -52,8 +52,8 @@ public class LVBPoliceTickerDetailViewCrawler {
         policeTickers = new ArrayList<>();
         try {
             for (final String url : detailURLs) {
-                // TODO why sleep 5s?
-                Thread.sleep(1);
+                // cause we won't be banned from LVZ for crawling
+                Thread.sleep(5000);
                 crawl(url);
             }
         } catch (final InterruptedException e) {
@@ -83,7 +83,8 @@ public class LVBPoliceTickerDetailViewCrawler {
     /**
      * mapper to map the information of the document into a model
      * 
-     * @param doc the document
+     * @param doc
+     *            the document
      * @return the model with all information which are needed
      */
     private PoliceTicker convertToDataModel(Document doc) {

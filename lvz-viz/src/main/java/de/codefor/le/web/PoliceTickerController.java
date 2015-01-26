@@ -74,7 +74,6 @@ public class PoliceTickerController {
             final SearchQuery sq = new NativeSearchQueryBuilder().withPageable(pageable)
                     .withQuery(createFulltextSearchQueryBuilder(pageable, splitToList)).build();
 
-            elasticsearchTemplate.queryForPage(sq, PoliceTicker.class);
             result = elasticsearchTemplate.queryForPage(sq, PoliceTicker.class);
         } else {
             result = getx(pageable);

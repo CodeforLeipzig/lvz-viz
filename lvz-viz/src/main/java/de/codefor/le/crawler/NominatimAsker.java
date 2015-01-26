@@ -18,32 +18,30 @@ import de.codefor.le.crawler.model.Nominatim;
 public class NominatimAsker {
     private static final Logger logger = LoggerFactory.getLogger(NominatimAsker.class);
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     public NominatimAsker() {
         restTemplate = new RestTemplate();
     }
 
     @Async
-    public Future<List<Nominatim>> execute(String adress) {
-        List<Nominatim> result = new ArrayList<>();
+    public Future<List<Nominatim>> execute(final String address) {
+        List<Nominatim> result = null;
         try {
-            result = getCoords(adress);
-            Thread.sleep(5000);
-            logger.info("finshed getting coords");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            result = getCoords(address);
+            Thread.sleep(1);
+        } catch (final InterruptedException e) {
+            logger.error(e.toString(), e);
         }
-        return new AsyncResult<List<Nominatim>>(result);
+        return new AsyncResult<List<Nominatim>>(result != null ? result : new ArrayList<Nominatim>());
     }
 
-    private List<Nominatim> getCoords(String adress) {
-        List<Nominatim> result = new ArrayList<>();
-        String url = "http://nominatim.openstreetmap.org/search?q=" + adress + "&format=json";
+    private List<Nominatim> getCoords(final String address) {
+        final String url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json";
         logger.debug("url {}", url);
 
-        result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
-        logger.debug("p {}", result.toString());
+        final List<Nominatim> result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
+        logger.debug("nominatim search result: {}", result);
         return result;
     }
 

@@ -1,6 +1,5 @@
 package de.codefor.le.crawler;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -24,6 +23,7 @@ import de.codefor.le.repositories.PoliceTickerRepository;
 public class CrawlScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(CrawlScheduler.class);
+
     @Autowired
     private PoliceTickerRepository policeTickerRepository;
 
@@ -33,65 +33,65 @@ public class CrawlScheduler {
     @Autowired
     private LVBPoliceTickerDetailViewCrawler detailCrawler;
 
-    @Autowired
+    @Autowired(required = false)
     private NER ner;
+
     @Autowired
     NominatimAsker nominatimAsker;
 
     // 1_800_000ms = 30min
     @Scheduled(fixedDelay = 1_800_000)
     public void crawlSchedule() throws ExecutionException, InterruptedException {
-        logger.info("start crawling");
+        logger.info("Start crawling police ticker");
         int i = 1;
         while (crawler.isMoreToCrawl()) {
-            List<String> detailPageUrls = crawlMainPage(i++);
-            List<PoliceTicker> details = crawlDetailPages(detailPageUrls);
-            if (!details.isEmpty()) {
-                policeTickerRepository.save(details);
+            final List<String> detailPageUrls = crawlMainPage(i++);
+            if (!detailPageUrls.isEmpty()) {
+                final List<PoliceTicker> details = crawlDetailPages(detailPageUrls);
+                if (ner != null) {
+                    addCoordsToPoliceTickerInformation(details);
+                }
+                if (!details.isEmpty()) {
+                    policeTickerRepository.save(details);
+                }
             }
         }
         // else the crawler will not start again after the delay
-        crawler.setMoreToCrawl(true);
+        crawler.resetCrawler();
     }
 
-    private List<String> crawlMainPage(int i) throws InterruptedException, ExecutionException {
-        List<String> result = new ArrayList<>();
-        logger.info("Start crawling page {}", i);
-        Stopwatch watch = Stopwatch.createStarted();
-        Future<List<String>> execute = crawler.execute(i++);
-        result = execute.get();
+    private List<String> crawlMainPage(final int i) throws InterruptedException, ExecutionException {
+        final Stopwatch watch = Stopwatch.createStarted();
+        final Future<List<String>> mainFuture = crawler.execute(i);
+        final List<String> result = mainFuture.get();
         watch.stop();
-        logger.debug("crawling of the mainpages was done in {} ms", watch.elapsed(TimeUnit.MILLISECONDS));
+        logger.info("Crawling of page {} was done in {} ms", i, watch.elapsed(TimeUnit.MILLISECONDS));
         return result;
     }
 
     private List<PoliceTicker> crawlDetailPages(List<String> detailPageUrls) throws InterruptedException,
             ExecutionException {
-        Future<List<PoliceTicker>> detailFuture = detailCrawler.execute(detailPageUrls);
-        List<PoliceTicker> details = detailFuture.get();
-        addCoordsToPoliceTickerInformation(details);
+        final Stopwatch watch = Stopwatch.createStarted();
+        final Future<List<PoliceTicker>> detailFuture = detailCrawler.execute(detailPageUrls);
+        final List<PoliceTicker> details = detailFuture.get();
+        watch.stop();
+        logger.info("Crawling of detail pages was done in {} ms", watch.elapsed(TimeUnit.MILLISECONDS));
         return details;
     }
 
-    private void addCoordsToPoliceTickerInformation(List<PoliceTicker> details) throws InterruptedException,
-            ExecutionException {
-        for (PoliceTicker policeTicker : details) {
+    void addCoordsToPoliceTickerInformation(List<PoliceTicker> details) throws InterruptedException, ExecutionException {
+        for (final PoliceTicker policeTicker : details) {
             boolean coordsFound = false;
-            List<String> locations = ner.getLocations(policeTicker.getArticle(), true);
+            final List<String> locations = ner.getLocations(policeTicker.getArticle(), true);
             // TODO - replace to bulk threading (not every page in one thread)
-            for (String string : locations) {
-                logger.debug("{}", string);
-                Future<List<Nominatim>> nomFutures = nominatimAsker.execute("Leipzig, " + string);
-
-                List<Nominatim> nominatim = nomFutures.get();
+            for (final String location : locations) {
+                logger.debug("{}", location);
+                final Future<List<Nominatim>> nomFutures = nominatimAsker.execute("Leipzig, " + location);
+                final List<Nominatim> nominatim = nomFutures.get();
                 logger.debug("{} coords: {}", policeTicker.getUrl(), nominatim);
                 if (!nominatim.isEmpty()) {
-                    for (Nominatim n : nominatim) {
-                        if (n.getLat() != null && !n.getLat().isEmpty()) {
-                            GeoPoint g = new GeoPoint(Double.valueOf(n.getLat()), Double.valueOf(n.getLon()));
-
-                            logger.debug("geoPoint {} ", g.toString());
-                            policeTicker.setCoords(g);
+                    for (final Nominatim n : nominatim) {
+                        if (setCoordsIfValid(policeTicker, n)) {
                             coordsFound = true;
                             break; // TODO - remove this hacky break;
                         }
@@ -103,5 +103,25 @@ public class CrawlScheduler {
                 }
             }
         }
+    }
+
+    /**
+     * Set coordinates from nominatim to policeTicker if valid
+     * 
+     * @param policeTicker PoliceTicker
+     * @param nominatim Nominatim
+     * @return true if nominatim contains valid coordinates
+     */
+    private boolean setCoordsIfValid(final PoliceTicker policeTicker, final Nominatim nominatim) {
+        final String lat = nominatim.getLat();
+        final String lon = nominatim.getLon();
+        // TODO should check isNumeric for lat and lon!
+        if (lat != null && !lat.isEmpty()) {
+            final GeoPoint g = new GeoPoint(Double.valueOf(lat), Double.valueOf(lon));
+            logger.debug("geoPoint {} ", g);
+            policeTicker.setCoords(g);
+            return true;
+        }
+        return false;
     }
 }

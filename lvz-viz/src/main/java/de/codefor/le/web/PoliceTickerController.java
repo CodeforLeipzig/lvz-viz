@@ -1,5 +1,6 @@
 package de.codefor.le.web;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -41,7 +42,7 @@ public class PoliceTickerController {
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
 
-    @Autowired
+    @Autowired(required = false)
     private NER ner;
 
     @RequestMapping(value = "/getx", method = RequestMethod.GET)
@@ -53,8 +54,11 @@ public class PoliceTickerController {
     @RequestMapping(value = "/extractlocations", method = RequestMethod.POST)
     @ResponseBody
     public Iterable<String> getLocations(@RequestBody String locations) {
-//        logger.info("{}", locations);
-        return ner.getLocations(locations, false);
+        logger.debug("extractlocations: {}", locations);
+        if (ner == null) {
+            logger.debug("return empty result b/c NER is not initialized!");
+        }
+        return ner != null ? ner.getLocations(locations, false) : Collections.<String> emptyList();
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
@@ -65,9 +69,9 @@ public class PoliceTickerController {
         Page<PoliceTicker> result;
         if (!query.isEmpty()) {
             query = query.toLowerCase();
-            List<String> splitToList = Splitter.on(CharMatcher.WHITESPACE).splitToList(query);
+            final List<String> splitToList = Splitter.on(CharMatcher.WHITESPACE).splitToList(query);
 
-            SearchQuery sq = new NativeSearchQueryBuilder().withPageable(pageable)
+            final SearchQuery sq = new NativeSearchQueryBuilder().withPageable(pageable)
                     .withQuery(createFulltextSearchQueryBuilder(pageable, splitToList)).build();
 
             elasticsearchTemplate.queryForPage(sq, PoliceTicker.class);
@@ -87,11 +91,11 @@ public class PoliceTickerController {
             @PageableDefault(direction = Direction.DESC, sort = "datePublished", size = Integer.MAX_VALUE) Pageable pageable) {
         logger.debug("query: {} from: {}, to: {}", new Object[] { query, from, to });
         query = query.toLowerCase();
-        List<String> splitToList = Splitter.on(CharMatcher.WHITESPACE).splitToList(query);
+        final List<String> splitToList = Splitter.on(CharMatcher.WHITESPACE).splitToList(query);
 
-        SearchQuery sq = new NativeSearchQueryBuilder().withPageable(pageable)
+        final SearchQuery sq = new NativeSearchQueryBuilder().withPageable(pageable)
                 .withQuery(createFulltextSearchQueryBetween(pageable, splitToList, from, to)).build();
-        Page<PoliceTicker> results = elasticsearchTemplate.queryForPage(sq, PoliceTicker.class);
+        final Page<PoliceTicker> results = elasticsearchTemplate.queryForPage(sq, PoliceTicker.class);
         logger.debug("results {}", results.getSize());
         return results;
     }
@@ -103,22 +107,22 @@ public class PoliceTickerController {
             @RequestParam String to,
             @PageableDefault(direction = Direction.DESC, sort = "datePublished", page = 0, size = Integer.MAX_VALUE) Pageable pageable) {
         logger.debug("from {}, to {}", from, to);
-        DateTime fromDate = DateTime.parse(from);
-        DateTime toDate = DateTime.parse(to);
-        Page<PoliceTicker> between = policeTickerRepository.findByDatePublishedBetween(
-                fromDate.toDateTimeISO().toDate(), toDate.toDateTimeISO().toDate(), pageable);
+        final DateTime fromDate = DateTime.parse(from);
+        final DateTime toDate = DateTime.parse(to);
+        final Page<PoliceTicker> between = policeTickerRepository.findByDatePublishedBetween(fromDate.toDateTimeISO()
+                .toDate(), toDate.toDateTimeISO().toDate(), pageable);
         return between;
     }
 
     @RequestMapping(value = "/minmaxdate", method = RequestMethod.GET)
     @ResponseBody
     public DateTime[] minMaxDate() {
-        Page<PoliceTicker> minDate = policeTickerRepository.findAll(new PageRequest(0, 1, Direction.ASC,
+        final Page<PoliceTicker> minDate = policeTickerRepository.findAll(new PageRequest(0, 1, Direction.ASC,
                 "datePublished"));
-        Page<PoliceTicker> maxDate = policeTickerRepository.findAll(new PageRequest(0, 1, Direction.DESC,
+        final Page<PoliceTicker> maxDate = policeTickerRepository.findAll(new PageRequest(0, 1, Direction.DESC,
                 "datePublished"));
-        DateTime minDatePublished = new DateTime(minDate.getContent().get(0).getDatePublished());
-        DateTime maxDatePublished = new DateTime(maxDate.getContent().get(0).getDatePublished());
+        final DateTime minDatePublished = new DateTime(minDate.getContent().get(0).getDatePublished());
+        final DateTime maxDatePublished = new DateTime(maxDate.getContent().get(0).getDatePublished());
         logger.debug("min {}, max {}", minDatePublished, maxDatePublished);
         return new DateTime[] { minDatePublished, maxDatePublished };
     }
@@ -126,8 +130,8 @@ public class PoliceTickerController {
     @RequestMapping(value = "/last7days", method = RequestMethod.GET)
     @ResponseBody
     public DateTime[] last7Days() {
-        DateTime now = DateTime.now();
-        DateTime minus7days = DateTime.now().minusDays(30);
+        final DateTime now = DateTime.now();
+        final DateTime minus7days = DateTime.now().minusDays(30);
         logger.debug("last7days: fromDate {}, toDate {}", minus7days, now);
         return new DateTime[] { minus7days, now };
     }
@@ -140,10 +144,10 @@ public class PoliceTickerController {
         } else {
             searchQuery = createFulltextSearchQueryBuilder(pageable, splitToList);
         }
-        DateTime fromDate = DateTime.parse(from);
-        DateTime toDate = DateTime.parse(to);
+        final DateTime fromDate = DateTime.parse(from);
+        final DateTime toDate = DateTime.parse(to);
 
-        RangeQueryBuilder rqb = QueryBuilders.rangeQuery("datePublished").from(fromDate.toDateTimeISO().toDate())
+        final RangeQueryBuilder rqb = QueryBuilders.rangeQuery("datePublished").from(fromDate.toDateTimeISO().toDate())
                 .to(toDate.toDateTimeISO().toDate());
 
         searchQuery.must(rqb);
@@ -151,14 +155,14 @@ public class PoliceTickerController {
     }
 
     private BoolQueryBuilder createFulltextSearchQueryBuilder(Pageable pageable, List<String> splitToList) {
-        BoolQueryBuilder articleBool = QueryBuilders.boolQuery();
-        BoolQueryBuilder titleBool = QueryBuilders.boolQuery();
-        for (String s : splitToList) {
+        final BoolQueryBuilder articleBool = QueryBuilders.boolQuery();
+        final BoolQueryBuilder titleBool = QueryBuilders.boolQuery();
+        for (final String s : splitToList) {
             articleBool.must(QueryBuilders.termQuery("article", s));
             titleBool.must(QueryBuilders.termQuery("title", s));
 
         }
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         boolQueryBuilder.should(articleBool);
         boolQueryBuilder.should(titleBool);
         return boolQueryBuilder;

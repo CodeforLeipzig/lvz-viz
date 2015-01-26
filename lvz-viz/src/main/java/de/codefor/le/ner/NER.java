@@ -3,9 +3,7 @@ package de.codefor.le.ner;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +11,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import com.google.common.base.Throwables;
 
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
@@ -21,33 +20,35 @@ import edu.stanford.nlp.ling.CoreLabel;
 
 @Component
 public class NER {
-    String serializedClassifier = "dewac_175m_600.crf.ser.gz";
-    AbstractSequenceClassifier<CoreLabel> classifier;
-    List<String> blackListedLocations;
+
     private static final Logger logger = LoggerFactory.getLogger(NER.class);
+
+    private static final String serializedClassifier = "dewac_175m_600.crf.ser.gz";
+    private AbstractSequenceClassifier<CoreLabel> classifier;
+    List<String> blackListedLocations;
 
     public NER() {
         try {
             classifier = CRFClassifier.<CoreLabel> getClassifier(new File(serializedClassifier));
         } catch (ClassCastException | ClassNotFoundException | IOException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
     public List<String> getLocations(String text, boolean removeBlackListed) {
-        List<String> result = new ArrayList<>();
-        List<List<CoreLabel>> classify = classifier.classify(text);
-        for (List<CoreLabel> list : classify) {
-            for (CoreLabel coreLabel : list) {
+        final List<String> result = new ArrayList<>();
+        for (final List<CoreLabel> classifiedSentences : classifier.classify(text)) {
+            for (final CoreLabel coreLabel : classifiedSentences) {
                 if (coreLabel.get(AnswerAnnotation.class).equals("I-LOC")) {
-                    logger.debug("{}", coreLabel.originalText());
-                    result.add(coreLabel.originalText());
+                    final String originalText = coreLabel.originalText();
+                    logger.debug("{}", originalText);
+                    result.add(originalText);
                 }
             }
         }
         if (removeBlackListed) {
             if (blackListedLocations == null) {
-                getBlackListedLocations();
+                blackListedLocations = initBlackListedLocations();
             }
             blackListCheck(result);
 
@@ -56,10 +57,9 @@ public class NER {
     }
 
     private void blackListCheck(List<String> result) {
-        Iterator<String> iterator = result.iterator();
-
+        final Iterator<String> iterator = result.iterator();
         while (iterator.hasNext()) {
-            String next = iterator.next();
+            final String next = iterator.next();
             if (blackListedLocations.contains(next)) {
                 logger.debug("found {} in blacklist. remove it", next);
                 iterator.remove();
@@ -67,18 +67,19 @@ public class NER {
         }
     }
 
-    private void getBlackListedLocations() {
-        blackListedLocations = new ArrayList<>();
+    static List<String> initBlackListedLocations() {
+        final List<String> blacklist = new ArrayList<>();
 
         String line;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader()
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(NER.class.getClassLoader()
                 .getResourceAsStream("locationBlacklist")))) {
             while ((line = br.readLine()) != null) {
-                blackListedLocations.add(line);
+                blacklist.add(line);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            logger.error(e.toString(), e);
         }
+        return blacklist;
     }
 
 }

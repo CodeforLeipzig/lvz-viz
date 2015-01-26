@@ -2,7 +2,6 @@ package de.codefor.le.crawler;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -45,56 +44,52 @@ public class LVBPoliceTickerDetailViewCrawler {
 
     public LVBPoliceTickerDetailViewCrawler() {
         policeTickers = new ArrayList<>();
-
     }
 
     @Async
     public Future<List<PoliceTicker>> execute(List<String> detailURLs) {
-        logger.info("start crawling the detailed pages");
+        logger.info("Start crawling the detailed pages");
         policeTickers = new ArrayList<>();
         try {
-            for (String url : detailURLs) {
-                Thread.sleep(5000);
+            for (final String url : detailURLs) {
+                // TODO why sleep 5s?
+                Thread.sleep(1);
                 crawl(url);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (final InterruptedException e) {
+            logger.error(e.toString(), e);
         }
         return new AsyncResult<List<PoliceTicker>>(policeTickers);
     }
 
     // link \t ueberschrift \t inhalt_plain \t copyright \t Datum der Veroeffentlichung
     private void crawl(String url) {
-        PoliceTicker result = new PoliceTicker();
         Document doc = null;
         try {
             doc = Jsoup.connect(url).userAgent("leipzig crawler").timeout(10000).get();
-            if (doc != null) {
-                result = convertToDataModel(doc);
-                result.setUrl(url);
-                result.setArticleId(Utils.getArticleId(url));
-                logger.info("crawled {}", url);
-                debugPrint(result);
-                policeTickers.add(result);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            logger.error(e.toString(), e);
+        }
+        if (doc != null) {
+            final PoliceTicker result = convertToDataModel(doc);
+            result.setUrl(url);
+            result.setArticleId(Utils.getArticleId(url));
+            logger.info("Crawled {}", url);
+            debugPrint(result);
+            policeTickers.add(result);
         }
     }
 
     /**
      * mapper to map the information of the document into a model
      * 
-     * @param path
-     *            the url
-     * @param doc
-     *            the document
-     * @return the model with all infromation which are needed
+     * @param doc the document
+     * @return the model with all information which are needed
      */
     private PoliceTicker convertToDataModel(Document doc) {
-        PoliceTicker dm = new PoliceTicker();
+        final PoliceTicker dm = new PoliceTicker();
         extractTitle(doc, dm);
-        extractArticleAndsnippet(doc, dm);
+        extractArticleAndSnippet(doc, dm);
         extractCopyright(doc, dm);
         extractDatePublished(doc, dm);
         return dm;
@@ -102,6 +97,8 @@ public class LVBPoliceTickerDetailViewCrawler {
 
     /**
      * prints the details of the detail view
+     * 
+     * TODO could be removed b/c we have PoliceTicker.toString
      * 
      * @param dm
      */
@@ -114,43 +111,28 @@ public class LVBPoliceTickerDetailViewCrawler {
         logger.debug("URL: {}", dm.getUrl());
     }
 
-    /**
-     * extracts the title from the document
-     * 
-     * @param doc
-     *            the document with the article
-     * @param dm
-     *            the datamodel for the information which are needed
-     */
     private void extractTitle(Document doc, PoliceTicker dm) {
-        String ownText = doc.select("title").first().ownText();
+        final String ownText = doc.select("title").first().ownText();
         dm.setTitle(ownText);
     }
 
-    /**
-     * extracts the copyright
-     * 
-     * @param doc
-     * @param dm
-     */
     private void extractCopyright(Document doc, PoliceTicker dm) {
-        String copyrightAndDatePublished = extractCopyrightAndDatePublished(doc);
+        final String copyrightAndDatePublished = extractCopyrightAndDatePublished(doc);
         dm.setCopyright(copyrightAndDatePublished.split(",")[0]);
     }
 
     private void extractDatePublished(Document doc, PoliceTicker dm) {
-        String copyrightAndDatePublished = extractCopyrightAndDatePublished(doc);
+        final String copyrightAndDatePublished = extractCopyrightAndDatePublished(doc);
 
-        String date = copyrightAndDatePublished.substring(copyrightAndDatePublished.indexOf(",") + 1).trim();
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("dd.MM.YYYY, HH:mm 'Uhr'");
+        final String date = copyrightAndDatePublished.substring(copyrightAndDatePublished.indexOf(",") + 1).trim();
+        final DateTimeFormatter fmt = DateTimeFormat.forPattern("dd.MM.YYYY, HH:mm 'Uhr'");
 
-        Date date2 = DateTime.parse(date, fmt).toDateTimeISO().toDate();
-        dm.setDatePublished(date2);
+        dm.setDatePublished(DateTime.parse(date, fmt).toDateTimeISO().toDate());
     }
 
     private String extractCopyrightAndDatePublished(Document doc) {
         String result = "";
-        for (Element e : doc.select("div.copyright")) {
+        for (final Element e : doc.select("div.copyright")) {
             // only plain copyright
             if (e.hasText()) {
                 result = e.ownText();
@@ -159,18 +141,17 @@ public class LVBPoliceTickerDetailViewCrawler {
         return result;
     }
 
-    private void extractArticleAndsnippet(Document doc, PoliceTicker dm) {
-        for (Element e : doc.select("div.ARTIKEL_TEXT")) {
+    private void extractArticleAndSnippet(Document doc, PoliceTicker dm) {
+        for (final Element e : doc.select("div.ARTIKEL_TEXT")) {
             if (e.hasText()) {
-                String article = e.ownText();
-                String[] split = article.split("\\s");
-                StringBuilder sb = new StringBuilder();
+                final String article = e.ownText();
+                final String[] split = article.split("\\s");
+                final StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < Math.min(20, split.length); i++) {
                     sb.append(split[i]).append(" ");
                 }
-                String abstractDesc = sb.toString().trim() + "...";
                 dm.setArticle(article);
-                dm.setSnippet(abstractDesc);
+                dm.setSnippet(sb.toString().trim() + "...");
             }
         }
     }

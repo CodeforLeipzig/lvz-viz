@@ -1,0 +1,44 @@
+buildscript {
+	repositories { mavenCentral() }
+	dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.10.RELEASE") }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+sourceCompatibility="1.7"
+group="de.codefor.le"
+version="1.1.0-SNAPSHOT"
+
+jar {
+	baseName = 'lvz-viz'
+	version =  '1.1.0-SNAPSHOT'
+}
+
+springBoot { mainClass = 'de.codefor.le.LvzViz' }
+
+repositories { mavenCentral() }
+dependencies {
+	def slf4jVersion = "1.7.10"
+
+	compile "org.slf4j:slf4j-api:$slf4jVersion",
+			"com.google.guava:guava:18.0",
+			"org.jsoup:jsoup:1.7.3",
+			"joda-time:joda-time:2.3",
+			"edu.stanford.nlp:stanford-corenlp:1.3.0"
+
+	compile "org.springframework.boot:spring-boot-starter-web",
+			"org.springframework.boot:spring-boot-starter-logging",
+			"org.springframework.boot:spring-boot-starter-data-elasticsearch",
+			"org.springframework.boot:spring-boot-starter-actuator"
+
+	runtime "org.slf4j:jcl-over-slf4j:$slf4jVersion",
+			"ch.qos.logback:logback-classic:1.1.2"
+
+	testCompile "org.springframework.boot:spring-boot-starter-test",
+			"junit:junit:4.12"
+}
+
+task wrapper(type: Wrapper) { gradleVersion = "2.2.1" }

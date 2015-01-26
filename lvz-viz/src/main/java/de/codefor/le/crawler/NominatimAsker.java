@@ -29,7 +29,8 @@ public class NominatimAsker {
         List<Nominatim> result = null;
         try {
             result = getCoords(address);
-            Thread.sleep(1);
+            // wait 5sec cause we won't to stress nominatim to much :)
+            Thread.sleep(5000);
         } catch (final InterruptedException e) {
             logger.error(e.toString(), e);
         }

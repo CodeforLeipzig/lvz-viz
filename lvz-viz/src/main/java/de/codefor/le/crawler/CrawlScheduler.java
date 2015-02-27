@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,7 @@ public class CrawlScheduler {
         return result;
     }
 
-    private List<PoliceTicker> crawlDetailPages(List<String> detailPageUrls) throws InterruptedException,
+    private List<PoliceTicker> crawlDetailPages(final List<String> detailPageUrls) throws InterruptedException,
             ExecutionException {
         final Stopwatch watch = Stopwatch.createStarted();
         final Future<List<PoliceTicker>> detailFuture = detailCrawler.execute(detailPageUrls);
@@ -79,13 +80,16 @@ public class CrawlScheduler {
         return details;
     }
 
-    void addCoordsToPoliceTickerInformation(List<PoliceTicker> details) throws InterruptedException, ExecutionException {
-        for (final PoliceTicker policeTicker : details) {
+    void addCoordsToPoliceTickerInformation(final List<PoliceTicker> articles) throws InterruptedException,
+    ExecutionException {
+        logger.debug("addCoordsToPoliceTickerInformation for {} articles", articles.size());
+        for (final PoliceTicker policeTicker : articles) {
             boolean coordsFound = false;
             final List<String> locations = ner.getLocations(policeTicker.getArticle(), true);
+            logger.debug("{} locations found: {}", locations.size(), locations);
             // TODO - replace to bulk threading (not every page in one thread)
             for (final String location : locations) {
-                logger.debug("{}", location);
+                logger.debug("search {} in nominatim", location);
                 final Future<List<Nominatim>> nomFutures = nominatimAsker.execute("Leipzig, " + location);
                 final List<Nominatim> nominatim = nomFutures.get();
                 logger.debug("{} coords: {}", policeTicker.getUrl(), nominatim);
@@ -107,7 +111,7 @@ public class CrawlScheduler {
 
     /**
      * Set coordinates from nominatim to policeTicker if valid
-     * 
+     *
      * @param policeTicker PoliceTicker
      * @param nominatim Nominatim
      * @return true if nominatim contains valid coordinates
@@ -115,12 +119,13 @@ public class CrawlScheduler {
     private boolean setCoordsIfValid(final PoliceTicker policeTicker, final Nominatim nominatim) {
         final String lat = nominatim.getLat();
         final String lon = nominatim.getLon();
-        // TODO should check isNumeric for lat and lon!
-        if (lat != null && !lat.isEmpty()) {
+        if (NumberUtils.isNumber(lat) && NumberUtils.isNumber(lon)) {
             final GeoPoint g = new GeoPoint(Double.valueOf(lat), Double.valueOf(lon));
-            logger.debug("geoPoint {} ", g);
+            logger.debug("set geoPoint {} to article", g);
             policeTicker.setCoords(g);
             return true;
+        } else {
+            logger.warn("latitude {} and longitude {} must be non-empty numeric", lat, lon);
         }
         return false;
     }

@@ -22,7 +22,7 @@ import de.codefor.le.utilities.Utils;
 
 /**
  * TODO should be renamed to LVZPoliceTickerCrawler
- * 
+ *
  * @author spinner0815
  */
 @Component
@@ -31,6 +31,8 @@ public class LVBPoliceTickerCrawler {
     private static final Logger logger = LoggerFactory.getLogger(LVBPoliceTickerCrawler.class);
 
     protected static final String USER_AGENT = "leipzig crawler";
+
+    protected static final int REQUEST_TIMEOUT = 10000;
 
     protected static final String FILE_ENDING_HTML = ".html";
 
@@ -49,7 +51,7 @@ public class LVBPoliceTickerCrawler {
     private boolean crawlMore = true;
 
     @Async
-    public Future<List<String>> execute(int page) {
+    public Future<List<String>> execute(final int page) {
         final List<String> crawledNews = new ArrayList<>();
         try {
             crawlMore = crawlNewsFromPage(crawledNews, page);
@@ -64,20 +66,20 @@ public class LVBPoliceTickerCrawler {
      * @return true if all content of the current page is new. Hint for also crawling the next site
      * @throws IOException if there are problems while writing the detail links to a file
      */
-    private boolean crawlNewsFromPage(List<String> crawledNews, int page) throws IOException {
+    private boolean crawlNewsFromPage(final List<String> crawledNews, final int page) throws IOException {
         final String url = generateUrl(page);
         logger.info("Start crawling page {} at url {}", page, url);
-        final Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(10000).get();
+        final Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
         final Elements links = doc.select("a:contains(mehr...)");
         for (final Element link : links) {
             final String detailLink = LVZ_BASE_URL + link.attr("href");
-            final String articleId = Utils.getArticleId(detailLink);
-            if (!articleId.isEmpty()) {
-                List<PoliceTicker> articles = null;
+            final String id = Utils.generateHashForUrl(detailLink);
+            if (!id.isEmpty()) {
+                PoliceTicker article = null;
                 if (policeTickerRepository != null) {
-                    articles = policeTickerRepository.findByArticleId(articleId);
+                    article = policeTickerRepository.findOne(id);
                 }
-                if (articles == null || articles.isEmpty()) {
+                if (article == null) {
                     logger.debug("article not stored yet: {}", detailLink);
                     crawledNews.add(detailLink);
                 } else {
@@ -88,7 +90,7 @@ public class LVBPoliceTickerCrawler {
         boolean result = true;
         if (crawledNews.isEmpty()) {
             logger.info("No new articles found on this page");
-            result = false;
+            result = true;
         }
         if (links.isEmpty()) {
             logger.info("No links found on this page, this should be the last available page");
@@ -98,7 +100,7 @@ public class LVBPoliceTickerCrawler {
         return result;
     }
 
-    private String generateUrl(int page) {
+    private String generateUrl(final int page) {
         final StringBuilder sb = new StringBuilder(LVZ_POLICE_TICKER_PAGE_URL);
         sb.append(page);
         sb.append(FILE_ENDING_HTML);

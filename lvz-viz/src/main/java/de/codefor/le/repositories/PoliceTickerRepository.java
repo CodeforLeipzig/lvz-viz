@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import de.codefor.le.model.PoliceTicker;
 
 @Repository
-public interface PoliceTickerRepository extends ElasticsearchRepository<PoliceTicker, Long> {
+public interface PoliceTickerRepository extends ElasticsearchRepository<PoliceTicker, String> {
 
     Page<PoliceTicker> findByArticleContaining(String article, Pageable page);
 
@@ -26,6 +26,6 @@ public interface PoliceTickerRepository extends ElasticsearchRepository<PoliceTi
     List<PoliceTicker> findByArticleId(String articleId);
 
     Page<PoliceTicker> findByDatePublishedBetween(Date fromDate, Date toDate, Pageable page);
-    
+
     List<PoliceTicker> findByDatePublishedBetween(Date fromDate, Date toDate);
 }

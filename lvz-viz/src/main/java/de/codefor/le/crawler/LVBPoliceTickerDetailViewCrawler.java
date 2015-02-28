@@ -21,10 +21,7 @@ import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.utilities.Utils;
 
 /**
- * TODO - create a thread which sleeps 5sec after a page was crawled
- * 
- * crawls the detailview to extract and store teh following information into a csv file
- * 
+ * Crawls the concrete url of an article to extract the following information into a <code>PoliceTicker</code> model:
  * <ul>
  * <li>title
  * <li>url
@@ -33,61 +30,69 @@ import de.codefor.le.utilities.Utils;
  * <li>copyright
  * <li>date published
  * </ul>
- * 
+ *
  * @author spinner0815
  */
 @Component
 public class LVBPoliceTickerDetailViewCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LVBPoliceTickerDetailViewCrawler.class);
-    private List<PoliceTicker> policeTickers;
 
-    public LVBPoliceTickerDetailViewCrawler() {
-        policeTickers = new ArrayList<>();
-    }
+    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 5000;
 
     @Async
-    public Future<List<PoliceTicker>> execute(List<String> detailURLs) {
+    public Future<List<PoliceTicker>> execute(final List<String> detailURLs) {
         logger.info("Start crawling the detailed pages");
-        policeTickers = new ArrayList<>();
-        try {
-            for (final String url : detailURLs) {
-                // cause we won't be banned from LVZ for crawling
-                Thread.sleep(5000);
-                crawl(url);
+        final List<PoliceTicker> policeTickers = new ArrayList<>();
+        for (final String url : detailURLs) {
+            try {
+                Thread.sleep(WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING);
+                final PoliceTicker ticker = crawl(url);
+                if (ticker != null) {
+                    policeTickers.add(ticker);
+                }
+            } catch (final InterruptedException e) {
+                logger.error(e.toString(), e);
             }
-        } catch (final InterruptedException e) {
-            logger.error(e.toString(), e);
         }
         return new AsyncResult<List<PoliceTicker>>(policeTickers);
     }
 
-    // link \t ueberschrift \t inhalt_plain \t copyright \t Datum der Veroeffentlichung
-    private void crawl(String url) {
+    /**
+     * Crawl concrete url for one ticker article.
+     *
+     * @param url article url
+     * @return PoliceTickers
+     */
+    private PoliceTicker crawl(final String url) {
         Document doc = null;
         try {
-            doc = Jsoup.connect(url).userAgent("leipzig crawler").timeout(10000).get();
+            doc = Jsoup.connect(url).userAgent(LVBPoliceTickerCrawler.USER_AGENT)
+                    .timeout(LVBPoliceTickerCrawler.REQUEST_TIMEOUT).get();
         } catch (final IOException e) {
             logger.error(e.toString(), e);
         }
+        PoliceTicker result = null;
         if (doc != null) {
-            final PoliceTicker result = convertToDataModel(doc);
+            result = convertToDataModel(doc);
             result.setUrl(url);
-            result.setArticleId(Utils.getArticleId(url));
+            result.setId(Utils.generateHashForUrl(url));
+            result.setArticleId(Utils.extractArticleId(url));
             logger.info("Crawled {}", url);
-            debugPrint(result);
-            policeTickers.add(result);
         }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Crawled {}", result);
+        }
+        return result;
     }
 
     /**
      * mapper to map the information of the document into a model
-     * 
-     * @param doc
-     *            the document
+     *
+     * @param doc the document
      * @return the model with all information which are needed
      */
-    private PoliceTicker convertToDataModel(Document doc) {
+    private PoliceTicker convertToDataModel(final Document doc) {
         final PoliceTicker dm = new PoliceTicker();
         extractTitle(doc, dm);
         extractArticleAndSnippet(doc, dm);
@@ -96,33 +101,17 @@ public class LVBPoliceTickerDetailViewCrawler {
         return dm;
     }
 
-    /**
-     * prints the details of the detail view
-     * 
-     * TODO could be removed b/c we have PoliceTicker.toString
-     * 
-     * @param dm
-     */
-    private void debugPrint(PoliceTicker dm) {
-        logger.debug("Article: {}", dm.getArticle());
-        logger.debug("Copyright: {}", dm.getCopyright());
-        logger.debug("Published: {}", dm.getDatePublished());
-        logger.debug("Snippet: {}", dm.getSnippet());
-        logger.debug("Title: {}", dm.getTitle());
-        logger.debug("URL: {}", dm.getUrl());
-    }
-
-    private void extractTitle(Document doc, PoliceTicker dm) {
+    private void extractTitle(final Document doc, final PoliceTicker dm) {
         final String ownText = doc.select("title").first().ownText();
         dm.setTitle(ownText);
     }
 
-    private void extractCopyright(Document doc, PoliceTicker dm) {
+    private void extractCopyright(final Document doc, final PoliceTicker dm) {
         final String copyrightAndDatePublished = extractCopyrightAndDatePublished(doc);
         dm.setCopyright(copyrightAndDatePublished.split(",")[0]);
     }
 
-    private void extractDatePublished(Document doc, PoliceTicker dm) {
+    private void extractDatePublished(final Document doc, final PoliceTicker dm) {
         final String copyrightAndDatePublished = extractCopyrightAndDatePublished(doc);
 
         final String date = copyrightAndDatePublished.substring(copyrightAndDatePublished.indexOf(",") + 1).trim();
@@ -131,7 +120,7 @@ public class LVBPoliceTickerDetailViewCrawler {
         dm.setDatePublished(DateTime.parse(date, fmt).toDateTimeISO().toDate());
     }
 
-    private String extractCopyrightAndDatePublished(Document doc) {
+    private String extractCopyrightAndDatePublished(final Document doc) {
         String result = "";
         for (final Element e : doc.select("div.copyright")) {
             // only plain copyright
@@ -142,7 +131,7 @@ public class LVBPoliceTickerDetailViewCrawler {
         return result;
     }
 
-    private void extractArticleAndSnippet(Document doc, PoliceTicker dm) {
+    private void extractArticleAndSnippet(final Document doc, final PoliceTicker dm) {
         for (final Element e : doc.select("div.ARTIKEL_TEXT")) {
             if (e.hasText()) {
                 final String article = e.ownText();

@@ -16,21 +16,23 @@ import de.codefor.le.crawler.model.Nominatim;
 
 @Component
 public class NominatimAsker {
+
     private static final Logger logger = LoggerFactory.getLogger(NominatimAsker.class);
 
-    private final RestTemplate restTemplate;
+    public static final String NOMINATIM_SEARCH_CITY_PREFIX = "Leipzig, ";
 
-    public NominatimAsker() {
-        restTemplate = new RestTemplate();
-    }
+    private static final String NOMINATIM_SEARCH_URL = "http://nominatim.openstreetmap.org/search?q=%s&format=json";
+
+    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 5000;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Async
     public Future<List<Nominatim>> execute(final String address) {
         List<Nominatim> result = null;
         try {
             result = getCoords(address);
-            // wait 5sec cause we won't to stress nominatim to much :)
-            Thread.sleep(5000);
+            Thread.sleep(WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING);
         } catch (final InterruptedException e) {
             logger.error(e.toString(), e);
         }
@@ -38,12 +40,11 @@ public class NominatimAsker {
     }
 
     private List<Nominatim> getCoords(final String address) {
-        final String url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json";
+        final String url = String.format(NOMINATIM_SEARCH_URL, address);
         logger.debug("url {}", url);
 
         final List<Nominatim> result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
         logger.debug("nominatim search result: {}", result);
         return result;
     }
-
 }

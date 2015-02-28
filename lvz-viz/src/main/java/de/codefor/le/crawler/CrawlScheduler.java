@@ -81,27 +81,27 @@ public class CrawlScheduler {
     }
 
     void addCoordsToPoliceTickerInformation(final List<PoliceTicker> articles) throws InterruptedException,
-    ExecutionException {
+            ExecutionException {
         logger.debug("addCoordsToPoliceTickerInformation for {} articles", articles.size());
         for (final PoliceTicker policeTicker : articles) {
+            logger.debug("process article {}", policeTicker.getUrl());
             boolean coordsFound = false;
-            final List<String> locations = ner.getLocations(policeTicker.getArticle(), true);
-            logger.debug("{} locations found: {}", locations.size(), locations);
             // TODO - replace to bulk threading (not every page in one thread)
-            for (final String location : locations) {
+            for (final String location : ner.getLocations(policeTicker.getArticle(), true)) {
                 logger.debug("search {} in nominatim", location);
-                final Future<List<Nominatim>> nomFutures = nominatimAsker.execute("Leipzig, " + location);
+                final Future<List<Nominatim>> nomFutures = nominatimAsker
+                        .execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX + location);
                 final List<Nominatim> nominatim = nomFutures.get();
                 logger.debug("{} coords: {}", policeTicker.getUrl(), nominatim);
                 if (!nominatim.isEmpty()) {
                     for (final Nominatim n : nominatim) {
                         if (setCoordsIfValid(policeTicker, n)) {
                             coordsFound = true;
-                            break; // TODO - remove this hacky break;
+                            break;
                         }
                     }
                 }
-                // TODO - better loop
+                // TODO better looping without two breaks
                 if (coordsFound) {
                     break;
                 }

@@ -34,9 +34,9 @@ import de.codefor.le.utilities.Utils;
  * @author spinner0815
  */
 @Component
-public class LVBPoliceTickerDetailViewCrawler {
+public class LvzPoliceTickerDetailViewCrawler {
 
-    private static final Logger logger = LoggerFactory.getLogger(LVBPoliceTickerDetailViewCrawler.class);
+    private static final Logger logger = LoggerFactory.getLogger(LvzPoliceTickerDetailViewCrawler.class);
 
     private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 5000;
 
@@ -67,8 +67,8 @@ public class LVBPoliceTickerDetailViewCrawler {
     private PoliceTicker crawl(final String url) {
         Document doc = null;
         try {
-            doc = Jsoup.connect(url).userAgent(LVBPoliceTickerCrawler.USER_AGENT)
-                    .timeout(LVBPoliceTickerCrawler.REQUEST_TIMEOUT).get();
+            doc = Jsoup.connect(url).userAgent(LvzPoliceTickerCrawler.USER_AGENT)
+                    .timeout(LvzPoliceTickerCrawler.REQUEST_TIMEOUT).get();
         } catch (final IOException e) {
             logger.error(e.toString(), e);
         }

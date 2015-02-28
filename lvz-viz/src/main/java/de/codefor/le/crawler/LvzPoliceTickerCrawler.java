@@ -21,14 +21,13 @@ import de.codefor.le.repositories.PoliceTickerRepository;
 import de.codefor.le.utilities.Utils;
 
 /**
- * TODO should be renamed to LVZPoliceTickerCrawler
- *
  * @author spinner0815
+ * @author sepe81
  */
 @Component
-public class LVBPoliceTickerCrawler {
+public class LvzPoliceTickerCrawler {
 
-    private static final Logger logger = LoggerFactory.getLogger(LVBPoliceTickerCrawler.class);
+    private static final Logger logger = LoggerFactory.getLogger(LvzPoliceTickerCrawler.class);
 
     protected static final String USER_AGENT = "leipzig crawler";
 

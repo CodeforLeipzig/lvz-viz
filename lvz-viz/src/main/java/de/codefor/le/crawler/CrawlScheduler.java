@@ -29,10 +29,10 @@ public class CrawlScheduler {
     private PoliceTickerRepository policeTickerRepository;
 
     @Autowired
-    private LVBPoliceTickerCrawler crawler;
+    private LvzPoliceTickerCrawler crawler;
 
     @Autowired
-    private LVBPoliceTickerDetailViewCrawler detailCrawler;
+    private LvzPoliceTickerDetailViewCrawler detailCrawler;
 
     @Autowired(required = false)
     private NER ner;

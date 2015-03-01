@@ -10,11 +10,9 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.google.common.hash.Hashing;
 
-import de.codefor.le.web.PoliceTickerController;
-
 public final class Utils {
 
-    private static final Logger logger = LoggerFactory.getLogger(PoliceTickerController.class);
+    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
     private static final Pattern PATTERN_ARTICLE_ID = Pattern.compile("[0-9]{6}");
 

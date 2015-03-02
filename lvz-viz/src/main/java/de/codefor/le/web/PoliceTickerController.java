@@ -18,12 +18,11 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
@@ -32,10 +31,12 @@ import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.ner.NER;
 import de.codefor.le.repositories.PoliceTickerRepository;
 
-@Controller
+@RestController
+@RequestMapping(value = "/api")
 public class PoliceTickerController {
 
     private static final Logger logger = LoggerFactory.getLogger(PoliceTickerController.class);
+
     @Autowired
     private PoliceTickerRepository policeTickerRepository;
 
@@ -46,14 +47,12 @@ public class PoliceTickerController {
     private NER ner;
 
     @RequestMapping(value = "/getx", method = RequestMethod.GET)
-    @ResponseBody
-    public Page<PoliceTicker> getx(@PageableDefault Pageable pageable) {
+    public Page<PoliceTicker> getx(@PageableDefault final Pageable pageable) {
         return policeTickerRepository.findAll(pageable);
     }
 
     @RequestMapping(value = "/extractlocations", method = RequestMethod.POST)
-    @ResponseBody
-    public Iterable<String> getLocations(@RequestBody String locations) {
+    public Iterable<String> getLocations(@RequestBody final String locations) {
         logger.debug("extractlocations: {}", locations);
         if (ner == null) {
             logger.debug("return empty result b/c NER is not initialized!");
@@ -62,9 +61,8 @@ public class PoliceTickerController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    @ResponseBody
     public Page<PoliceTicker> search(@RequestParam String query,
-            @PageableDefault(direction = Direction.DESC, sort = "datePublished") Pageable pageable) {
+            @PageableDefault(direction = Direction.DESC, sort = "datePublished") final Pageable pageable) {
         logger.info("query: {}", query);
         Page<PoliceTicker> result;
         if (!query.isEmpty()) {
@@ -82,12 +80,11 @@ public class PoliceTickerController {
     }
 
     @RequestMapping(value = "/searchbetween", method = RequestMethod.GET)
-    @ResponseBody
     public Page<PoliceTicker> searchBetween(
             @RequestParam(defaultValue = "") String query,
-            @RequestParam String from,
-            @RequestParam String to,
-            @PageableDefault(direction = Direction.DESC, sort = "datePublished", size = Integer.MAX_VALUE) Pageable pageable) {
+            @RequestParam final String from,
+            @RequestParam final String to,
+            @PageableDefault(direction = Direction.DESC, sort = "datePublished", size = Integer.MAX_VALUE) final Pageable pageable) {
         logger.debug("query: {} from: {}, to: {}", new Object[] { query, from, to });
         query = query.toLowerCase();
         final List<String> splitToList = Splitter.on(CharMatcher.WHITESPACE).splitToList(query);
@@ -100,11 +97,10 @@ public class PoliceTickerController {
     }
 
     @RequestMapping(value = "/between", method = RequestMethod.GET)
-    @ResponseBody
     public Page<PoliceTicker> between(
-            @RequestParam String from,
-            @RequestParam String to,
-            @PageableDefault(direction = Direction.DESC, sort = "datePublished", page = 0, size = Integer.MAX_VALUE) Pageable pageable) {
+            @RequestParam final String from,
+            @RequestParam final String to,
+            @PageableDefault(direction = Direction.DESC, sort = "datePublished", page = 0, size = Integer.MAX_VALUE) final Pageable pageable) {
         logger.debug("from {}, to {}", from, to);
         final DateTime fromDate = DateTime.parse(from);
         final DateTime toDate = DateTime.parse(to);
@@ -114,7 +110,6 @@ public class PoliceTickerController {
     }
 
     @RequestMapping(value = "/minmaxdate", method = RequestMethod.GET)
-    @ResponseBody
     public DateTime[] minMaxDate() {
         final Page<PoliceTicker> minDate = policeTickerRepository.findAll(new PageRequest(0, 1, Direction.ASC,
                 "datePublished"));
@@ -127,7 +122,6 @@ public class PoliceTickerController {
     }
 
     @RequestMapping(value = "/last7days", method = RequestMethod.GET)
-    @ResponseBody
     public DateTime[] last7Days() {
         final DateTime now = DateTime.now();
         final DateTime minus7days = DateTime.now().minusDays(30);
@@ -135,8 +129,8 @@ public class PoliceTickerController {
         return new DateTime[] { minus7days, now };
     }
 
-    private BoolQueryBuilder createFulltextSearchQueryBetween(Pageable pageable, List<String> splitToList, String from,
-            String to) {
+    private BoolQueryBuilder createFulltextSearchQueryBetween(final Pageable pageable, final List<String> splitToList,
+            final String from, final String to) {
         BoolQueryBuilder searchQuery = null;
         if (splitToList.isEmpty()) {
             searchQuery = QueryBuilders.boolQuery().must(QueryBuilders.matchAllQuery());
@@ -153,7 +147,7 @@ public class PoliceTickerController {
         return searchQuery;
     }
 
-    private BoolQueryBuilder createFulltextSearchQueryBuilder(Pageable pageable, List<String> splitToList) {
+    private BoolQueryBuilder createFulltextSearchQueryBuilder(final Pageable pageable, final List<String> splitToList) {
         final BoolQueryBuilder articleBool = QueryBuilders.boolQuery();
         final BoolQueryBuilder titleBool = QueryBuilders.boolQuery();
         for (final String s : splitToList) {

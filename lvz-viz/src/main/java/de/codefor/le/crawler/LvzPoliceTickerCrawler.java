@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
+
+import com.google.common.base.Stopwatch;
 
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.repositories.PoliceTickerRepository;
@@ -47,17 +50,21 @@ public class LvzPoliceTickerCrawler {
     @Autowired
     PoliceTickerRepository policeTickerRepository;
 
-    private boolean crawlMore = true;
+    private boolean crawlMore = false;
 
     @Async
-    public Future<List<String>> execute(final int page) {
+    public Future<Iterable<String>> execute(final int page) {
+        final Stopwatch watch = Stopwatch.createStarted();
+        logger.info("Start crawling page {}", page);
         final List<String> crawledNews = new ArrayList<>();
         try {
             crawlMore = crawlNewsFromPage(crawledNews, page);
         } catch (final IOException e) {
             logger.error(e.toString(), e);
         }
-        return new AsyncResult<List<String>>(crawledNews);
+        watch.stop();
+        logger.info("Finished crawling page {} in {} ms", page, watch.elapsed(TimeUnit.MILLISECONDS));
+        return new AsyncResult<Iterable<String>>(crawledNews);
     }
 
     /**
@@ -66,9 +73,7 @@ public class LvzPoliceTickerCrawler {
      * @throws IOException if there are problems while writing the detail links to a file
      */
     private boolean crawlNewsFromPage(final List<String> crawledNews, final int page) throws IOException {
-        final String url = generateUrl(page);
-        logger.info("Start crawling page {} at url {}", page, url);
-        final Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
+        final Document doc = Jsoup.connect(generateUrl(page)).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
         final Elements links = doc.select("a:contains(mehr...)");
         for (final Element link : links) {
             final String detailLink = LVZ_BASE_URL + link.attr("href");
@@ -95,7 +100,6 @@ public class LvzPoliceTickerCrawler {
             logger.info("No links found on this page, this should be the last available page");
             result = false;
         }
-        logger.info("Crawled page {}", page);
         return result;
     }
 
@@ -103,7 +107,9 @@ public class LvzPoliceTickerCrawler {
         final StringBuilder sb = new StringBuilder(LVZ_POLICE_TICKER_PAGE_URL);
         sb.append(page);
         sb.append(FILE_ENDING_HTML);
-        return sb.toString();
+        final String url = sb.toString();
+        logger.debug("page url {}", url);
+        return url;
     }
 
     public void resetCrawler() {

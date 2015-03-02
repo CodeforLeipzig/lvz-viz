@@ -8,7 +8,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -21,9 +20,9 @@ public class LvzPoliceTickerCrawlerTest {
 
     @Test
     public void testExecuteForPageOneAndZero() throws InterruptedException, ExecutionException {
-        final Future<List<String>> future = crawler.execute(1);
+        final Future<Iterable<String>> future = crawler.execute(1);
         assertNotNull(future);
-        final List<String> pageOne = future.get();
+        final Iterable<String> pageOne = future.get();
         assertNotNull(pageOne);
         final Iterator<String> it = pageOne.iterator();
         assertTrue(it.hasNext());
@@ -33,15 +32,15 @@ public class LvzPoliceTickerCrawlerTest {
         assertThat(firstArticleUrl, containsString(LvzPoliceTickerCrawler.FILE_ENDING_HTML));
 
         // page 0 redirects to page 1
-        final List<String> pageZero = crawler.execute(0).get();
+        final Iterable<String> pageZero = crawler.execute(0).get();
         assertEquals(pageZero, pageOne);
     }
 
     @Test
     public void testExecuteForPageMaxInteger() throws InterruptedException, ExecutionException {
-        final List<String> result = crawler.execute(Integer.MAX_VALUE).get();
+        final Iterable<String> result = crawler.execute(Integer.MAX_VALUE).get();
         assertNotNull(result);
-        assertThat(result, Matchers.emptyCollectionOf(String.class));
+        assertThat(result, Matchers.emptyIterableOf(String.class));
     }
 
 }

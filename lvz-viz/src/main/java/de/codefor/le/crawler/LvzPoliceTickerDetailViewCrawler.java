@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -16,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
+
+import com.google.common.base.Stopwatch;
 
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.utilities.Utils;
@@ -38,11 +41,12 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LvzPoliceTickerDetailViewCrawler.class);
 
-    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 5000;
+    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 100;
 
     @Async
-    public Future<List<PoliceTicker>> execute(final List<String> detailURLs) {
-        logger.info("Start crawling the detailed pages");
+    public Future<Iterable<PoliceTicker>> execute(final Iterable<String> detailURLs) {
+        final Stopwatch watch = Stopwatch.createStarted();
+        logger.info("Start crawling detail pages");
         final List<PoliceTicker> policeTickers = new ArrayList<>();
         for (final String url : detailURLs) {
             try {
@@ -55,7 +59,10 @@ public class LvzPoliceTickerDetailViewCrawler {
                 logger.error(e.toString(), e);
             }
         }
-        return new AsyncResult<List<PoliceTicker>>(policeTickers);
+        watch.stop();
+        logger.info("Finished crawling {} detail pages in {} ms", policeTickers.size(),
+                watch.elapsed(TimeUnit.MILLISECONDS));
+        return new AsyncResult<Iterable<PoliceTicker>>(policeTickers);
     }
 
     /**

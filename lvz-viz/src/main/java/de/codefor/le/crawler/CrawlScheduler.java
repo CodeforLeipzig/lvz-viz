@@ -3,7 +3,6 @@ package de.codefor.le.crawler;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.elasticsearch.common.geo.GeoPoint;
@@ -12,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import com.google.common.base.Stopwatch;
 
 import de.codefor.le.crawler.model.Nominatim;
 import de.codefor.le.model.PoliceTicker;
@@ -46,13 +43,13 @@ public class CrawlScheduler {
         logger.info("Start crawling police ticker");
         int i = 1;
         while (crawler.isMoreToCrawl()) {
-            final List<String> detailPageUrls = crawlMainPage(i++);
-            if (!detailPageUrls.isEmpty()) {
-                final List<PoliceTicker> details = crawlDetailPages(detailPageUrls);
+            final Iterable<String> detailPageUrls = crawlMainPage(i++);
+            if (detailPageUrls.iterator().hasNext()) {
+                final Iterable<PoliceTicker> details = crawlDetailPages(detailPageUrls);
                 if (ner != null) {
                     addCoordsToPoliceTickerInformation(details);
                 }
-                if (!details.isEmpty()) {
+                if (details.iterator().hasNext()) {
                     policeTickerRepository.save(details);
                 }
             }
@@ -61,28 +58,22 @@ public class CrawlScheduler {
         crawler.resetCrawler();
     }
 
-    private List<String> crawlMainPage(final int i) throws InterruptedException, ExecutionException {
-        final Stopwatch watch = Stopwatch.createStarted();
-        final Future<List<String>> mainFuture = crawler.execute(i);
-        final List<String> result = mainFuture.get();
-        watch.stop();
-        logger.info("Crawling of page {} was done in {} ms", i, watch.elapsed(TimeUnit.MILLISECONDS));
+    private Iterable<String> crawlMainPage(final int page) throws InterruptedException, ExecutionException {
+        final Future<Iterable<String>> mainFuture = crawler.execute(page);
+        final Iterable<String> result = mainFuture.get();
         return result;
     }
 
-    private List<PoliceTicker> crawlDetailPages(final List<String> detailPageUrls) throws InterruptedException,
+    private Iterable<PoliceTicker> crawlDetailPages(final Iterable<String> detailPageUrls) throws InterruptedException,
             ExecutionException {
-        final Stopwatch watch = Stopwatch.createStarted();
-        final Future<List<PoliceTicker>> detailFuture = detailCrawler.execute(detailPageUrls);
-        final List<PoliceTicker> details = detailFuture.get();
-        watch.stop();
-        logger.info("Crawling of detail pages was done in {} ms", watch.elapsed(TimeUnit.MILLISECONDS));
+        final Future<Iterable<PoliceTicker>> detailFuture = detailCrawler.execute(detailPageUrls);
+        final Iterable<PoliceTicker> details = detailFuture.get();
         return details;
     }
 
-    void addCoordsToPoliceTickerInformation(final List<PoliceTicker> articles) throws InterruptedException,
+    void addCoordsToPoliceTickerInformation(final Iterable<PoliceTicker> articles) throws InterruptedException,
             ExecutionException {
-        logger.debug("addCoordsToPoliceTickerInformation for {} articles", articles.size());
+        logger.debug("addCoordsToPoliceTickerInformation for various articles");
         for (final PoliceTicker policeTicker : articles) {
             logger.debug("process article {}", policeTicker.getUrl());
             boolean coordsFound = false;

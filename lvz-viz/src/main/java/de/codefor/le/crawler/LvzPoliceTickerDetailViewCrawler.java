@@ -41,7 +41,7 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LvzPoliceTickerDetailViewCrawler.class);
 
-    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 100;
+    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 5000;
 
     @Async
     public Future<Iterable<PoliceTicker>> execute(final Iterable<String> detailURLs) {

@@ -22,6 +22,8 @@ public class CrawlScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(CrawlScheduler.class);
 
+    private static final int DEFAULT_PAGE_SIZE = 12;
+
     @Autowired
     private PoliceTickerRepository policeTickerRepository;
 
@@ -41,9 +43,9 @@ public class CrawlScheduler {
     @Scheduled(fixedDelay = 1_800_000)
     public void crawlSchedule() throws ExecutionException, InterruptedException {
         logger.info("Start crawling police ticker");
-        int i = 1;
+        int offset = 0;
         while (crawler.isMoreToCrawl()) {
-            final Iterable<String> detailPageUrls = crawlMainPage(i++);
+            final Iterable<String> detailPageUrls = crawlMainPage(offset);
             if (detailPageUrls.iterator().hasNext()) {
                 final Iterable<PoliceTicker> details = crawlDetailPages(detailPageUrls);
                 if (ner != null) {
@@ -53,13 +55,14 @@ public class CrawlScheduler {
                     policeTickerRepository.save(details);
                 }
             }
+            offset += DEFAULT_PAGE_SIZE;
         }
         // else the crawler will not start again after the delay
         crawler.resetCrawler();
     }
 
-    private Iterable<String> crawlMainPage(final int page) throws InterruptedException, ExecutionException {
-        final Future<Iterable<String>> mainFuture = crawler.execute(page);
+    private Iterable<String> crawlMainPage(final int offset) throws InterruptedException, ExecutionException {
+        final Future<Iterable<String>> mainFuture = crawler.execute(offset);
         final Iterable<String> result = mainFuture.get();
         return result;
     }
@@ -107,7 +110,7 @@ public class CrawlScheduler {
      * @param nominatim Nominatim
      * @return true if nominatim contains valid coordinates
      */
-    private boolean setCoordsIfValid(final PoliceTicker policeTicker, final Nominatim nominatim) {
+    private static boolean setCoordsIfValid(final PoliceTicker policeTicker, final Nominatim nominatim) {
         final String lat = nominatim.getLat();
         final String lon = nominatim.getLon();
         if (NumberUtils.isNumber(lat) && NumberUtils.isNumber(lon)) {
@@ -115,9 +118,8 @@ public class CrawlScheduler {
             logger.debug("set geoPoint {} to article", g);
             policeTicker.setCoords(g);
             return true;
-        } else {
-            logger.warn("latitude {} and longitude {} must be non-empty numeric", lat, lon);
         }
+        logger.warn("latitude {} and longitude {} must be non-empty numeric", lat, lon);
         return false;
     }
 }

@@ -36,45 +36,41 @@ public class LvzPoliceTickerCrawler {
 
     protected static final int REQUEST_TIMEOUT = 10000;
 
-    protected static final String FILE_ENDING_HTML = ".html";
+    protected static final String LVZ_BASE_URL = "http://www.lvz.de";
 
-    protected static final String LVZ_BASE_URL = "http://www.lvz-online.de";
+    protected static final String LVZ_POLICE_TICKER_BASE_URL = LVZ_BASE_URL + "/Leipzig/Polizeiticker/Polizeiticker-Leipzig";
 
-    protected static final String LVZ_POLICE_TICKER_BASE_URL = LVZ_BASE_URL
-            + "/leipzig/polizeiticker/polizeiticker-leipzig";
-
-    protected static final String REF_TOKEN = "r-polizeiticker-leipzig";
-
-    protected static final String LVZ_POLICE_TICKER_PAGE_URL = LVZ_POLICE_TICKER_BASE_URL + "/" + REF_TOKEN + "-seite-";
+    protected static final String LVZ_POLICE_TICKER_PAGE_URL = LVZ_POLICE_TICKER_BASE_URL + "/(offset)/%s";
 
     @Autowired
     PoliceTickerRepository policeTickerRepository;
 
-    private boolean crawlMore = false;
+    private boolean crawlMore = true;
 
     @Async
-    public Future<Iterable<String>> execute(final int page) {
+    public Future<Iterable<String>> execute(final int offset) {
         final Stopwatch watch = Stopwatch.createStarted();
-        logger.info("Start crawling page {}", page);
+        final String url = String.format(LVZ_POLICE_TICKER_PAGE_URL, offset);
+        logger.info("Start crawling {}", url);
         final List<String> crawledNews = new ArrayList<>();
         try {
-            crawlMore = crawlNewsFromPage(crawledNews, page);
+            crawlMore = crawlNewsFromPage(crawledNews, url);
         } catch (final IOException e) {
             logger.error(e.toString(), e);
         }
         watch.stop();
-        logger.info("Finished crawling page {} in {} ms", page, watch.elapsed(TimeUnit.MILLISECONDS));
-        return new AsyncResult<Iterable<String>>(crawledNews);
+        logger.info("Finished crawling page at offset {} in {} ms", offset, watch.elapsed(TimeUnit.MILLISECONDS));
+        return new AsyncResult<>(crawledNews);
     }
 
     /**
-     * @param page the page which to crawl
+     * @param url the url which to crawl
      * @return true if all content of the current page is new. Hint for also crawling the next site
      * @throws IOException if there are problems while writing the detail links to a file
      */
-    private boolean crawlNewsFromPage(final List<String> crawledNews, final int page) throws IOException {
-        final Document doc = Jsoup.connect(generateUrl(page)).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
-        final Elements links = doc.select("a:contains(mehr...)");
+    private boolean crawlNewsFromPage(final List<String> crawledNews, final String url) throws IOException {
+        final Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
+        final Elements links = doc.select("a.pda-headlinelink");
         for (final Element link : links) {
             final String detailLink = LVZ_BASE_URL + link.attr("href");
             final String id = Utils.generateHashForUrl(detailLink);
@@ -101,15 +97,6 @@ public class LvzPoliceTickerCrawler {
             result = false;
         }
         return result;
-    }
-
-    private String generateUrl(final int page) {
-        final StringBuilder sb = new StringBuilder(LVZ_POLICE_TICKER_PAGE_URL);
-        sb.append(page);
-        sb.append(FILE_ENDING_HTML);
-        final String url = sb.toString();
-        logger.debug("page url {}", url);
-        return url;
     }
 
     public void resetCrawler() {

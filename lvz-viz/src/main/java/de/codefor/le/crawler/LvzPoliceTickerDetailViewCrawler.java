@@ -1,14 +1,15 @@
 package de.codefor.le.crawler;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,6 +20,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
 
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.utilities.Utils;
@@ -43,26 +45,29 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 5000;
 
+    private static final String ELLIPSIS = "...";
+
     @Async
     public Future<Iterable<PoliceTicker>> execute(final Iterable<String> detailURLs) {
         final Stopwatch watch = Stopwatch.createStarted();
         logger.info("Start crawling detail pages");
         final List<PoliceTicker> policeTickers = new ArrayList<>();
-        for (final String url : detailURLs) {
-            try {
-                Thread.sleep(WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING);
-                final PoliceTicker ticker = crawl(url);
-                if (ticker != null) {
-                    policeTickers.add(ticker);
+        for (final Iterator<String> iterator = detailURLs.iterator(); iterator.hasNext();) {
+            final PoliceTicker ticker = crawl(iterator.next());
+            if (ticker != null) {
+                policeTickers.add(ticker);
+            }
+            if (iterator.hasNext()) {
+                try {
+                    Thread.sleep(WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING);
+                } catch (final InterruptedException e) {
+                    logger.error(e.toString(), e);
                 }
-            } catch (final InterruptedException e) {
-                logger.error(e.toString(), e);
             }
         }
         watch.stop();
-        logger.info("Finished crawling {} detail pages in {} ms", policeTickers.size(),
-                watch.elapsed(TimeUnit.MILLISECONDS));
-        return new AsyncResult<Iterable<PoliceTicker>>(policeTickers);
+        logger.info("Finished crawling {} detail pages in {} ms", policeTickers.size(), watch.elapsed(TimeUnit.MILLISECONDS));
+        return new AsyncResult<>(policeTickers);
     }
 
     /**
@@ -71,11 +76,10 @@ public class LvzPoliceTickerDetailViewCrawler {
      * @param url article url
      * @return PoliceTickers
      */
-    private PoliceTicker crawl(final String url) {
+    private static PoliceTicker crawl(final String url) {
         Document doc = null;
         try {
-            doc = Jsoup.connect(url).userAgent(LvzPoliceTickerCrawler.USER_AGENT)
-                    .timeout(LvzPoliceTickerCrawler.REQUEST_TIMEOUT).get();
+            doc = Jsoup.connect(url).userAgent(LvzPoliceTickerCrawler.USER_AGENT).timeout(LvzPoliceTickerCrawler.REQUEST_TIMEOUT).get();
         } catch (final IOException e) {
             logger.error(e.toString(), e);
         }
@@ -84,11 +88,10 @@ public class LvzPoliceTickerDetailViewCrawler {
             result = convertToDataModel(doc);
             result.setUrl(url);
             result.setId(Utils.generateHashForUrl(url));
-            result.setArticleId(Utils.extractArticleId(url));
             logger.info("Crawled {}", url);
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Crawled {}", result);
+            logger.debug("Extracted {}", result);
         }
         return result;
     }
@@ -99,7 +102,7 @@ public class LvzPoliceTickerDetailViewCrawler {
      * @param doc the document
      * @return the model with all information which are needed
      */
-    private PoliceTicker convertToDataModel(final Document doc) {
+    private static PoliceTicker convertToDataModel(final Document doc) {
         final PoliceTicker dm = new PoliceTicker();
         extractTitle(doc, dm);
         extractArticleAndSnippet(doc, dm);
@@ -108,48 +111,63 @@ public class LvzPoliceTickerDetailViewCrawler {
         return dm;
     }
 
-    private void extractTitle(final Document doc, final PoliceTicker dm) {
-        final String ownText = doc.select("title").first().ownText();
-        dm.setTitle(ownText);
+    private static void extractTitle(final Document doc, final PoliceTicker dm) {
+        final Element elem = doc.select("h1.pda-entry-title.entry-title").first();
+        if (elem != null) {
+            dm.setTitle(elem.ownText());
+        }
+        if (Strings.isNullOrEmpty(dm.getTitle())) {
+            logger.warn("title not found for article");
+        }
     }
 
-    private void extractCopyright(final Document doc, final PoliceTicker dm) {
-        final String copyrightAndDatePublished = extractCopyrightAndDatePublished(doc);
-        dm.setCopyright(copyrightAndDatePublished.split(",")[0]);
+    private static void extractCopyright(final Document doc, final PoliceTicker dm) {
+        final Element elem = doc.select("li:contains(©)").first();
+        if (elem != null) {
+            dm.setCopyright(elem.text());
+        }
+        if (Strings.isNullOrEmpty(dm.getCopyright())) {
+            logger.warn("copyright not found for article");
+        }
     }
 
-    private void extractDatePublished(final Document doc, final PoliceTicker dm) {
-        final String copyrightAndDatePublished = extractCopyrightAndDatePublished(doc);
-
-        final String date = copyrightAndDatePublished.substring(copyrightAndDatePublished.indexOf(",") + 1).trim();
-        final DateTimeFormatter fmt = DateTimeFormat.forPattern("dd.MM.YYYY, HH:mm 'Uhr'");
-
-        dm.setDatePublished(DateTime.parse(date, fmt).toDateTimeISO().toDate());
-    }
-
-    private String extractCopyrightAndDatePublished(final Document doc) {
-        String result = "";
-        for (final Element e : doc.select("div.copyright")) {
-            // only plain copyright
-            if (e.hasText()) {
-                result = e.ownText();
+    private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
+        final Element elem = doc.select("span.dtstamp").first();
+        if (elem != null) {
+            // example: 2015-10-11T15:13:00Z
+            final String date = elem.attr("content");
+            if (!date.isEmpty()) {
+                final String dateWithoutSuffixZ = date.substring(0, date.length() - 1);
+                dm.setDatePublished(Date.from(LocalDateTime.parse(dateWithoutSuffixZ).atZone(ZoneId.systemDefault()).toInstant()));
             }
         }
-        return result;
+        if (dm.getDatePublished() == null) {
+            logger.warn("publishing date not found for article");
+        }
     }
 
-    private void extractArticleAndSnippet(final Document doc, final PoliceTicker dm) {
-        for (final Element e : doc.select("div.ARTIKEL_TEXT")) {
+    private static void extractArticleAndSnippet(final Document doc, final PoliceTicker dm) {
+        final StringBuilder article = new StringBuilder();
+
+        for (final Element e : doc.select("#articlecontent > p.pda-abody-p")) {
             if (e.hasText()) {
-                final String article = e.ownText();
-                final String[] split = article.split("\\s");
-                final StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < Math.min(20, split.length); i++) {
-                    sb.append(split[i]).append(" ");
+                if (article.length() > 0) {
+                    article.append(" ");
                 }
-                dm.setArticle(article);
-                dm.setSnippet(sb.toString().trim() + "...");
+                article.append(e.text());
             }
+        }
+
+        dm.setArticle(article.toString());
+        final String[] split = dm.getArticle().split("\\s");
+        final StringBuilder snippet = new StringBuilder();
+        for (int i = 0; i < Math.min(20, split.length); i++) {
+            snippet.append(split[i]).append(" ");
+        }
+        dm.setSnippet(snippet.toString().trim() + ELLIPSIS);
+
+        if (Strings.isNullOrEmpty(dm.getArticle())) {
+            logger.warn("content not found for article");
         }
     }
 }

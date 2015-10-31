@@ -23,8 +23,6 @@ public interface PoliceTickerRepository extends ElasticsearchRepository<PoliceTi
 
     List<PoliceTicker> findByArticle(String article);
 
-    List<PoliceTicker> findByArticleId(String articleId);
-
     Page<PoliceTicker> findByDatePublishedBetween(Date fromDate, Date toDate, Pageable page);
 
     List<PoliceTicker> findByDatePublishedBetween(Date fromDate, Date toDate);

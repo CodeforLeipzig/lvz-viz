@@ -1,16 +1,7 @@
 {
     "policeticker-type": {
-        "_source": {
-            "excludes": [
-                "article"
-            ]
-        },
         "properties": {
             "url": {
-                "type": "string",
-                "index": "not_analyzed"
-            },
-            "articleId": {
                 "type": "string",
                 "index": "not_analyzed"
             },

@@ -21,7 +21,7 @@ import de.codefor.le.model.PoliceTicker;
 @SpringApplicationConfiguration(classes = LvzViz.class)
 public class CrawlSchedulerTest {
 
-    private static final String URL = "http://www.lvz-online.de/leipzig/polizeiticker/polizeiticker-leipzig/zwei-80-jaehrige-damen-in-der-eythraer-strasse-ausgeraubt/r-polizeiticker-leipzig-a-4819.html";
+    private static final String URL = "http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Zwei-80-jaehrige-Damen-in-der-Eythraer-Strasse-ausgeraubt";
 
     private static final String ARTICLE = "Leipzig. Am Samstagabend hat ein Unbekannter zwei 80-jährige Leipzigerinnen ausgeraubt."
             + "[...]Am Hauseingang der Eythraer Straße 15 %ssei der Dieb dann auf die Damen zugekommen[...]";
@@ -44,16 +44,14 @@ public class CrawlSchedulerTest {
     }
 
     @Test
-    public void addCoordsToPoliceTickerInformationWithNoSpecificLocation() throws ExecutionException,
-            InterruptedException {
+    public void addCoordsToPoliceTickerInformationWithNoSpecificLocation() throws ExecutionException, InterruptedException {
         ticker.setArticle(String.format(ARTICLE, ""));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));
         assertNull(ticker.getCoords());
     }
 
     @Test
-    public void addCoordsToPoliceTickerInformationWithSpecificLocationInLeipzig() throws ExecutionException,
-            InterruptedException {
+    public void addCoordsToPoliceTickerInformationWithSpecificLocationInLeipzig() throws ExecutionException, InterruptedException {
         ticker.setArticle(String.format(ARTICLE, "in Kleinzschocher "));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));
         assertNotNull(ticker.getCoords());

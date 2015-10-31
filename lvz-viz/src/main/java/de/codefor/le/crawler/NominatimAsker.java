@@ -36,7 +36,7 @@ public class NominatimAsker {
         } catch (final InterruptedException e) {
             logger.error(e.toString(), e);
         }
-        return new AsyncResult<List<Nominatim>>(result != null ? result : new ArrayList<Nominatim>());
+        return new AsyncResult<>(result != null ? result : new ArrayList<Nominatim>());
     }
 
     private List<Nominatim> getCoords(final String address) {

@@ -8,21 +8,9 @@ public class UtilsTest {
 
     private static final String EMPTY_STRING = "";
 
-    private static final String EXAMPLE_ID = "123456";
-
     private static final String URL_70905 = "http://nachrichten.lvz-online.de/leipzig/polizeiticker/polizeiticker-leipzig/diebe-stehlen-sich-mit-eis-und-nuernberger-wuerstchen-davon/r-polizeiticker-leipzig-a-70905.html";
 
     private static final String URL_70889 = "http://nachrichten.lvz-online.de/leipzig/polizeiticker/polizeiticker-leipzig/starker-bartwuchs--mann-versucht-in-leipzig-gruenau-rucksack-voll-rasierer-zu-stehlen/r-polizeiticker-leipzig-a-70889.html";
-
-    @Test
-    public void extractArticleId() {
-        assertEquals(EMPTY_STRING, Utils.extractArticleId(null));
-        assertEquals(EMPTY_STRING, Utils.extractArticleId(EMPTY_STRING));
-        assertEquals(EMPTY_STRING, Utils.extractArticleId(" "));
-        assertEquals(EMPTY_STRING, Utils.extractArticleId("/12345"));
-        assertEquals(EXAMPLE_ID, Utils.extractArticleId("/" + EXAMPLE_ID));
-        assertEquals(EXAMPLE_ID, Utils.extractArticleId("/1234567"));
-    }
 
     @Test
     public void generateHashForUrl() {

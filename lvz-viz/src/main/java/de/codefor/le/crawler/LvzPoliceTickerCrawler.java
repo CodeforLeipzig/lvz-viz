@@ -48,7 +48,7 @@ public class LvzPoliceTickerCrawler {
     private boolean crawlMore = true;
 
     @Async
-    public Future<Iterable<String>> execute(final int offset) {
+    public Future<? extends Iterable<String>> execute(final int offset) {
         final Stopwatch watch = Stopwatch.createStarted();
         final String url = String.format(LVZ_POLICE_TICKER_PAGE_URL, offset);
         logger.info("Start crawling {}", url);

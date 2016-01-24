@@ -20,7 +20,7 @@ public class LvzPoliceTickerCrawlerTest {
 
     @Test
     public void testExecuteForPageWithOffsetZero() throws InterruptedException, ExecutionException {
-        final Future<Iterable<String>> future = crawler.execute(0);
+        final Future<? extends Iterable<String>> future = crawler.execute(0);
         assertNotNull(future);
         final Iterable<String> pageOne = future.get();
         assertNotNull(pageOne);

@@ -83,7 +83,7 @@ public class NER {
         final Collection<String> blacklist = new HashSet<>();
         List<String> lines = null;
         try {
-            lines = Files.readAllLines(Paths.get(ClassLoader.getSystemResource(BLACKLIST_FILE).toURI()),
+            lines = Files.readAllLines(Paths.get(NER.class.getClassLoader().getResource(BLACKLIST_FILE).toURI()),
                     StandardCharsets.UTF_8);
         } catch (final IOException | URISyntaxException e) {
             throw Throwables.propagate(e);

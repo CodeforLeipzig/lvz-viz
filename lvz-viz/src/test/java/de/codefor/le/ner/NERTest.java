@@ -7,9 +7,12 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 public class NERTest {
+
+    private static final NER NER_INSTANCE = new NER();
 
     @Test
     public void initBlackListedLocations() {
@@ -22,10 +25,20 @@ public class NERTest {
     }
 
     @Test
-    public void getLocations() {
-        final NER ner = new NER();
-        assertNotNull(ner.getLocations("foo", false));
-        assertNotNull(ner.getLocations("foo", true));
+    public void getLocationsForSimpleStringShouldReturnNull() {
+        assertNotNull(NER_INSTANCE.getLocations("foo", false));
+        assertNotNull(NER_INSTANCE.getLocations("foo", true));
     }
 
+    private static final String ARTICLE = "Leipzig. Der Autoanhänger [...] ist am Montagabend in Leipzig-Plagwitz von [...]"
+            + "Der Vorfall ereignete sich auf der Karl-Heine-Straße [...]"
+            + "Eine der Flaschen zerschellte auf der Karl-Heine-Straße in Höhe König-Albert Brücke. [...] Danach fuhr das Auto weiter."
+            + "[...] Von LVZ";
+
+    @Test
+    public void getLocationsForArticleShouldReturnCollection() {
+        final Collection<String> locations = NER_INSTANCE.getLocations(ARTICLE, true);
+        assertNotNull(locations);
+        assertThat(locations, Matchers.containsInAnyOrder("Leipzig-Plagwitz", "Karl-Heine-Straße", "Brücke"));
+    }
 }

@@ -12,8 +12,5 @@
         <constructor-arg name="client" ref="client"/>
     </bean>
 
-
     <elasticsearch:repositories base-package="de.codefor.le.repositories" />
-
-
 </beans>

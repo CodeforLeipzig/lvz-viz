@@ -47,17 +47,17 @@ eclipse {
                    'org.eclipse.jdt.core.javanature',                     // default java
                    'org.eclipse.wst.common.modulecore.ModuleCoreNature',  // default
                    'org.eclipse.wst.common.project.facet.core.nature']    // if you want a facetted projekt
-        
+
         buildCommand 'org.springframework.ide.eclipse.core.springbuilder' // Spring STS
     }
-  
+
     classpath {
         defaultOutputDir = file('build/classes')
 
         downloadSources = true
         downloadJavadoc = false
     }
-  
+
     wtp {
         facet {
             facet name: 'jst.web', version: '3.0' // Servlet 3.0
@@ -65,4 +65,4 @@ eclipse {
     }
 }
 
-task wrapper(type: Wrapper) { gradleVersion = "2.8" }
+task wrapper(type: Wrapper) { gradleVersion = "2.10" }

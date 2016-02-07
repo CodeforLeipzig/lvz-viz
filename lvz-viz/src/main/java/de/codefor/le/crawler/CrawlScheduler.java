@@ -62,14 +62,14 @@ public class CrawlScheduler {
     }
 
     private Iterable<String> crawlMainPage(final int offset) throws InterruptedException, ExecutionException {
-        final Future<Iterable<String>> mainFuture = crawler.execute(offset);
+        final Future<? extends Iterable<String>> mainFuture = crawler.execute(offset);
         final Iterable<String> result = mainFuture.get();
         return result;
     }
 
     private Iterable<PoliceTicker> crawlDetailPages(final Iterable<String> detailPageUrls) throws InterruptedException,
             ExecutionException {
-        final Future<Iterable<PoliceTicker>> detailFuture = detailCrawler.execute(detailPageUrls);
+        final Future<? extends Iterable<PoliceTicker>> detailFuture = detailCrawler.execute(detailPageUrls);
         final Iterable<PoliceTicker> details = detailFuture.get();
         return details;
     }

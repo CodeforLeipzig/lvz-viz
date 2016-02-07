@@ -48,7 +48,7 @@ public class LvzPoliceTickerDetailViewCrawler {
     private static final String ELLIPSIS = "...";
 
     @Async
-    public Future<Iterable<PoliceTicker>> execute(final Iterable<String> detailURLs) {
+    public Future<? extends Iterable<PoliceTicker>> execute(final Iterable<String> detailURLs) {
         final Stopwatch watch = Stopwatch.createStarted();
         logger.info("Start crawling detail pages");
         final List<PoliceTicker> policeTickers = new ArrayList<>();

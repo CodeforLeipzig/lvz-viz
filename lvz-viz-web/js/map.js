@@ -5,7 +5,7 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
     var map = L.map('map').setView([51.339695, 12.373075], 11);
     // // add an OpenStreetMap tile layer
     var u_id = 'paesku.jilhmmgd';
-;
+
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -17,17 +17,17 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
         sort: 'datePublished,desc'
     }, function(data) {
         data.number = data.number + 1;
-        $scope.data = data
+        $scope.data = data;
         addtoMap(data);
-    })
+    });
     $('#blubble').click(function(){
         // console.log(L);
         // console.log(map)
-       map._onResize()
+       map._onResize();
        
-    })
+    });
     $scope.search = function(number) {
-        $scope.searchquery = $scope.query
+        $scope.searchquery = $scope.query;
         search.get({
             'query': $scope.query,
             page: $scope.data.number - 1,
@@ -35,10 +35,10 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
             sort: 'datePublished,desc'
         }, function(data) {
             data.number = data.number + 1;
-            $scope.data = data
+            $scope.data = data;
             addtoMap(data);
-        })
-    }
+        });
+    };
     var addtoMap = function(data) {
         map.removeLayer(markers);
         markers = new L.FeatureGroup();
@@ -49,9 +49,9 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
                 var marker = new L.marker([c.coords.lat, c.coords.lon]).bindPopup("<a href=" + c.url + ">" + c.title + "</a><br>" + c.snippet);
                 markers.addLayer(marker);
             }
-        };
-        map.addLayer(markers)
-    }
+        }
+        map.addLayer(markers);
+    };
     $scope.pageChanged = function() {
         if ($scope.query === undefined) {
             getx.get({
@@ -60,9 +60,9 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
                 sort: 'datePublished,desc'
             }, function(data) {
                 data.number = data.number + 1;
-                $scope.data = data
+                $scope.data = data;
                 addtoMap(data);
-            })
+            });
         } else {
             $scope.search($scope.data.number - 1);
         }
@@ -75,11 +75,11 @@ app.factory('search', function($resource) {
         size: '@size',
         sort: '@sort'
     });
-})
+});
 app.factory('getx', function($resource) {
     return $resource('api/getx', {
         page: '@page',
         size: '@size',
         sort: '@sort'
     });
-})
+});

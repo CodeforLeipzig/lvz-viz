@@ -3,6 +3,8 @@ package de.codefor.le.crawler;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -134,16 +136,33 @@ public class LvzPoliceTickerDetailViewCrawler {
     private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
         final Element elem = doc.select("span.dtstamp").first();
         if (elem != null) {
-            // example: 2015-10-11T15:13:00Z
-            final String date = elem.attr("content");
-            if (!date.isEmpty()) {
-                final String dateWithoutSuffixZ = date.substring(0, date.length() - 1);
-                dm.setDatePublished(Date.from(LocalDateTime.parse(dateWithoutSuffixZ).atZone(ZoneId.systemDefault()).toInstant()));
-            }
+            dm.setDatePublished(extractDate(elem.attr("content")));
         }
         if (dm.getDatePublished() == null) {
             logger.warn("publishing date not found for article");
         }
+    }
+
+    static Date extractDate(final String date) {
+        Date result = null;
+        if (!Strings.isNullOrEmpty(date)) {
+            ZonedDateTime zonedDateTime = null;
+            try {
+                String normalizedDate = date;
+                if (date.length() == 20 && date.endsWith("Z")) {
+                    normalizedDate = date.substring(0, date.length() - 1);
+                }
+                if (normalizedDate.length() == 19) {
+                    zonedDateTime = LocalDateTime.parse(normalizedDate).atZone(ZoneId.systemDefault());
+                } else {
+                    zonedDateTime = ZonedDateTime.parse(normalizedDate);
+                }
+                result = Date.from(zonedDateTime.toInstant());
+            } catch (final DateTimeParseException e) {
+                logger.warn(e.toString(), e);
+            }
+        }
+        return result;
     }
 
     private static void extractArticleAndSnippet(final Document doc, final PoliceTicker dm) {

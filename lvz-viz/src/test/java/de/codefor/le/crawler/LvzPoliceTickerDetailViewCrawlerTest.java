@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.time.LocalDateTime;
@@ -37,11 +38,14 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     @Test
     public void testExecuteForPageWithOffsetZero() throws InterruptedException, ExecutionException {
         final List<String> urls = new ArrayList<>();
-        urls.add("http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Ermittlungen-nach-toedlichem-Kranunfall-in-Leipzig-City-dauern-an");
+        urls.add("http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig"
+                + "/Ermittlungen-nach-toedlichem-Kranunfall-in-Leipzig-City-dauern-an");
         urls.add("http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Betrunkene-rauscht-im-Leipziger-Zentrum-ins-Gleisbett");
         urls.add("http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Taeter-nach-Boellerwurf-in-Asylbewerberwohnung-gefasst");
-        urls.add("http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Autoanhaenger-mit-Legida-Buehne-in-Leipzig-mit-Molotow-Cocktails-angegriffen");
-        urls.add("http://www.lvz.de/Specials/Themenspecials/Legida-und-Proteste/Pegida/Nach-Pegida-Auseinandersetzung-auch-am-Leipziger-Hauptbahnhof");
+        urls.add("http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig"
+                + "/Autoanhaenger-mit-Legida-Buehne-in-Leipzig-mit-Molotow-Cocktails-angegriffen");
+        urls.add("http://www.lvz.de/Specials/Themenspecials/Legida-und-Proteste"
+                + "/Pegida/Nach-Pegida-Auseinandersetzung-auch-am-Leipziger-Hauptbahnhof");
 
         final Future<Iterable<PoliceTicker>> future = crawler.execute(urls);
         assertNotNull(future);
@@ -62,5 +66,17 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
         }
 
         assertThat(ticker.getArticle(), containsString("Identitätsfeststellung"));
+    }
+
+    @Test
+    public void testExtractDate() {
+        assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(null));
+        assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(""));
+        assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(" "));
+        assertNull(LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11"));
+        assertEquals(PUBLISHING_DATE, LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11T15:13:00"));
+        assertEquals(PUBLISHING_DATE, LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11T15:13:00Z"));
+        assertEquals(PUBLISHING_DATE, LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11T15:13:00+02:00"));
+
     }
 }

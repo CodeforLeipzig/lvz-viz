@@ -7,13 +7,11 @@ Visualization of [LVZ police ticker](http://www.lvz-online.de/leipzig/polizeitic
 
 # Usage
 
-First change directory to lvz-viz and startup backend with Maven or Gradle.
-
-    cd lvz-viz
+Run the app with Maven or Gradle.
 
 Apache Maven
 
-	# build and run project as jar
+    # build and run project as jar
     mvn package
     java -jar target/lvz-viz-*.jar
 

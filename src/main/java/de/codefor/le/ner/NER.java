@@ -1,11 +1,9 @@
 package de.codefor.le.ner;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -81,18 +79,11 @@ public class NER {
 
     static Collection<String> initBlackListedLocations() {
         final Collection<String> blacklist = new HashSet<>();
-        List<String> lines = null;
-        try {
-            lines = Files.readAllLines(Paths.get(NER.class.getClassLoader().getResource(BLACKLIST_FILE).toURI()),
-                    StandardCharsets.UTF_8);
-        } catch (final IOException | URISyntaxException e) {
-            throw Throwables.propagate(e);
-        }
-        for (final String line : lines) {
+        new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(BLACKLIST_FILE))).lines().forEach(line -> {
             if (!Strings.isNullOrEmpty(line) && !line.startsWith(BLACKLIST_COMMENT)) {
                 blacklist.add(line);
             }
-        }
+        });
         logger.debug("initialized location blacklist: {}", blacklist);
         return blacklist;
     }

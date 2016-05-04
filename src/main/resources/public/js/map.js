@@ -6,7 +6,7 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
     // // add an OpenStreetMap tile layer
     var u_id = 'paesku.jilhmmgd';
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
@@ -24,7 +24,7 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
         // console.log(L);
         // console.log(map)
        map._onResize();
-       
+
     });
     $scope.search = function(number) {
         $scope.searchquery = $scope.query;

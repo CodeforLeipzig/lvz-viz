@@ -15,7 +15,10 @@ version="1.1.0-SNAPSHOT"
 
 defaultTasks 'build'
 
-springBoot { mainClass = 'de.codefor.le.LvzViz' }
+springBoot {
+    executable = true
+    mainClass = 'de.codefor.le.LvzViz'
+}
 
 repositories { mavenCentral() }
 dependencies {

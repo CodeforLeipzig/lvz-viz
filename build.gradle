@@ -25,7 +25,7 @@ dependencies {
 	compile "com.google.guava:guava:18.0",
 			"org.jsoup:jsoup:1.9.1",
 			"joda-time:joda-time:2.7",
-			"edu.stanford.nlp:stanford-corenlp:3.5.0"
+			"edu.stanford.nlp:stanford-corenlp:3.6.0"
 
 	compile "org.springframework.boot:spring-boot-starter-web",
 			"org.springframework.boot:spring-boot-starter-logging",

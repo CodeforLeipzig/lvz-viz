@@ -143,7 +143,7 @@ app.controller('sliderctrl', function($scope, $filter, $resource, $interval) {
         var latlng = [];
         for (var i = content.length - 1; i >= 0; i--) {
             var c = content[i];
-            if (c.coords === null) {} else {
+            if (c.coords) {
                 latlng.push([c.coords.lat, c.coords.lon]);
             }
         }

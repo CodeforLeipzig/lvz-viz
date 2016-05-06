@@ -45,7 +45,7 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
         content = data.content;
         for (var i = content.length - 1; i >= 0; i--) {
             var c = content[i];
-            if (c.coords === null) {} else {
+            if (c.coords) {
                 var marker = new L.marker([c.coords.lat, c.coords.lon]).bindPopup("<a href=" + c.url + ">" + c.title + "</a><br>" + c.snippet);
                 markers.addLayer(marker);
             }

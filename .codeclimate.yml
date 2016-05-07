@@ -12,6 +12,11 @@ engines:
     enabled: true
   markdownlint:
     enabled: true
+ratings:
+  paths:
+  - src/**
+  - "**.js"
+  - "**.md"
 exclude_paths:
 - "dewac_175m_600.crf.ser.gz"
 - "src/main/resources/public/vendor/**/*"

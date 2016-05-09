@@ -15,7 +15,7 @@
         <h1>{{data.totalElements}} Artikel über {{searchquery}}</h1>
     </div>
     <div class="text-center">
-        <pagination total-items="data.totalElements" ng-model="data.number" ng-change="pageChanged()" items-per-page="data.size" boundary-links="true" rotate="false" max-size=3></pagination>
+        <uib-pagination total-items="data.totalElements" ng-model="data.number" ng-change="pageChanged()" items-per-page="data.size" boundary-links="true" rotate="false" max-size=3></uib-pagination>
     </div>
     <div class="panel panel-info text-center" ng-repeat="(key, value) in data.content">
         <div class="panel-heading">
@@ -29,6 +29,6 @@
         </div>
     </div>
     <div class="text-center">
-        <pagination total-items="data.totalElements" ng-model="data.number" ng-change="pageChanged()" items-per-page="data.size" boundary-links="true" rotate="false" max-size=3></pagination>
+        <uib-pagination total-items="data.totalElements" ng-model="data.number" ng-change="pageChanged()" items-per-page="data.size" boundary-links="true" rotate="false" max-size=3></uib-pagination>
     </div>
 </div>

@@ -3,9 +3,10 @@ app.controller('sliderctrl', function($scope, $filter, $resource, $interval) {
     var last7days = {};
     var map2 = L.map('map2').setView([51.339695, 12.373075], 11);
 
-    L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map2);
+
     var markers = new L.FeatureGroup();
     var heat = L.heatLayer([], {
         radius: 25,
@@ -63,7 +64,7 @@ app.controller('sliderctrl', function($scope, $filter, $resource, $interval) {
         }
     };
     $scope.runforwardautomatic = function() {
-        
+
         // console.log("test "+ text)
         var upperbound = new Date($("#slider ").dateRangeSlider("bounds").max).getTime();
         var maxcheck = new Date($("#slider ").dateRangeSlider("values").max).getTime();

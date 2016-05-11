@@ -2,8 +2,7 @@ app.controller('sliderctrl', function($scope, $filter, $resource, $interval) {
     var dates = {};
     var last7days = {};
     var map2 = L.map('map2').setView([51.339695, 12.373075], 11);
-    // // add an OpenStreetMap tile layer
-    var u_id = 'paesku.jilhmmgd';
+
     L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map2);

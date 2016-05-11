@@ -3,8 +3,6 @@ app.controller('lvzVizCtrl', function($scope, $resource, search, getx) {
     $scope.totalItems = 64;
     $scope.currentPage = 4;
     var map = L.map('map').setView([51.339695, 12.373075], 11);
-    // // add an OpenStreetMap tile layer
-    var u_id = 'paesku.jilhmmgd';
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

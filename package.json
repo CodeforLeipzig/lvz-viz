@@ -1,0 +1,26 @@
+{
+  "author": "Sebastian Peters",
+  "description": "lvz-viz javascript project",
+  "homepage": "https://github.com/CodeforLeipzig/lvz-viz",
+  "license": "GPL",
+  "name": "lvz-viz",
+  "private": true,
+  "version": "1.2.0",
+  "dependencies": {
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "load-grunt-tasks": "^3.5.0"
+  },
+  "devDependencies": {
+    "grunt-html-angular-validate": "^0.5.8"
+  },
+  "scripts": {
+    "postinstall": "grunt"
+  }
+}

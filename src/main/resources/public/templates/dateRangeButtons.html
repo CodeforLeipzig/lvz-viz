@@ -1,13 +1,24 @@
+<!doctype html>
 <div class="col-xs-2 col-md-1 col-md-offset-1 ">
-    <button ng-mousedown="runbackwardautomatic()" ng-mouseup="stop()" class="btn btn-lg"><span class="glyphicon glyphicon-backward"></span></button>
+  <button data-ng-mousedown="slider.runbackwardautomatic()" data-ng-mouseup="slider.stop()" class="btn btn-lg">
+    <span class="glyphicon glyphicon-backward"></span>
+  </button>
 </div>
 <div class="col-xs-2 col-md-1">
-    <button ng-click="runbackward()" class="btn btn-lg"><span class="glyphicon glyphicon-arrow-left"></span></button>
+  <button data-ng-click="slider.runbackward()" class="btn btn-lg">
+    <span class="glyphicon glyphicon-arrow-left"></span>
+  </button>
 </div>
-<div class="col-xs-4 col-md-5 text-center"> Halten Sie einen der beiden äußeren Buttons gedrückt, damit sich der Slider automatisch zwischen dem gewünschten Zeitfenster bewegt.</div>
-<div class="col-xs-2 col-md-1">
-    <button ng-click="runforward()" class="btn btn-lg"><span class="glyphicon glyphicon-arrow-right"></span></button>
+<div class="col-xs-4 col-md-5 text-center">
+  Halten Sie einen der beiden äußeren Buttons gedrückt, damit sich der Slider automatisch im gewünschten Zeitfenster bewegt.
 </div>
 <div class="col-xs-2 col-md-1">
-    <button ng-mousedown="runforwardautomatic()" ng-mouseup="stop()" class="btn btn-lg"><span class="glyphicon glyphicon-forward"></span></button>
+  <button data-ng-click="slider.runforward()" class="btn btn-lg">
+    <span class="glyphicon glyphicon-arrow-right"></span>
+  </button>
+</div>
+<div class="col-xs-2 col-md-1">
+  <button data-ng-mousedown="slider.runforwardautomatic()" data-ng-mouseup="slider.stop()" class="btn btn-lg">
+    <span class="glyphicon glyphicon-forward"></span>
+  </button>
 </div>

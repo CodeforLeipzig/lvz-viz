@@ -1,12 +1,12 @@
-app.directive('myButtons', function(){
-    // Runs during compile
+(function() {
+  'use strict';
+  angular.module('appLvzViz').directive('myButtons', function() {
     return {
-         templateUrl: 'templates/dateRangeButtons.html'
+      templateUrl: 'templates/dateRangeButtons.html'
     };
-});
-app.directive('myResultlist', function(){
-    // Runs during compile
+  }).directive('myResultlist', function() {
     return {
-         templateUrl: 'templates/myResultlist.html'
+      templateUrl: 'templates/myResultlist.html'
     };
-});
+  });
+})();

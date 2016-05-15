@@ -1,125 +1,123 @@
-<html lang="de" ng-app="lvzViz">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="initial-scale=1">
-        <title>LVZ-Polizeiticker</title>
-        <link rel="icon" href="images/polizeiticker.ico" type="image/x-icon" />
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
-        <link rel="stylesheet" href="css/map.css" />
-        <link rel="stylesheet" href="vendor/iThing-min.css" type="text/css" />
-        <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-resource.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
-        <script src="vendor/leaflet-heat.js"></script>
-        <script src="vendor/jQDateRangeSlider-min.js"></script>
-    </head>
-    <body >
-        <nav>
-            <div class="container">
-                <a href="http://codefor.de">
-                <img class="img-responsive" src="images/polizeiticker.png" alt="polizeiticker-logo">
-                </a>
+<!doctype html>
+<html lang="de" data-ng-app="appLvzViz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1">
+    <title>LVZ-Polizeiticker</title>
+    <link rel="icon" href="images/polizeiticker.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="css/map.css" />
+    <link rel="stylesheet" href="vendor/iThing-min.css" type="text/css" />
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-resource.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+    <script src="vendor/leaflet-heat.js"></script>
+    <script src="vendor/jQDateRangeSlider-min.js"></script>
+  </head>
+  <body>
+    <nav>
+      <div class="container">
+        <a href="http://codefor.de"><img class="img-responsive" src="images/polizeiticker.png" alt="polizeiticker-logo"></a>
+      </div>
+    </nav>
+    <div class="container main">
+      <div role="tabpanel" data-ng-controller="SliderController as slider">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active">
+            <a href="#searches" aria-controls="searches" role="tab" data-toggle="tab" id="blubble">Suche</a>
+          </li>
+          <li role="presentation">
+            <a href="#statistic" aria-controls="statistic" role="tab" data-toggle="tab" data-ng-click="slider.create()">Statistiken</a>
+          </li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <!-- ####### -->
+          <!-- HEATMAP -->
+          <!-- ####### -->
+          <div role="tabpanel" class="tab-pane" id="statistic">
+            <div class="row" style="padding: 5px">
+              <div class="col-xs-12 col-md-12">
+                Häufigkeit und Orte der im LVZ-Polizeiticker beschriebenen Fälle in Leipzig.<br>
+                Verändern Sie den Slider, um verschiedene Zeitfenster zu sehen.
+              </div>
             </div>
-        </nav>
-        <div class="container main">
-            <div role="tabpanel"  ng-controller="sliderctrl">
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#searches" aria-controls="searches" role="tab" data-toggle="tab" id="blubble">Suche</a></li>
-                    <li role="presentation" ><a href="#statistic" aria-controls="statistic" role="tab" data-toggle="tab" ng-click="create()">Statistiken</a></li>
-                </ul>
-                <!-- Tab panes -->
-                <div class="tab-content">
-                    <!-- ######################-->
-                    <!-- HEATMAP-->
-                    <div role="tabpanel" class="tab-pane" id="statistic">
-                        <div class="row" style="padding: 5px">
-                            <div class="col-md-8">
-                                <div class="row" style="padding: 5px">
-                                    <div class="row" style="padding: 5px">
-                                        <div class="col-xs-12 col-md-12 text-center">
-                                            Häufigkeit und Orte der im Polizeiticker (LVZ) beschriebenen Fälle in Leipzig. <br/>
-                                            Verändern Sie den Slider um verschiedene Zeitfenster zu sehen.
-                                        </div>
-                                    </div>
-                                    <div class="row" style="padding: 5px">
-                                        <div class="col-xs-12 col-md-12">
-                                            <div id="slider"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="padding: 5px">
-                                        <div my-buttons></div>
-                                    </div>
-                                    <div class="row" style="padding: 5px">
-                                        <div class="col-xs-12 col-md-12 text-center">
-                                            Die hier abgebildeten Daten entstammen prototypischen Algorithmen, welche Orte aus Texten extrahieren.<br>
-                                            Das Mapping der Orte auf die Karte erfolgt über die
-                                            <a href="https://nominatim.openstreetmap.org" target="_blank">Nominatim-API</a> von
-                                            <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a>.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" style="padding: 5px">
-                                    <div class="col-xs-12 col-md-12">
-                                        <div id="map2" style="height:100%;width:100%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ######################-->
-                    <!-- DIE SUCHE BEGINNT HIER-->
-                    <div role="tabpanel" class="tab-pane active" id="searches" ng-controller="lvzVizCtrl">
-                        <div class="container" >
-                            <div class="row">
-                                <div class="col-xs-12 col-md-8">
-                                    Auf der Karte werden die Orte dargestellt, welche aus den LVZ Polizeiticker Artikeln erkannt wurden. <br/>
-                                    Sie können auch über die Suche nach speziellen Orten und Begriffen suchen.
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12 col-md-8">
-                                    <div id="map"></div>
-                                </div>
-                                <div class="col-xs-12 col-md-4">
-                                    <div my-resultlist></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="row" style="padding: 5px">
+              <div class="col-xs-12 col-md-12">
+                <div id="mapStatistics"></div>
+              </div>
             </div>
+            <div class="row" style="padding: 5px">
+              <div class="col-xs-12 col-md-12">
+                <div id="slider"></div>
+              </div>
+            </div>
+            <div class="row" style="padding: 5px">
+              <div data-my-buttons></div>
+            </div>
+            <div class="row" style="padding: 5px">
+              <div class="col-xs-12 col-md-12">
+                Die hier abgebildeten Daten entstammen prototypischen Algorithmen, welche Orte aus Texten extrahieren.<br>
+                Das Mapping der Orte auf die Karte erfolgt über die
+                <a href="https://nominatim.openstreetmap.org" target="_blank">Nominatim-API</a> von
+                <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a>.
+              </div>
+            </div>
+          </div>
+          <!-- ##### -->
+          <!-- SUCHE -->
+          <!-- ##### -->
+          <div role="tabpanel" class="tab-pane active" id="searches" data-ng-controller="SearchController as vm">
+            <div class="row" style="padding: 5px">
+              <div class="col-xs-12 col-md-8">
+                Auf der Karte werden die Orte dargestellt, welche aus den LVZ-Polizeiticker-Artikeln erkannt wurden.<br>
+                Sie können auch über die Suche nach speziellen Orten und Begriffen suchen.
+              </div>
+            </div>
+            <div class="row" style="padding: 5px">
+              <div class="col-xs-12 col-md-8">
+                <div id="mapSearch"></div>
+              </div>
+              <div class="col-xs-12 col-md-4">
+                <div data-my-resultlist></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <footer class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6">
-                        <ul class="list-unstyled">
-                            <li>Unser Impressum findet ihr hier: <a href="http://codefor.de/impressum">Impressum</a>
-                            </li>
-                            <li>Des Weiteren beziehen wir uns auf die <a href="http://www.lvz-online.de/nachrichten/service/impressum/servicetexte/leistungsschutzrecht/r-servicetexte-a-199230.html">LVZ</a> und hoffen niemanden weh zu tun.</li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <ul class="list-unstyled">
-                            <li>Entwickler sind <a href="https://github.com/RicardoUsbeck">Ricardo</a> und <a href="https://github.com/spinner0815">Lars</a>
-                            </li>
-                            <li>Der komplette Code ist auf <a href="https://github.com/CodeforLeipzig/lvz-viz/">github</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </footer>
+      </div>
     </div>
-    <script src="js/map.js"></script>
-    <script src="js/slider.js"></script>
-    <script src="js/directives.js"></script>
-    <script src="js/analytics.js"></script>
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 col-sm-6">
+            <ul class="list-unstyled">
+              <li>Unser Impressum findet Ihr hier: <a href="http://codefor.de/impressum">Impressum</a></li>
+              <li>
+                Des Weiteren beziehen wir uns auf das
+                <a href="http://www.lvz-online.de/nachrichten/service/impressum/servicetexte/leistungsschutzrecht/r-servicetexte-a-199230.html">
+                  Leistungsschutzrecht der LVZ
+                </a>.
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-12 col-sm-6">
+            <ul class="list-unstyled">
+              <li>
+                Entwickler sind <a href="https://github.com/RicardoUsbeck">Ricardo</a> und
+                <a href="https://github.com/spinner0815">Lars</a>
+              </li>
+              <li>Der komplette Code ist auf <a href="https://github.com/CodeforLeipzig/lvz-viz/">GitHub</a>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="js/app.min.js"></script>
   </body>
 </html>

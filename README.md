@@ -1,18 +1,19 @@
-lvz-viz
-=======
+# lvz-viz
 
 [![Code Climate](https://codeclimate.com/github/CodeforLeipzig/lvz-viz/badges/gpa.svg)](https://codeclimate.com/github/CodeforLeipzig/lvz-viz)
 
+## Intro
+
 Visualization of [LVZ police ticker](http://www.lvz-online.de/leipzig/polizeiticker/r-polizeiticker.html).
 
-The official website is hosted at [https://lvz-viz.leipzig.codefor.de](https://lvz-viz.leipzig.codefor.de) by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_visualisierung).
+The official website is hosted at [https://lvz-viz.leipzig.codefor.de](https://lvz-viz.leipzig.codefor.de)
+by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_visualisierung).
 
-
-# Usage
+## Usage
 
 Run the app with Maven or Gradle.
 
-Apache Maven
+### Apache Maven
 
     # build and run project as jar
     mvn package
@@ -21,7 +22,7 @@ Apache Maven
     # run project within maven
     mvn spring-boot:run
 
-Gradle
+### Gradle
 
     # build and run project as jar
     ./gradlew build

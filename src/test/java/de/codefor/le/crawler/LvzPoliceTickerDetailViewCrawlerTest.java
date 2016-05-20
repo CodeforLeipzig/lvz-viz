@@ -22,8 +22,9 @@ import de.codefor.le.model.PoliceTicker;
 
 public class LvzPoliceTickerDetailViewCrawlerTest {
 
-    private static final Date PUBLISHING_DATE = Date
-            .from(LocalDateTime.of(2015, 10, 11, 15, 13).atZone(ZoneId.systemDefault()).toInstant());
+    private static final String BASE_URL = LvzPoliceTickerCrawler.LVZ_POLICE_TICKER_BASE_URL;
+
+    private static final Date PUBLISHING_DATE = getDate(LocalDateTime.of(2015, 10, 11, 15, 13));
 
     private static final String ARTICLE = "Leipzig. Fast ein halbes Jahr nach einem tödlichen Kranunfall in der Leipziger Innenstadt "
             + "ist die Verantwortung noch immer unklar. Ein technisches Gutachten liege inzwischen vor, "
@@ -35,15 +36,17 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
 
     private final LvzPoliceTickerDetailViewCrawler crawler = new LvzPoliceTickerDetailViewCrawler();
 
+    private static Date getDate(LocalDateTime localDate) {
+        return Date.from(localDate.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
     @Test
-    public void testExecuteForPageWithOffsetZero() throws InterruptedException, ExecutionException {
+    public void extractArticles() throws InterruptedException, ExecutionException {
         final List<String> urls = new ArrayList<>();
-        urls.add("http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig"
-                + "/Ermittlungen-nach-toedlichem-Kranunfall-in-Leipzig-City-dauern-an");
-        urls.add("http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Betrunkene-rauscht-im-Leipziger-Zentrum-ins-Gleisbett");
-        urls.add("http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Taeter-nach-Boellerwurf-in-Asylbewerberwohnung-gefasst");
-        urls.add("http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig"
-                + "/Autoanhaenger-mit-Legida-Buehne-in-Leipzig-mit-Molotow-Cocktails-angegriffen");
+        urls.add(BASE_URL + "/Ermittlungen-nach-toedlichem-Kranunfall-in-Leipzig-City-dauern-an");
+        urls.add(BASE_URL + "/Betrunkene-rauscht-im-Leipziger-Zentrum-ins-Gleisbett");
+        urls.add(BASE_URL + "/Taeter-nach-Boellerwurf-in-Asylbewerberwohnung-gefasst");
+        urls.add(BASE_URL + "/Autoanhaenger-mit-Legida-Buehne-in-Leipzig-mit-Molotow-Cocktails-angegriffen");
         urls.add("http://www.lvz.de/Specials/Themenspecials/Legida-und-Proteste"
                 + "/Pegida/Nach-Pegida-Auseinandersetzung-auch-am-Leipziger-Hauptbahnhof");
 
@@ -69,7 +72,26 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     }
 
     @Test
-    public void testExtractDate() {
+    public void extractPublishedDate() throws InterruptedException, ExecutionException {
+        final List<String> urls = new ArrayList<>();
+        urls.add(BASE_URL + "/Motorradfahrer-bei-Unfall-in-Leipzig-schwer-verletzt");
+        urls.add(BASE_URL + "/Krawalle-am-Leipziger-Amtsgericht-191-Verfahren-eingestellt");
+        final Future<Iterable<PoliceTicker>> future = crawler.execute(urls);
+        assertNotNull(future);
+        final Iterable<PoliceTicker> results = future.get();
+        assertNotNull(results);
+
+        final Iterator<PoliceTicker> it = results.iterator();
+        PoliceTicker ticker = it.next();
+
+        assertEquals(getDate(LocalDateTime.of(2016, 3, 30, 10, 35, 36)), ticker.getDatePublished());
+
+        ticker = it.next();
+        assertEquals(getDate(LocalDateTime.of(2016, 5, 7, 10, 00)), ticker.getDatePublished());
+    }
+
+    @Test
+    public void extractDate() {
         assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(null));
         assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(""));
         assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(" "));

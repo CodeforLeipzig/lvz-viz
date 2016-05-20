@@ -145,12 +145,24 @@ public class LvzPoliceTickerDetailViewCrawler {
         }
     }
 
+    /**
+     * Try different selectors for publishing date.
+     * 
+     * @param doc Document
+     * @param dm PoliceTicker
+     */
     private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
         final String publishingDate = "publishing date";
         String cssQuery = "span.dtstamp";
         Element elem = doc.select(cssQuery).first();
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
+        } else {
+            cssQuery = "meta[itemprop=datepublished]";
+            elem = doc.select(cssQuery).first();
+            if (elem != null) {
+                logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
+            }
         }
         if (elem != null) {
             dm.setDatePublished(extractDate(elem.attr("content")));

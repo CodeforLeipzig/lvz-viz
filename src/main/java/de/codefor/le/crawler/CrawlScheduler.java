@@ -57,6 +57,7 @@ public class CrawlScheduler {
             }
             offset += DEFAULT_PAGE_SIZE;
         }
+        logger.info("Finished crawling police ticker");
         // else the crawler will not start again after the delay
         crawler.resetCrawler();
     }

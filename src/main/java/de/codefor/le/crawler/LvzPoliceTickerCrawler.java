@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
@@ -45,6 +46,10 @@ public class LvzPoliceTickerCrawler {
     @Autowired
     PoliceTickerRepository policeTickerRepository;
 
+    @Value("${app.crawlAllMainPages}")
+    private boolean crawlAllMainPages;
+
+    /** hint for crawling the next site */
     private boolean crawlMore = true;
 
     @Async
@@ -54,7 +59,7 @@ public class LvzPoliceTickerCrawler {
         logger.info("Start crawling {}", url);
         final List<String> crawledNews = new ArrayList<>();
         try {
-            crawlMore = crawlNewsFromPage(crawledNews, url);
+            crawlNewsFromPage(crawledNews, url);
         } catch (final IOException e) {
             logger.error(e.toString(), e);
         }
@@ -64,11 +69,10 @@ public class LvzPoliceTickerCrawler {
     }
 
     /**
-     * @param url the url which to crawl
-     * @return true if all content of the current page is new. Hint for also crawling the next site
+     * @param url the url to crawl
      * @throws IOException if there are problems while writing the detail links to a file
      */
-    private boolean crawlNewsFromPage(final List<String> crawledNews, final String url) throws IOException {
+    private void crawlNewsFromPage(final List<String> crawledNews, final String url) throws IOException {
         final Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
         final Elements links = doc.select("a.pda-headlinelink");
         for (final Element link : links) {
@@ -87,16 +91,14 @@ public class LvzPoliceTickerCrawler {
                 }
             }
         }
-        boolean result = true;
-        if (crawledNews.isEmpty()) {
-            logger.info("No new articles found on this page");
-            result = true;
-        }
         if (links.isEmpty()) {
-            logger.info("No links found on this page, this should be the last available page");
-            result = false;
+            logger.info("No links found on current page. This should be the last available page.");
+            this.crawlMore = false;
+        } else if (crawledNews.isEmpty()) {
+            logger.info("No new articles found on current page. "
+                    + (crawlAllMainPages ? "Nevertheless, continue crawling on next page." : "Stop crawling for now."));
+            this.crawlMore = crawlAllMainPages;
         }
-        return result;
     }
 
     public void resetCrawler() {

@@ -17,7 +17,7 @@
     <h1>{{vm.data.totalElements}} Artikel über {{vm.searchquery}}</h1>
   </div>
   <div class="text-center">
-    <uib-pagination total-items="vm.data.totalElements" data-ng-model="vm.data.number" data-ng-change="vm.pageChanged()" items-per-page="vm.data.size" boundary-links="true" rotate="false" max-size="3"></uib-pagination>
+    <uib-pagination total-items="vm.data.totalElements" data-ng-model="vm.data.number" data-ng-change="vm.pageChanged()" items-per-page="vm.data.size" boundary-links="true" rotate="false" max-size="3" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
   </div>
   <div class="panel panel-info text-center" data-ng-repeat="(key, value) in vm.data.content">
     <div class="panel-heading">
@@ -30,6 +30,6 @@
     </div>
   </div>
   <div class="text-center">
-    <uib-pagination total-items="vm.data.totalElements" data-ng-model="vm.data.number" data-ng-change="vm.pageChanged()" items-per-page="vm.data.size" boundary-links="true" rotate="false" max-size="3"></uib-pagination>
+    <uib-pagination total-items="vm.data.totalElements" data-ng-model="vm.data.number" data-ng-change="vm.pageChanged()" items-per-page="vm.data.size" boundary-links="true" rotate="false" max-size="3" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
   </div>
 </div>

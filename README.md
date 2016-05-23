@@ -45,3 +45,11 @@ You can build an executable jar with gradle daemon and skip all tests to speed u
 Or you can simply run the project within gradle during development.
 
     ./gradlew bootRun
+
+### Docker
+
+You can build and run the app within a Docker container. Run the following commands after building the executable jar with Gradle.
+
+    docker-compose up -d
+    docker-compose logs -f
+    docker-compose down

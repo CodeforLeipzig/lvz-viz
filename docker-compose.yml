@@ -1,0 +1,11 @@
+version: '2'
+services:
+  webapp:
+    build: .
+    image: sepe81/lvz-viz:latest
+    ports:
+      - 8080:8080
+    volumes:
+      - ./data:/home/lvz-viz/data
+    environment:
+      - SPRING_PROFILES_ACTIVE=crawl

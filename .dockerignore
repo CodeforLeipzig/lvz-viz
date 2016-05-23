@@ -1,0 +1,8 @@
+.git
+.gradle
+.settings
+build
+!build/libs/*.jar
+data
+gradle
+node_modules

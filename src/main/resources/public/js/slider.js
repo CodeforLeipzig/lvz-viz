@@ -58,37 +58,50 @@
     var promise;
     var delay = 150;
 
-    /**
-     * Forward running
-     */
+    var getUpperBound = function() {
+      var bound = $('#slider').dateRangeSlider('bounds').max;
+      console.debug('getUpperBound: ' + bound);
+      return bound.getTime();
+    };
+
+    var getLowerBound = function() {
+      var bound = $('#slider').dateRangeSlider('bounds').min;
+      console.debug('getLowerBound: ' + bound);
+      return bound.getTime();
+    };
+
+    var getUpperValue = function() {
+      var value = $('#slider').dateRangeSlider('values').max;
+      console.debug('getUpperValue: ' + value);
+      return value.getTime();
+    };
+
+    var getLowerValue = function() {
+      var value = $('#slider').dateRangeSlider('values').min;
+      console.debug('getLowerValue: ' + value);
+      return value.getTime();
+    };
+
     vm.runforward = function() {
-      var upperbound = new Date($('#slider').dateRangeSlider('bounds').max).getTime();
-      var maxcheck = new Date($('#slider').dateRangeSlider('values').max).getTime();
-      if (maxcheck < upperbound) {
+      if (getUpperValue() < getUpperBound()) {
         runforwardnow();
       }
     };
 
     vm.runforwardautomatic = function() {
-      var upperbound = new Date($('#slider').dateRangeSlider('bounds').max).getTime();
-      var maxcheck = new Date($('#slider').dateRangeSlider('values').max).getTime();
-      console.log('upperbound: ' + upperbound + ', maxcheck: ' + maxcheck);
-      if (maxcheck < upperbound) {
+      console.debug('runforwardautomatic');
+      if (getUpperValue() < getUpperBound()) {
         promise = $interval(runforwardnow, delay);
-      } else {
-        vm.stop();
       }
     };
 
     var runforwardnow = function() {
+      console.debug('runforwardnow');
       var sl = $('#slider').dateRangeSlider('values');
-      var upperbound = new Date($('#slider').dateRangeSlider('bounds').max).getTime();
-      var maxcheck = new Date(sl.max).getTime();
-      if (maxcheck < upperbound) {
-        maxcheck = new Date(sl.max).getTime();
-        var min = new Date(sl.min);
+      if (sl.max.getTime() < getUpperBound()) {
+        var min = sl.min;
         min.setDate(min.getDate() + 1);
-        var max = new Date(sl.max);
+        var max = sl.max;
         max.setDate(max.getDate() + 1);
         $('#slider').dateRangeSlider('values', min, max);
       } else {
@@ -96,36 +109,26 @@
       }
     };
 
-    /**
-     * Backward running
-     */
     vm.runbackward = function() {
-      var lowerbound = new Date($('#slider').dateRangeSlider('bounds').min).getTime();
-      var mincheck = new Date($('#slider').dateRangeSlider('values').min).getTime();
-      if (mincheck > lowerbound) {
+      if (getLowerValue() > getLowerBound()) {
         runbackwardnow();
       }
     };
 
     vm.runbackwardautomatic = function() {
-      var lowerbound = new Date($('#slider').dateRangeSlider('bounds').min).getTime();
-      var mincheck = new Date($('#slider').dateRangeSlider('values').min).getTime();
-      if (mincheck > lowerbound) {
+      console.debug('runbackwardautomatic');
+      if (getLowerValue() > getLowerBound()) {
         promise = $interval(runbackwardnow, delay);
-      } else {
-        vm.stop();
       }
     };
 
     var runbackwardnow = function() {
+      console.debug('runbackwardnow');
       var sl = $('#slider').dateRangeSlider('values');
-      var lowerbound = new Date($('#slider').dateRangeSlider('bounds').min).getTime();
-      var mincheck = new Date(sl.min).getTime();
-      if (mincheck > lowerbound) {
-        mincheck = new Date(sl.min).getTime();
-        var min = new Date(sl.min);
+      if (sl.min.getTime() > getLowerBound()) {
+        var min = sl.min;
         min.setDate(min.getDate() - 1);
-        var max = new Date(sl.max);
+        var max = sl.max;
         max.setDate(max.getDate() - 1);
         $('#slider').dateRangeSlider('values', min, max);
       } else {
@@ -134,23 +137,8 @@
     };
 
     vm.stop = function() {
-        console.log('stop');
-        $interval.cancel(promise);
-    };
-
-    vm.search = function() {
-      console.log('search1');
-      vm.searchquery = vm.query;
-      search.get({
-        'query': vm.query,
-        page: vm.data.number - 1,
-        size: 30,
-        sort: 'datePublished,desc'
-      }, function(data) {
-        data.number = data.number + 1;
-        vm.data = data;
-        addtoMap(data);
-      });
+      console.debug('stop');
+      $interval.cancel(promise);
     };
 
     var addtoMap = function(data) {
@@ -166,12 +154,6 @@
       if (map._size.y === 0) {} else {
         map.addLayer(heat);
       }
-    };
-
-    vm.search = function() {
-      console.log('search2');
-      var sl = $('#slider').dateRangeSlider('values');
-      getResources(sl.min.toISOString(), sl.max.toISOString());
     };
 
     function getResources(from, to) {

@@ -9,6 +9,7 @@ import org.elasticsearch.common.geo.GeoPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ import de.codefor.le.ner.NER;
 import de.codefor.le.repositories.PoliceTickerRepository;
 
 @Component
+@Profile("crawl")
 public class CrawlScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(CrawlScheduler.class);
@@ -68,15 +70,13 @@ public class CrawlScheduler {
         return result;
     }
 
-    private Iterable<PoliceTicker> crawlDetailPages(final Iterable<String> detailPageUrls) throws InterruptedException,
-            ExecutionException {
+    private Iterable<PoliceTicker> crawlDetailPages(final Iterable<String> detailPageUrls) throws InterruptedException, ExecutionException {
         final Future<Iterable<PoliceTicker>> detailFuture = detailCrawler.execute(detailPageUrls);
         final Iterable<PoliceTicker> details = detailFuture.get();
         return details;
     }
 
-    void addCoordsToPoliceTickerInformation(final Iterable<PoliceTicker> articles) throws InterruptedException,
-            ExecutionException {
+    void addCoordsToPoliceTickerInformation(final Iterable<PoliceTicker> articles) throws InterruptedException, ExecutionException {
         logger.debug("addCoordsToPoliceTickerInformation for various articles");
         for (final PoliceTicker policeTicker : articles) {
             logger.debug("process article {}", policeTicker.getUrl());
@@ -84,8 +84,7 @@ public class CrawlScheduler {
             // TODO - replace to bulk threading (not every page in one thread)
             for (final String location : ner.getLocations(policeTicker.getArticle(), true)) {
                 logger.debug("search {} in nominatim", location);
-                final Future<List<Nominatim>> nomFutures = nominatimAsker
-                        .execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX + location);
+                final Future<List<Nominatim>> nomFutures = nominatimAsker.execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX + location);
                 final List<Nominatim> nominatim = nomFutures.get();
                 logger.debug("{} coords: {}", policeTicker.getUrl(), nominatim);
                 if (!nominatim.isEmpty()) {

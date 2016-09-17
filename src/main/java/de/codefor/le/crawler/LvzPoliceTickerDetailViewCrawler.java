@@ -18,6 +18,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,7 @@ import de.codefor.le.utilities.Utils;
  * @author spinner0815
  */
 @Component
+@Profile("crawl")
 public class LvzPoliceTickerDetailViewCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LvzPoliceTickerDetailViewCrawler.class);
@@ -147,7 +149,7 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     /**
      * Try different selectors for publishing date.
-     * 
+     *
      * @param doc Document
      * @param dm PoliceTicker
      */

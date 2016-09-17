@@ -1,6 +1,6 @@
 buildscript {
-	repositories { mavenCentral() }
-	dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.5.RELEASE") }
+  repositories { mavenCentral() }
+  dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.5.RELEASE") }
 }
 
 apply plugin: 'java'
@@ -16,50 +16,50 @@ version="1.2.0-SNAPSHOT"
 defaultTasks 'build'
 
 springBoot {
-    executable = true
-    mainClass = 'de.codefor.le.LvzViz'
+  executable = true
+  mainClass = 'de.codefor.le.LvzViz'
 }
 
 repositories { mavenCentral() }
 dependencies {
-	compile "com.google.guava:guava:18.0",
-			"org.jsoup:jsoup:1.9.2",
-			"joda-time:joda-time:2.7",
-			"edu.stanford.nlp:stanford-corenlp:3.6.0"
+  compile "com.google.guava:guava:18.0",
+          "org.jsoup:jsoup:1.9.2",
+          "joda-time:joda-time:2.7",
+          "edu.stanford.nlp:stanford-corenlp:3.6.0"
 
-	compile "org.springframework.boot:spring-boot-starter-web",
-			"org.springframework.boot:spring-boot-starter-logging",
-			"org.springframework.boot:spring-boot-starter-data-elasticsearch",
-			"org.springframework.boot:spring-boot-starter-actuator"
+  compile "org.springframework.boot:spring-boot-starter-web",
+          "org.springframework.boot:spring-boot-starter-logging",
+          "org.springframework.boot:spring-boot-starter-data-elasticsearch",
+          "org.springframework.boot:spring-boot-starter-actuator"
 
-	testCompile "org.springframework.boot:spring-boot-starter-test",
-			"junit:junit:4.12"
+  testCompile "org.springframework.boot:spring-boot-starter-test",
+              "junit:junit:4.12"
 }
 
 // see http://www.rehpoehler.de/gradle/Gradle-Eclipse-WTP-Beispiel.html
 eclipse {
-    project {
-        natures = ['org.springframework.ide.eclipse.core.springnature',   // if you use springsourcr sts
-                   'org.springsource.ide.eclipse.gradle.core.nature',     // gradle plugin
-                   'org.eclipse.jdt.core.javanature',                     // default java
-                   'org.eclipse.wst.common.modulecore.ModuleCoreNature',  // default
-                   'org.eclipse.wst.common.project.facet.core.nature']    // if you want a facetted projekt
+  project {
+    natures = ['org.springframework.ide.eclipse.core.springnature',   // if you use springsourcr sts
+               'org.springsource.ide.eclipse.gradle.core.nature',     // gradle plugin
+               'org.eclipse.jdt.core.javanature',                     // default java
+               'org.eclipse.wst.common.modulecore.ModuleCoreNature',  // default
+               'org.eclipse.wst.common.project.facet.core.nature']    // if you want a facetted projekt
 
-        buildCommand 'org.springframework.ide.eclipse.core.springbuilder' // Spring STS
+    buildCommand 'org.springframework.ide.eclipse.core.springbuilder' // Spring STS
+  }
+
+  classpath {
+    defaultOutputDir = file('build/classes')
+
+    downloadSources = true
+    downloadJavadoc = false
+  }
+
+  wtp {
+    facet {
+      facet name: 'jst.web', version: '3.0' // Servlet 3.0
     }
-
-    classpath {
-        defaultOutputDir = file('build/classes')
-
-        downloadSources = true
-        downloadJavadoc = false
-    }
-
-    wtp {
-        facet {
-            facet name: 'jst.web', version: '3.0' // Servlet 3.0
-        }
-    }
+  }
 }
 
 task wrapper(type: Wrapper) { gradleVersion = "2.14.1" }

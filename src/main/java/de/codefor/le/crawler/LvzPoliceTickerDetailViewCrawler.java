@@ -49,7 +49,7 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LvzPoliceTickerDetailViewCrawler.class);
 
-    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 5000;
+    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 50;
 
     private static final String LOG_ELEMENT_FOUND = "element '{}' found with '{}' for article";
 

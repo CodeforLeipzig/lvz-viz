@@ -23,7 +23,7 @@ public class NominatimAsker {
 
     private static final String NOMINATIM_SEARCH_URL = "http://nominatim.openstreetmap.org/search?q=%s&format=json";
 
-    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 5000;
+    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 50;
 
     private final RestTemplate restTemplate = new RestTemplate();
 

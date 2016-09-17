@@ -14,7 +14,7 @@ import org.junit.Test;
 
 public class LvzPoliceTickerCrawlerTest {
 
-    private static final String OLDEST_URL = "http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Anbau-von-Hanf-in-Stoetteritzer-Kleingarten-entdeckt";
+    private static final String OLDEST_URL = "http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Ladendetektive-schnappen-an-einem-Tag-vier-Diebe-im-Leipziger-Zentrum";
 
     private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler();
 

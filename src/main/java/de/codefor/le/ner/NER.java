@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Strings;
@@ -27,11 +29,14 @@ public class NER {
 
     private static final Logger logger = LoggerFactory.getLogger(NER.class);
 
-    private static final String BLACKLIST_FILE = "locationBlacklist";
+    private static final String BLACKLIST_FILE = "classpath:locationBlacklist";
 
     private static final String BLACKLIST_COMMENT = "#";
 
     private static final String SERIALIZED_CLASSIFIER = "dewac_175m_600.crf.ser.gz";
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     private AbstractSequenceClassifier<CoreLabel> classifier;
 
@@ -77,13 +82,17 @@ public class NER {
         }
     }
 
-    static Collection<String> initBlackListedLocations() {
+    Collection<String> initBlackListedLocations() {
         final Collection<String> blacklist = new HashSet<>();
-        new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(BLACKLIST_FILE))).lines().forEach(line -> {
-            if (!Strings.isNullOrEmpty(line) && !line.startsWith(BLACKLIST_COMMENT)) {
-                blacklist.add(line);
-            }
-        });
+        try {
+            new BufferedReader(new InputStreamReader(resourceLoader.getResource(BLACKLIST_FILE).getInputStream())).lines().forEach(line -> {
+                if (!Strings.isNullOrEmpty(line) && !line.startsWith(BLACKLIST_COMMENT)) {
+                    blacklist.add(line);
+                }
+            });
+        } catch (final IOException e) {
+            Throwables.propagate(e);
+        }
         logger.debug("initialized location blacklist: {}", blacklist);
         return blacklist;
     }

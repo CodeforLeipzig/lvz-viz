@@ -9,14 +9,21 @@ import java.util.Collection;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class NERTest {
 
-    private static final NER NER_INSTANCE = new NER();
+    @Autowired
+    private NER ner;
 
     @Test
     public void initBlackListedLocations() {
-        final Collection<String> blackListedLocations = NER.initBlackListedLocations();
+        final Collection<String> blackListedLocations = ner.initBlackListedLocations();
         assertNotNull(blackListedLocations);
         assertThat(blackListedLocations, hasItem("Leipzig"));
         assertThat(blackListedLocations, hasItem("Dresdens"));
@@ -26,8 +33,8 @@ public class NERTest {
 
     @Test
     public void getLocationsForSimpleStringShouldReturnNull() {
-        assertNotNull(NER_INSTANCE.getLocations("foo", false));
-        assertNotNull(NER_INSTANCE.getLocations("foo", true));
+        assertNotNull(ner.getLocations("foo", false));
+        assertNotNull(ner.getLocations("foo", true));
     }
 
     private static final String ARTICLE = "Leipzig. Der Autoanhänger [...] ist am Montagabend in Leipzig-Plagwitz von [...]"
@@ -37,7 +44,7 @@ public class NERTest {
 
     @Test
     public void getLocationsForArticleShouldReturnCollection() {
-        final Collection<String> locations = NER_INSTANCE.getLocations(ARTICLE, true);
+        final Collection<String> locations = ner.getLocations(ARTICLE, true);
         assertNotNull(locations);
         assertThat(locations, Matchers.containsInAnyOrder("Leipzig-Plagwitz", "Karl-Heine-Straße", "Brücke"));
     }

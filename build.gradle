@@ -1,12 +1,18 @@
 buildscript {
-  repositories { mavenCentral() }
-  dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE") }
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE"
+    classpath "com.avast.gradle:docker-compose-gradle-plugin:0.3.13"
+  }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
+apply plugin: 'docker-compose'
 
 sourceCompatibility="1.8"
 targetCompatibility="1.8"
@@ -36,6 +42,10 @@ dependencies {
 
   testCompile "org.springframework.boot:spring-boot-starter-test",
               "junit:junit:4.12"
+}
+
+dockerCompose {
+  captureContainersOutput = false
 }
 
 // see http://www.rehpoehler.de/gradle/Gradle-Eclipse-WTP-Beispiel.html

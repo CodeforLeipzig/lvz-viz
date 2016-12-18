@@ -37,9 +37,9 @@ You can build an executable jar with gradle and run it as a separate process.
     ./gradlew build
     java -jar build/libs/lvz-viz-*.jar
 
-You can build an executable jar with gradle daemon and skip all tests to speed up the build.
+You can build an executable jar with gradle and skip all tests to speed up the build.
 
-    ./gradlew build -x test --daemon
+    ./gradlew build -x test
     java -jar build/libs/lvz-viz-*.jar
 
 Or you can simply run the project within gradle during development.

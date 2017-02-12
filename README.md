@@ -11,24 +11,13 @@ by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_v
 
 ## Usage
 
-Build and run the app with [npm](https://www.npmjs.com), [Grunt](http://gruntjs.com/) and [Maven](https://maven.apache.org/) or [Gradle](https://gradle.org). The crawling and indexing of new articles is activated by the startup parameter `--spring.profiles.active=crawl`.
+Build and run the app with [npm](https://www.npmjs.com), [Grunt](http://gruntjs.com/) and [Gradle](https://gradle.org). The crawling and indexing of new articles is activated by the startup parameter --spring.profiles.active=crawl.
 
 ### npm and Grunt
 
 Download client js dependencies with npm and package them with Grunt during postinstall phase.
 
     npm install
-
-### Apache Maven
-
-You can build an executable jar with maven and run it as a separate process.
-
-    mvn package
-    java -jar target/lvz-viz-*.jar
-
-Or you can simply run the project within maven during development.
-
-    mvn spring-boot:run
 
 ### Gradle
 

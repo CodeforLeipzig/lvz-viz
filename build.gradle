@@ -3,7 +3,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath "com.avast.gradle:docker-compose-gradle-plugin:0.3.13"
+    classpath "com.avast.gradle:docker-compose-gradle-plugin:0.3.20"
     classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.4.RELEASE"
   }
 }

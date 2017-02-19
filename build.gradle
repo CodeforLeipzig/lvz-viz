@@ -1,10 +1,13 @@
 buildscript {
+  ext {
+    springBootVersion = '1.4.4.RELEASE'
+  }
   repositories {
     jcenter()
   }
   dependencies {
     classpath "com.avast.gradle:docker-compose-gradle-plugin:0.3.20"
-    classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.4.RELEASE"
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
   }
 }
 

@@ -1,4 +1,4 @@
-FROM develar/java
+FROM anapsix/alpine-java:8_server-jre_unlimited
 
 MAINTAINER Sebastian Peters <Sebastian.Peters@gmail.com>
 

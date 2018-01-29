@@ -1,6 +1,6 @@
 FROM anapsix/alpine-java:8_server-jre_unlimited
 
-MAINTAINER Sebastian Peters <Sebastian.Peters@gmail.com>
+LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
 
 ENV APP_NAME lvz-viz
 ENV APP_VERSION 1.2.0-SNAPSHOT

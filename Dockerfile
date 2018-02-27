@@ -1,25 +1,45 @@
+FROM node:carbon AS build-js
+
+RUN npm install -g grunt-cli
+
+ENV USER app
+RUN adduser --disabled-password -gecos '' $USER
+
+USER $USER
+WORKDIR /home/$USER
+
+COPY --chown=app Gruntfile.js package*.json ./
+COPY --chown=app src/main/resources/public/js ./src/main/resources/public/js
+
+RUN npm install
+
+FROM gradle:4.6-jdk8-alpine AS build-java
+
+USER gradle
+RUN mkdir -p /home/gradle/app/build/resources/main/public/js
+WORKDIR /home/gradle/app
+
+COPY --chown=gradle build.gradle .
+COPY --chown=gradle src ./src
+COPY --chown=gradle --from=build-js /home/app/build/resources/main/public/js ./build/resources/main/public/js
+
+RUN gradle --no-daemon build -x test
+
 FROM anapsix/alpine-java:8_server-jre_unlimited
 
 LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
 
-ENV APP_NAME lvz-viz
-ENV APP_VERSION 1.2.0-SNAPSHOT
-ENV USER_NAME $APP_NAME
-ENV USER_HOME /home/$USER_NAME
+ARG APP_JAR=app-1.2.0-SNAPSHOT.jar
+ENV USER lvz-viz
 
-RUN adduser -S $USER_NAME
+RUN addgroup $USER \
+  && adduser -D -G $USER -S $USER
 
-WORKDIR $USER_HOME
+USER $USER
+WORKDIR /home/$USER
 
-COPY dewac_175m_600.crf.ser.gz .
-COPY build/libs/$APP_NAME-$APP_VERSION.jar ./app.jar
-
-RUN chown -R $USER_NAME $USER_HOME
-
-USER $USER_NAME
-
-VOLUME $USER_HOME/data
-VOLUME /tmp
+COPY --chown=lvz-viz dewac_175m_600.crf.ser.gz .
+COPY --chown=lvz-viz --from=build-java /home/gradle/app/build/libs/$APP_JAR ./app.jar
 
 EXPOSE 8080
 

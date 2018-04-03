@@ -21,7 +21,8 @@ WORKDIR /home/gradle/app
 
 COPY --chown=gradle build.gradle .
 COPY --chown=gradle src ./src
-COPY --chown=gradle --from=build-js /home/app/build/resources/main/public/js ./build/resources/main/public/js
+RUN rm -f src/main/resources/public/js/*.js
+COPY --chown=gradle --from=build-js /home/app/build/resources/main/public/js/app.min.js ./src/main/resources/public/js/
 
 RUN gradle --no-daemon build -x test
 

@@ -11,7 +11,8 @@ by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_v
 
 ## Usage
 
-Build and run the app with [npm](https://www.npmjs.com), [Grunt](http://gruntjs.com/) and [Gradle](https://gradle.org). The crawling and indexing of new articles is activated by the startup parameter --spring.profiles.active=crawl.
+Build and run the app with [npm](https://www.npmjs.com), [Grunt](http://gruntjs.com/) and [Gradle](https://gradle.org).
+The crawling and indexing of new articles is activated by the startup parameter --spring.profiles.active=crawl.
 
 ### npm and Grunt
 
@@ -37,7 +38,8 @@ Or you can simply run the project within gradle during development.
 
 ### Docker
 
-You can build and run the app within a Docker container. Run the following commands after building the executable jar with Gradle.
+You can build and run the app within a Docker container.
+Run the following commands after building the executable jar with Gradle.
 
     docker-compose up -d
     docker-compose logs -f

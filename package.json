@@ -17,7 +17,7 @@
     "load-grunt-tasks": "^3.5.2"
   },
   "devDependencies": {
-    "grunt-contrib-watch": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.1",
     "grunt-html-angular-validate": "^0.6.1"
   },
   "scripts": {

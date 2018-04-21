@@ -39,8 +39,10 @@ Or you can simply run the project within gradle during development.
 ### Docker
 
 You can build and run the app within a Docker container.
-Run the following commands after building the executable jar with Gradle.
 
+Required version for the multi-stage build: Docker 17.05+
+
+    docker-compose build
     docker-compose up -d
     docker-compose logs -f
     docker-compose down

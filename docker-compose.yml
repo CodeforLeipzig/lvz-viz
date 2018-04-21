@@ -3,6 +3,7 @@ services:
   webapp:
     build: .
     image: sepe81/lvz-viz:latest
+    mem_limit: 1500m
     ports:
       - 8080:8080
     volumes:

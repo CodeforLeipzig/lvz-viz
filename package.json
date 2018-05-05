@@ -19,8 +19,5 @@
   "devDependencies": {
     "grunt-contrib-watch": "^1.0.1",
     "grunt-html-angular-validate": "^0.6.1"
-  },
-  "scripts": {
-    "postinstall": "grunt"
   }
 }

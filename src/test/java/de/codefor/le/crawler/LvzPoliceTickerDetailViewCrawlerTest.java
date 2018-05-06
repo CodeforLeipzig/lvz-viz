@@ -26,7 +26,7 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
 
     private static final Date PUBLISHING_DATE = getDate(LocalDateTime.of(2015, 10, 11, 15, 13));
 
-    private static final String ARTICLE = "Leipzig. Fast ein halbes Jahr nach einem tödlichen Kranunfall in der Leipziger Innenstadt "
+    private static final String ARTICLE = "Fast ein halbes Jahr nach einem tödlichen Kranunfall in der Leipziger Innenstadt "
             + "ist die Verantwortung noch immer unklar. Ein technisches Gutachten liege inzwischen vor, "
             + "sagte ein Sprecher der Staatsanwaltschaft in Leipzig. Es sei aber noch unklar, "
             + "ob für das Unglück jemand strafrechtlich verantwortlich gemacht werden könne. "
@@ -46,7 +46,6 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
         urls.add(BASE_URL + "/Ermittlungen-nach-toedlichem-Kranunfall-in-Leipzig-City-dauern-an");
         urls.add(BASE_URL + "/Betrunkene-rauscht-im-Leipziger-Zentrum-ins-Gleisbett");
         urls.add(BASE_URL + "/Taeter-nach-Boellerwurf-in-Asylbewerberwohnung-gefasst");
-        urls.add(BASE_URL + "/Autoanhaenger-mit-Legida-Buehne-in-Leipzig-mit-Molotow-Cocktails-angegriffen");
         urls.add("http://www.lvz.de/Specials/Themenspecials/Legida-und-Proteste"
                 + "/Pegida/Nach-Pegida-Auseinandersetzung-auch-am-Leipziger-Hauptbahnhof");
 

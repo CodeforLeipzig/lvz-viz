@@ -124,7 +124,7 @@ public class LvzPoliceTickerDetailViewCrawler {
     private static void extractTitle(final Document doc, final PoliceTicker dm) {
         final String title = "title";
         final String cssQuery = "h1.pda-entry-title.entry-title";
-        final Element elem = doc.select(cssQuery).first();
+        final Element elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, title, cssQuery);
             dm.setTitle(elem.ownText());
@@ -137,7 +137,7 @@ public class LvzPoliceTickerDetailViewCrawler {
     private static void extractCopyright(final Document doc, final PoliceTicker dm) {
         final String copyright = "copyright";
         final String cssQuery = "li:contains(©)";
-        final Element elem = doc.select(cssQuery).first();
+        final Element elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, copyright, cssQuery);
             dm.setCopyright(elem.text());
@@ -156,12 +156,12 @@ public class LvzPoliceTickerDetailViewCrawler {
     private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
         final String publishingDate = "publishing date";
         String cssQuery = "span.dtstamp";
-        Element elem = doc.select(cssQuery).first();
+        Element elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
         } else {
             cssQuery = "meta[itemprop=datepublished]";
-            elem = doc.select(cssQuery).first();
+            elem = doc.selectFirst(cssQuery);
             if (elem != null) {
                 logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
             }

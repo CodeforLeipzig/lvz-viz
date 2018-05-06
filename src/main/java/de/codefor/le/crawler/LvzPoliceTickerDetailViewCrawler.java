@@ -123,7 +123,7 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static void extractTitle(final Document doc, final PoliceTicker dm) {
         final String title = "title";
-        final String cssQuery = "h1.pda-entry-title.entry-title";
+        final String cssQuery = ".pdb-article-teaser-breadcrumb-headline-title";
         final Element elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, title, cssQuery);
@@ -148,26 +148,20 @@ public class LvzPoliceTickerDetailViewCrawler {
     }
 
     /**
-     * Try different selectors for publishing date.
+     * Try to extract the publishing date from a script block.
      *
      * @param doc Document
      * @param dm PoliceTicker
      */
     private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
         final String publishingDate = "publishing date";
-        String cssQuery = "span.dtstamp";
+        String cssQuery = ".pdb-article > script[type=application/ld+json]";
         Element elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
-        } else {
-            cssQuery = "meta[itemprop=datepublished]";
-            elem = doc.selectFirst(cssQuery);
-            if (elem != null) {
-                logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
-            }
-        }
-        if (elem != null) {
-            dm.setDatePublished(extractDate(elem.attr("content")));
+            String date = elem.data();
+            int startIndex = date.indexOf("datePublished") + 17;
+            dm.setDatePublished(extractDate(date.substring(startIndex, startIndex + 25)));
         }
         if (dm.getDatePublished() == null) {
             logger.warn(LOG_ELEMENT_NOT_FOUND, publishingDate);
@@ -198,7 +192,7 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static void extractArticleAndSnippet(final Document doc, final PoliceTicker dm) {
         final String content = "articlecontent";
-        final String cssQuery = "#articlecontent > p.pda-abody-p";
+        final String cssQuery = ".pdb-article-body > .ezxmltext-field > p";
         final Elements elements = doc.select(cssQuery);
         if (!elements.isEmpty()) {
             logger.debug(LOG_ELEMENT_FOUND, content, cssQuery);

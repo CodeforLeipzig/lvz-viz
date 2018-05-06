@@ -24,8 +24,6 @@ public class CrawlScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(CrawlScheduler.class);
 
-    private static final int DEFAULT_PAGE_SIZE = 12;
-
     @Autowired
     private PoliceTickerRepository policeTickerRepository;
 
@@ -45,9 +43,9 @@ public class CrawlScheduler {
     @Scheduled(fixedDelay = 1_800_000, initialDelay = 1000)
     public void crawlSchedule() throws ExecutionException, InterruptedException {
         logger.info("Start crawling police ticker");
-        int offset = 0;
+        int page = 1;
         while (crawler.isMoreToCrawl()) {
-            final Iterable<String> detailPageUrls = crawlMainPage(offset);
+            final Iterable<String> detailPageUrls = crawlMainPage(page++);
             if (detailPageUrls.iterator().hasNext()) {
                 final Iterable<PoliceTicker> details = crawlDetailPages(detailPageUrls);
                 if (ner != null) {
@@ -57,15 +55,14 @@ public class CrawlScheduler {
                     policeTickerRepository.save(details);
                 }
             }
-            offset += DEFAULT_PAGE_SIZE;
         }
         logger.info("Finished crawling police ticker");
         // else the crawler will not start again after the delay
         crawler.resetCrawler();
     }
 
-    private Iterable<String> crawlMainPage(final int offset) throws InterruptedException, ExecutionException {
-        final Future<Iterable<String>> mainFuture = crawler.execute(offset);
+    private Iterable<String> crawlMainPage(final int page) throws InterruptedException, ExecutionException {
+        final Future<Iterable<String>> mainFuture = crawler.execute(page);
         final Iterable<String> result = mainFuture.get();
         return result;
     }

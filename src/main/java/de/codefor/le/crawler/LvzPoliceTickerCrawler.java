@@ -41,7 +41,7 @@ public class LvzPoliceTickerCrawler {
 
     protected static final String LVZ_POLICE_TICKER_BASE_URL = LVZ_BASE_URL + "/Leipzig/Polizeiticker/Polizeiticker-Leipzig";
 
-    protected static final String LVZ_POLICE_TICKER_PAGE_URL = LVZ_POLICE_TICKER_BASE_URL + "/(offset)/%s";
+    protected static final String LVZ_POLICE_TICKER_PAGE_URL = LVZ_POLICE_TICKER_BASE_URL + "/%s#anchor";
 
     @Autowired
     PoliceTickerRepository policeTickerRepository;
@@ -53,9 +53,9 @@ public class LvzPoliceTickerCrawler {
     private boolean crawlMore = true;
 
     @Async
-    public Future<Iterable<String>> execute(final int offset) {
+    public Future<Iterable<String>> execute(final int page) {
         final Stopwatch watch = Stopwatch.createStarted();
-        final String url = String.format(LVZ_POLICE_TICKER_PAGE_URL, offset);
+        final String url = String.format(LVZ_POLICE_TICKER_PAGE_URL, page);
         logger.info("Start crawling {}", url);
         final List<String> crawledNews = new ArrayList<>();
         try {
@@ -64,7 +64,7 @@ public class LvzPoliceTickerCrawler {
             logger.error(e.toString(), e);
         }
         watch.stop();
-        logger.info("Finished crawling page at offset {} in {} ms", offset, watch.elapsed(TimeUnit.MILLISECONDS));
+        logger.info("Finished crawling page {} in {} ms", page, watch.elapsed(TimeUnit.MILLISECONDS));
         return new AsyncResult<>(crawledNews);
     }
 
@@ -74,9 +74,14 @@ public class LvzPoliceTickerCrawler {
      */
     private void crawlNewsFromPage(final List<String> crawledNews, final String url) throws IOException {
         final Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
-        final Elements links = doc.select("a.pda-headlinelink");
+        final Elements links = doc.select("a.pdb-teaser3-teaser-breadcrumb-headline-title-link");
         for (final Element link : links) {
             final String detailLink = LVZ_BASE_URL + link.attr("href");
+            logger.debug("article url: {}", detailLink);
+            if (!detailLink.startsWith(LVZ_POLICE_TICKER_BASE_URL)) {
+                logger.debug("article not from policeticker - skip it");
+                continue;
+            }
             final String id = Utils.generateHashForUrl(detailLink);
             if (!id.isEmpty()) {
                 PoliceTicker article = null;
@@ -84,10 +89,10 @@ public class LvzPoliceTickerCrawler {
                     article = policeTickerRepository.findOne(id);
                 }
                 if (article == null) {
-                    logger.debug("article not stored yet: {}", detailLink);
+                    logger.debug("article not stored yet - save it");
                     crawledNews.add(detailLink);
                 } else {
-                    logger.debug("article already stored: {}", detailLink);
+                    logger.debug("article already stored - skip it");
                 }
             }
         }

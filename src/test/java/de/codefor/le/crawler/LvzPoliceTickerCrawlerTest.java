@@ -1,11 +1,11 @@
 package de.codefor.le.crawler;
 
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -14,27 +14,18 @@ import org.junit.Test;
 
 public class LvzPoliceTickerCrawlerTest {
 
-    private static final String OLDEST_URL = "http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Ladendetektive-schnappen-an-einem-Tag-vier-Diebe-im-Leipziger-Zentrum";
-
     private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler();
 
     @Test
-    public void testExecuteForPageWithOffsetZero() throws InterruptedException, ExecutionException {
+    public void testExecuteForPageZeroAndOne() throws InterruptedException, ExecutionException {
         final Future<Iterable<String>> future = crawler.execute(0);
         assertNotNull(future);
         final Iterable<String> pageOne = future.get();
         assertNotNull(pageOne);
-        final Iterator<String> it = pageOne.iterator();
-        assertTrue(it.hasNext());
-        final String firstArticleUrl = it.next();
+        final String firstArticleUrl = pageOne.iterator().next();
         assertThat(firstArticleUrl, startsWith(LvzPoliceTickerCrawler.LVZ_POLICE_TICKER_BASE_URL));
-    }
 
-    @Test
-    public void testExecuteForPageWithOffset6538() throws InterruptedException, ExecutionException {
-        final Iterable<String> result = crawler.execute(6538).get();
-        assertNotNull(result);
-        assertThat(result, Matchers.hasItem(OLDEST_URL));
+        assertEquals(firstArticleUrl, crawler.execute(1).get().iterator().next());
     }
 
     @Test

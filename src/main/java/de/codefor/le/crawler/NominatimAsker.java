@@ -21,7 +21,7 @@ public class NominatimAsker {
 
     public static final String NOMINATIM_SEARCH_CITY_PREFIX = "Leipzig, ";
 
-    private static final String NOMINATIM_SEARCH_URL = "http://nominatim.openstreetmap.org/search?q=%s&format=json";
+    private static final String NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search?q=%s&format=json";
 
     private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 50;
 

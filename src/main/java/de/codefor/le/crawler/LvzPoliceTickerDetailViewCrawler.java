@@ -55,8 +55,6 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static final String LOG_ELEMENT_NOT_FOUND = "element '{}' not found for article";
 
-    private static final String ELLIPSIS = "...";
-
     @Async
     public Future<Iterable<PoliceTicker>> execute(final Iterable<String> detailURLs) {
         final Stopwatch watch = Stopwatch.createStarted();
@@ -115,7 +113,8 @@ public class LvzPoliceTickerDetailViewCrawler {
     private static PoliceTicker convertToDataModel(final Document doc) {
         final PoliceTicker dm = new PoliceTicker();
         extractTitle(doc, dm);
-        extractArticleAndSnippet(doc, dm);
+        extractArticle(doc, dm);
+        extractTeaser(doc, dm);
         extractCopyright(doc, dm);
         extractDatePublished(doc, dm);
         return dm;
@@ -190,7 +189,7 @@ public class LvzPoliceTickerDetailViewCrawler {
         return result;
     }
 
-    private static void extractArticleAndSnippet(final Document doc, final PoliceTicker dm) {
+    private static void extractArticle(final Document doc, final PoliceTicker dm) {
         final String content = "articlecontent";
         final String cssQuery = ".pdb-article-body > .pdb-richtext-field > p";
         final Elements elements = doc.select(cssQuery);
@@ -209,15 +208,21 @@ public class LvzPoliceTickerDetailViewCrawler {
         }
         dm.setArticle(article.toString());
 
-        final String[] split = dm.getArticle().split("\\s");
-        final StringBuilder snippet = new StringBuilder();
-        for (int i = 0; i < Math.min(20, split.length); i++) {
-            snippet.append(split[i]).append(" ");
-        }
-        dm.setSnippet(snippet.toString().trim() + ELLIPSIS);
-
         if (Strings.isNullOrEmpty(dm.getArticle())) {
             logger.warn(LOG_ELEMENT_NOT_FOUND, content);
+        }
+    }
+
+    private static void extractTeaser(final Document doc, final PoliceTicker dm) {
+        final String teaser = "teaser";
+        final String cssQuery = ".pdb-article-teaser-intro > .pdb-richtext-field > p";
+        final Element elem = doc.selectFirst(cssQuery);
+        if (elem != null) {
+            logger.debug(LOG_ELEMENT_FOUND, teaser, cssQuery);
+            dm.setSnippet(elem.ownText().trim());
+        }
+        if (Strings.isNullOrEmpty(dm.getSnippet())) {
+            logger.warn(LOG_ELEMENT_NOT_FOUND, teaser);
         }
     }
 }

@@ -192,7 +192,7 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static void extractArticleAndSnippet(final Document doc, final PoliceTicker dm) {
         final String content = "articlecontent";
-        final String cssQuery = ".pdb-article-body > .ezxmltext-field > p";
+        final String cssQuery = ".pdb-article-body > .pdb-richtext-field > p";
         final Elements elements = doc.select(cssQuery);
         if (!elements.isEmpty()) {
             logger.debug(LOG_ELEMENT_FOUND, content, cssQuery);

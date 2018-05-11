@@ -68,7 +68,7 @@ public class PoliceTickerController {
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public Page<PoliceTicker> search(@RequestParam String query,
             @PageableDefault(direction = Direction.DESC, sort = "datePublished") final Pageable pageable) {
-        logger.info("query: {}", query);
+        logger.debug("search query: {}", query);
         Page<PoliceTicker> result;
         if (!query.isEmpty()) {
             query = query.toLowerCase();

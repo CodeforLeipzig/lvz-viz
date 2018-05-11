@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.ner.NER;
@@ -50,6 +51,16 @@ public class PoliceTickerController {
     private final ElasticsearchRestTemplate elasticsearchTemplate;
 
     private final Optional<NER> ner;
+
+    @GetMapping(value = "/removeemptyarticles")
+    public void removeEmptyArticles(@PageableDefault final Pageable pageable) {
+        for(PoliceTicker p : getx(pageable).getContent()) {
+            if (Strings.isNullOrEmpty(p.getArticle())) {
+                logger.info("Remove entry for url {}", p.getUrl());
+                policeTickerRepository.delete(p);
+            }
+        }
+    }
 
     @GetMapping(value = "/getx")
     public Page<PoliceTicker> getx(@PageableDefault final Pageable pageable) {

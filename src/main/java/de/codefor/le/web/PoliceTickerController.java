@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -12,7 +13,6 @@ import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,21 +35,20 @@ import com.google.common.base.Splitter;
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.ner.NER;
 import de.codefor.le.repositories.PoliceTickerRepository;
+import lombok.RequiredArgsConstructor;
 
-@RestController
 @RequestMapping(value = "/api")
+@RequiredArgsConstructor
+@RestController
 public class PoliceTickerController {
 
     private static final Logger logger = LoggerFactory.getLogger(PoliceTickerController.class);
 
-    @Autowired
-    private PoliceTickerRepository policeTickerRepository;
+    private final PoliceTickerRepository policeTickerRepository;
 
-    @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    private final ElasticsearchTemplate elasticsearchTemplate;
 
-    @Autowired(required = false)
-    private NER ner;
+    private final Optional<NER> ner;
 
     @RequestMapping(value = "/getx", method = RequestMethod.GET)
     public Page<PoliceTicker> getx(@PageableDefault final Pageable pageable) {
@@ -59,10 +58,11 @@ public class PoliceTickerController {
     @RequestMapping(value = "/extractlocations", method = RequestMethod.POST)
     public Iterable<String> getLocations(@RequestBody final String locations) {
         logger.debug("extractlocations: {}", locations);
-        if (ner == null) {
-            logger.debug("return empty result b/c NER is not initialized!");
+        if (ner.isPresent()) {
+            return ner.get().getLocations(locations, false);
         }
-        return ner != null ? ner.getLocations(locations, false) : Collections.<String> emptyList();
+        logger.debug("return empty result b/c NER is not initialized!");
+        return Collections.<String> emptyList();
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)

@@ -13,6 +13,7 @@ buildscript {
 
 plugins {
   id "com.moowork.grunt" version "1.2.0"
+  id "io.franzbecker.gradle-lombok" version "1.14"
 }
 
 apply plugin: 'java'

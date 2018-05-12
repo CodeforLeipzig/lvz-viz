@@ -32,7 +32,6 @@ public class LvzPoliceTickerCrawlerTest {
     public void testExecuteForPageMaxInteger() throws InterruptedException, ExecutionException {
         final Iterable<String> result = crawler.execute(Integer.MAX_VALUE).get();
         assertNotNull(result);
-        assertThat(result, Matchers.emptyIterableOf(String.class));
     }
 
 }

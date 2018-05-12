@@ -1,4 +1,4 @@
-package de.oklab.le;
+package de.codefor.le.crawler;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -9,16 +9,16 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.repositories.PoliceTickerRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:/springContext-test.xml")
+@SpringBootTest
 @Ignore
 public class ReplacementTest {
 

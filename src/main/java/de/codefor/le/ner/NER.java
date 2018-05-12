@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -24,10 +23,14 @@ import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreAnnotations.AnswerAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @Profile("crawl")
-public class NER {
+@RequiredArgsConstructor
+public final class NER {
 
     private static final Logger logger = LoggerFactory.getLogger(NER.class);
 
@@ -37,24 +40,25 @@ public class NER {
 
     private static final String SERIALIZED_CLASSIFIER = "dewac_175m_600.crf.ser.gz";
 
-    @Autowired
-    private ResourceLoader resourceLoader;
+    private final ResourceLoader resourceLoader;
 
-    private AbstractSequenceClassifier<CoreLabel> classifier;
+    @Getter(lazy = true, onMethod = @__({ @SuppressWarnings("unchecked") }), value = AccessLevel.PRIVATE)
+    private final AbstractSequenceClassifier<CoreLabel> classifier = initClassifier();
 
-    private Collection<String> blackListedLocations;
+    @Getter(lazy = true, onMethod = @__({ @SuppressWarnings("unchecked") }), value = AccessLevel.PROTECTED)
+    private final Collection<String> blackListedLocations = initBlackListedLocations();
 
-    public NER() {
+    private static AbstractSequenceClassifier<CoreLabel> initClassifier() {
         try {
-            classifier = CRFClassifier.<CoreLabel> getClassifier(new File(SERIALIZED_CLASSIFIER));
+            return CRFClassifier.<CoreLabel> getClassifier(new File(SERIALIZED_CLASSIFIER));
         } catch (ClassCastException | ClassNotFoundException | IOException e) {
-            Throwables.propagate(e);
+            throw Throwables.propagate(e);
         }
     }
 
     public Collection<String> getLocations(final String text, final boolean removeBlackListed) {
         final Set<String> result = new HashSet<>();
-        for (final List<CoreLabel> classifiedSentences : classifier.classify(text)) {
+        for (final List<CoreLabel> classifiedSentences : getClassifier().classify(text)) {
             for (final CoreLabel coreLabel : classifiedSentences) {
                 if (coreLabel.get(AnswerAnnotation.class).equals("I-LOC")) {
                     final String originalText = coreLabel.originalText();
@@ -64,9 +68,6 @@ public class NER {
             }
         }
         if (removeBlackListed) {
-            if (blackListedLocations == null) {
-                blackListedLocations = initBlackListedLocations();
-            }
             blackListCheck(result);
         }
         logger.debug("{} locations found: {}", result.size(), result);
@@ -77,14 +78,14 @@ public class NER {
         final Iterator<String> iterator = results.iterator();
         while (iterator.hasNext()) {
             final String next = iterator.next();
-            if (blackListedLocations.contains(next)) {
+            if (getBlackListedLocations().contains(next)) {
                 logger.debug("remove blacklisted location {}", next);
                 iterator.remove();
             }
         }
     }
 
-    Collection<String> initBlackListedLocations() {
+    private Collection<String> initBlackListedLocations() {
         final Collection<String> blacklist = new HashSet<>();
         try {
             new BufferedReader(new InputStreamReader(resourceLoader.getResource(BLACKLIST_FILE).getInputStream())).lines().forEach(line -> {

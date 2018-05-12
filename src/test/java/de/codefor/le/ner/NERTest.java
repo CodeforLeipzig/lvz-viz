@@ -25,7 +25,7 @@ public class NERTest {
 
     @Test
     public void initBlackListedLocations() {
-        final Collection<String> blackListedLocations = ner.initBlackListedLocations();
+        final Collection<String> blackListedLocations = ner.getBlackListedLocations();
         assertNotNull(blackListedLocations);
         assertThat(blackListedLocations, hasItem("Leipzig"));
         assertThat(blackListedLocations, hasItem("Dresdens"));

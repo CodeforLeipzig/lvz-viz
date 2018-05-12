@@ -4,12 +4,10 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 public class LvzPoliceTickerCrawlerTest {

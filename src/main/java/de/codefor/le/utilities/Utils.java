@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.google.common.hash.Hashing;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class Utils {
 
     private static final Logger logger = LoggerFactory.getLogger(Utils.class);

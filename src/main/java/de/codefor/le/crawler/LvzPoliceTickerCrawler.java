@@ -56,7 +56,7 @@ public class LvzPoliceTickerCrawler {
     public Future<Iterable<String>> execute(final int page) {
         final Stopwatch watch = Stopwatch.createStarted();
         final String url = String.format(LVZ_POLICE_TICKER_PAGE_URL, page);
-        logger.info("Start crawling {}", url);
+        logger.info("Start crawling {}.", url);
         final List<String> crawledNews = new ArrayList<>();
         try {
             crawlNewsFromPage(crawledNews, url);
@@ -64,7 +64,7 @@ public class LvzPoliceTickerCrawler {
             logger.error(e.toString(), e);
         }
         watch.stop();
-        logger.info("Finished crawling page {} in {} ms", page, watch.elapsed(TimeUnit.MILLISECONDS));
+        logger.info("Finished crawling page {} in {} ms.", page, watch.elapsed(TimeUnit.MILLISECONDS));
         return new AsyncResult<>(crawledNews);
     }
 

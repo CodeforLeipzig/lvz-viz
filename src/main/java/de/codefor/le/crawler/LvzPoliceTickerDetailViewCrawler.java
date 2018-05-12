@@ -51,14 +51,14 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 50;
 
-    private static final String LOG_ELEMENT_FOUND = "element '{}' found with '{}' for article";
+    private static final String LOG_ELEMENT_FOUND = "Element '{}' found with selector '{}' for article.";
 
-    private static final String LOG_ELEMENT_NOT_FOUND = "element '{}' not found for article";
+    private static final String LOG_ELEMENT_NOT_FOUND = "Element '{}' not found for article.";
 
     @Async
     public Future<Iterable<PoliceTicker>> execute(final Iterable<String> detailURLs) {
         final Stopwatch watch = Stopwatch.createStarted();
-        logger.info("Start crawling detail pages");
+        logger.info("Start crawling detail pages.");
         final List<PoliceTicker> policeTickers = new ArrayList<>();
         for (final Iterator<String> iterator = detailURLs.iterator(); iterator.hasNext();) {
             final PoliceTicker ticker = crawl(iterator.next());
@@ -74,7 +74,7 @@ public class LvzPoliceTickerDetailViewCrawler {
             }
         }
         watch.stop();
-        logger.info("Finished crawling {} detail pages in {} ms", policeTickers.size(), watch.elapsed(TimeUnit.MILLISECONDS));
+        logger.info("Finished crawling {} detail pages in {} ms.", policeTickers.size(), watch.elapsed(TimeUnit.MILLISECONDS));
         return new AsyncResult<>(policeTickers);
     }
 
@@ -96,10 +96,10 @@ public class LvzPoliceTickerDetailViewCrawler {
             result = convertToDataModel(doc);
             result.setUrl(url);
             result.setId(Utils.generateHashForUrl(url));
-            logger.info("Crawled {}", url);
+            logger.info("Crawled {}.", url);
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Extracted {}", result);
+            logger.debug("Extracted {}.", result);
         }
         return result;
     }

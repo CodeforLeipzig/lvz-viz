@@ -42,7 +42,7 @@ public class CrawlScheduler {
     // 1_800_000ms = 30min
     @Scheduled(fixedDelay = 1_800_000, initialDelay = 1000)
     public void crawlSchedule() throws ExecutionException, InterruptedException {
-        logger.info("Start crawling police ticker");
+        logger.info("Start crawling police ticker.");
         int page = 1;
         while (crawler.isMoreToCrawl()) {
             final Iterable<String> detailPageUrls = crawlMainPage(page++);
@@ -56,7 +56,7 @@ public class CrawlScheduler {
                 }
             }
         }
-        logger.info("Finished crawling police ticker");
+        logger.info("Finished crawling police ticker.");
         // else the crawler will not start again after the delay
         crawler.resetCrawler();
     }

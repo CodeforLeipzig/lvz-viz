@@ -3,6 +3,7 @@ package de.codefor.le.crawler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +13,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -23,12 +23,14 @@ import com.google.common.base.Stopwatch;
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.repositories.PoliceTickerRepository;
 import de.codefor.le.utilities.Utils;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author spinner0815
  * @author sepe81
  */
 @Component
+@RequiredArgsConstructor
 public class LvzPoliceTickerCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LvzPoliceTickerCrawler.class);
@@ -43,8 +45,7 @@ public class LvzPoliceTickerCrawler {
 
     protected static final String LVZ_POLICE_TICKER_PAGE_URL = LVZ_POLICE_TICKER_BASE_URL + "/%s#anchor";
 
-    @Autowired
-    PoliceTickerRepository policeTickerRepository;
+    private final Optional<PoliceTickerRepository> policeTickerRepository;
 
     @Value("${app.crawlAllMainPages}")
     private boolean crawlAllMainPages;
@@ -85,8 +86,8 @@ public class LvzPoliceTickerCrawler {
             final String id = Utils.generateHashForUrl(detailLink);
             if (!id.isEmpty()) {
                 PoliceTicker article = null;
-                if (policeTickerRepository != null) {
-                    article = policeTickerRepository.findOne(id);
+                if (policeTickerRepository.isPresent()) {
+                    article = policeTickerRepository.get().findOne(id);
                 }
                 if (article == null) {
                     logger.debug("article not stored yet - save it");

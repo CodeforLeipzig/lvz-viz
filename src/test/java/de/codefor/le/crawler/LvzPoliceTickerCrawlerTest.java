@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -12,7 +13,7 @@ import org.junit.Test;
 
 public class LvzPoliceTickerCrawlerTest {
 
-    private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler();
+    private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler(Optional.empty());
 
     @Test
     public void testExecuteForPageZeroAndOne() throws InterruptedException, ExecutionException {

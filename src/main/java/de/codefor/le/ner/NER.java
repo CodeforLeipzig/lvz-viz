@@ -49,6 +49,7 @@ public final class NER {
     private final Collection<String> blackListedLocations = initBlackListedLocations();
 
     private static AbstractSequenceClassifier<CoreLabel> initClassifier() {
+        logger.info("Init classifier for Named-entity recognition (NER).");
         try {
             return CRFClassifier.<CoreLabel> getClassifier(new File(SERIALIZED_CLASSIFIER));
         } catch (ClassCastException | ClassNotFoundException | IOException e) {
@@ -86,6 +87,7 @@ public final class NER {
     }
 
     private Collection<String> initBlackListedLocations() {
+        logger.info("Init location blacklist from {}", BLACKLIST_FILE);
         final Collection<String> blacklist = new HashSet<>();
         try {
             new BufferedReader(new InputStreamReader(resourceLoader.getResource(BLACKLIST_FILE).getInputStream())).lines().forEach(line -> {

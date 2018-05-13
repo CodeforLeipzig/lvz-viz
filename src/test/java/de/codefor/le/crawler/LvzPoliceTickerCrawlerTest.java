@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -32,7 +33,12 @@ public class LvzPoliceTickerCrawlerTest {
     public void testExecuteForPageMaxInteger() throws InterruptedException, ExecutionException {
         final Iterable<String> result = crawler.execute(Integer.MAX_VALUE).get();
         assertNotNull(result);
-        assertFalse(result.iterator().hasNext());
+        Iterator it = result.iterator();
+        // in case of bigteaser-item we expect ONE result, otherwise ZERO
+        if (it.hasNext()) {
+            assertNotNull(it.next());
+            assertFalse(it.hasNext());
+        }
     }
 
 }

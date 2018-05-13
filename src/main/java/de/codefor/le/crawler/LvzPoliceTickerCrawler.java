@@ -77,6 +77,7 @@ public class LvzPoliceTickerCrawler {
     private Collection<String> crawlNewsFromPage(final String url) throws IOException {
         final Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
         final Elements links = doc.select("a.pdb-teaser3-teaser-breadcrumb-headline-title-link");
+        links.addAll(doc.select("a.pdb-bigteaser-item-teaser-breadcrumb-headline-title-link"));
         final Collection<String> result = extractNewArticleLinks(links);
         if (links.isEmpty()) {
             logger.info("No links found on current page. This should be the last available page.");

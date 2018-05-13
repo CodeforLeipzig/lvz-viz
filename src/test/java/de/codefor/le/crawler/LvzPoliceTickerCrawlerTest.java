@@ -2,6 +2,7 @@ package de.codefor.le.crawler;
 
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
@@ -31,6 +32,7 @@ public class LvzPoliceTickerCrawlerTest {
     public void testExecuteForPageMaxInteger() throws InterruptedException, ExecutionException {
         final Iterable<String> result = crawler.execute(Integer.MAX_VALUE).get();
         assertNotNull(result);
+        assertFalse(result.iterator().hasNext());
     }
 
 }

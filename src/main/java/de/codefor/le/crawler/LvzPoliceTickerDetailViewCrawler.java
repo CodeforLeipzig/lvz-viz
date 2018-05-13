@@ -7,7 +7,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -60,21 +59,22 @@ public class LvzPoliceTickerDetailViewCrawler {
         final Stopwatch watch = Stopwatch.createStarted();
         logger.info("Start crawling detail pages.");
         final List<PoliceTicker> policeTickers = new ArrayList<>();
-        for (final Iterator<String> iterator = detailURLs.iterator(); iterator.hasNext();) {
-            final PoliceTicker ticker = crawl(iterator.next());
-            if (ticker != null) {
-                policeTickers.add(ticker);
-            }
-            if (iterator.hasNext()) {
+        try {
+            for (final String url : detailURLs) {
+                final PoliceTicker ticker = crawl(url);
+                if (ticker != null) {
+                    policeTickers.add(ticker);
+                }
                 try {
                     Thread.sleep(WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING);
                 } catch (final InterruptedException e) {
                     logger.error(e.toString(), e);
                 }
             }
+        } finally {
+            watch.stop();
+            logger.info("Finished crawling {} detail pages in {} ms.", policeTickers.size(), watch.elapsed(TimeUnit.MILLISECONDS));
         }
-        watch.stop();
-        logger.info("Finished crawling {} detail pages in {} ms.", policeTickers.size(), watch.elapsed(TimeUnit.MILLISECONDS));
         return new AsyncResult<>(policeTickers);
     }
 
@@ -154,12 +154,12 @@ public class LvzPoliceTickerDetailViewCrawler {
      */
     private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
         final String publishingDate = "publishing date";
-        String cssQuery = ".pdb-article > script[type=application/ld+json]";
-        Element elem = doc.selectFirst(cssQuery);
+        final String cssQuery = ".pdb-article > script[type=application/ld+json]";
+        final Element elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
-            String date = elem.data();
-            int startIndex = date.indexOf("datePublished") + 17;
+            final String date = elem.data();
+            final int startIndex = date.indexOf("datePublished") + 17;
             dm.setDatePublished(extractDate(date.substring(startIndex, startIndex + 25)));
         }
         if (dm.getDatePublished() == null) {

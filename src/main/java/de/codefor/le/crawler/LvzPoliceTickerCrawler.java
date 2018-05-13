@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Stopwatch;
 
-import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.repositories.PoliceTickerRepository;
 import de.codefor.le.utilities.Utils;
 import lombok.RequiredArgsConstructor;
@@ -83,18 +82,17 @@ public class LvzPoliceTickerCrawler {
                 logger.debug("article not from policeticker - skip it");
                 continue;
             }
-            final String id = Utils.generateHashForUrl(detailLink);
-            if (!id.isEmpty()) {
-                PoliceTicker article = null;
-                if (policeTickerRepository.isPresent()) {
-                    article = policeTickerRepository.get().findOne(id);
-                }
-                if (article == null) {
+            boolean newArticle = true;
+            if (policeTickerRepository.isPresent()) {
+                if(!policeTickerRepository.get().exists(Utils.generateHashForUrl(detailLink))) {
                     logger.debug("article not stored yet - save it");
-                    crawledNews.add(detailLink);
                 } else {
                     logger.debug("article already stored - skip it");
+                    newArticle = false;
                 }
+            }
+            if (newArticle) {
+                crawledNews.add(detailLink);
             }
         }
         if (links.isEmpty()) {

@@ -104,6 +104,8 @@ public class LvzPoliceTickerCrawler {
             logger.info("No new articles found on current page. "
                     + (crawlAllMainPages ? "Nevertheless, continue crawling on next page." : "Stop crawling for now."));
             this.crawlMore = crawlAllMainPages;
+        } else {
+            logger.info("{} new articles found on current page.", crawledNews.size());
         }
     }
 

@@ -8,7 +8,6 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,27 +16,24 @@ import de.codefor.le.crawler.model.Nominatim;
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.ner.NER;
 import de.codefor.le.repositories.PoliceTickerRepository;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @Profile("crawl")
+@RequiredArgsConstructor
 public class CrawlScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(CrawlScheduler.class);
 
-    @Autowired
-    private PoliceTickerRepository policeTickerRepository;
+    private final PoliceTickerRepository policeTickerRepository;
 
-    @Autowired
-    private LvzPoliceTickerCrawler crawler;
+    private final LvzPoliceTickerCrawler crawler;
 
-    @Autowired
-    private LvzPoliceTickerDetailViewCrawler detailCrawler;
+    private final LvzPoliceTickerDetailViewCrawler detailCrawler;
 
-    @Autowired(required = false)
-    private NER ner;
+    private final NER ner;
 
-    @Autowired
-    NominatimAsker nominatimAsker;
+    private final NominatimAsker nominatimAsker;
 
     // 1_800_000ms = 30min
     @Scheduled(fixedDelay = 1_800_000, initialDelay = 1000)

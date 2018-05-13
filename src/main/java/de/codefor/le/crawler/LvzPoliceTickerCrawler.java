@@ -2,7 +2,7 @@ package de.codefor.le.crawler;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -57,24 +57,42 @@ public class LvzPoliceTickerCrawler {
         final Stopwatch watch = Stopwatch.createStarted();
         final String url = String.format(LVZ_POLICE_TICKER_PAGE_URL, page);
         logger.info("Start crawling {}.", url);
-        final List<String> crawledNews = new ArrayList<>();
+        final Collection<String> crawledNews = new ArrayList<>();
         try {
-            crawlNewsFromPage(crawledNews, url);
+            crawledNews.addAll(crawlNewsFromPage(url));
         } catch (final IOException e) {
             logger.error(e.toString(), e);
+        } finally {
+            watch.stop();
+            logger.info("Finished crawling page {} in {} ms.", page, watch.elapsed(TimeUnit.MILLISECONDS));
         }
-        watch.stop();
-        logger.info("Finished crawling page {} in {} ms.", page, watch.elapsed(TimeUnit.MILLISECONDS));
         return new AsyncResult<>(crawledNews);
     }
 
     /**
      * @param url the url to crawl
+     * @return links of new articles
      * @throws IOException if there are problems while writing the detail links to a file
      */
-    private void crawlNewsFromPage(final List<String> crawledNews, final String url) throws IOException {
+    private Collection<String> crawlNewsFromPage(final String url) throws IOException {
         final Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
         final Elements links = doc.select("a.pdb-teaser3-teaser-breadcrumb-headline-title-link");
+        final Collection<String> result = extractNewArticleLinks(links);
+        if (links.isEmpty()) {
+            logger.info("No links found on current page. This should be the last available page.");
+            this.crawlMore = false;
+        } else if (result.isEmpty()) {
+            logger.info("No new articles found on current page. "
+                    + (crawlAllMainPages ? "Nevertheless, continue crawling on next page." : "Stop crawling for now."));
+            this.crawlMore = crawlAllMainPages;
+        } else {
+            logger.info("{} new articles found on current page.", result.size());
+        }
+        return result;
+    }
+
+    private Collection<String> extractNewArticleLinks(final Elements links) {
+        final Collection<String> result = new ArrayList<>();
         for (final Element link : links) {
             final String detailLink = LVZ_BASE_URL + link.attr("href");
             logger.debug("article url: {}", detailLink);
@@ -84,7 +102,7 @@ public class LvzPoliceTickerCrawler {
             }
             boolean newArticle = true;
             if (policeTickerRepository.isPresent()) {
-                if(!policeTickerRepository.get().exists(Utils.generateHashForUrl(detailLink))) {
+                if (!policeTickerRepository.get().exists(Utils.generateHashForUrl(detailLink))) {
                     logger.debug("article not stored yet - save it");
                 } else {
                     logger.debug("article already stored - skip it");
@@ -92,19 +110,10 @@ public class LvzPoliceTickerCrawler {
                 }
             }
             if (newArticle) {
-                crawledNews.add(detailLink);
+                result.add(detailLink);
             }
         }
-        if (links.isEmpty()) {
-            logger.info("No links found on current page. This should be the last available page.");
-            this.crawlMore = false;
-        } else if (crawledNews.isEmpty()) {
-            logger.info("No new articles found on current page. "
-                    + (crawlAllMainPages ? "Nevertheless, continue crawling on next page." : "Stop crawling for now."));
-            this.crawlMore = crawlAllMainPages;
-        } else {
-            logger.info("{} new articles found on current page.", crawledNews.size());
-        }
+        return result;
     }
 
     public void resetCrawler() {

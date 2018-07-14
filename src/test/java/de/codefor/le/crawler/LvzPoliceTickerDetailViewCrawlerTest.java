@@ -46,6 +46,7 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
         urls.add(BASE_URL + "/Ermittlungen-nach-toedlichem-Kranunfall-in-Leipzig-City-dauern-an");
         urls.add(BASE_URL + "/Betrunkene-rauscht-im-Leipziger-Zentrum-ins-Gleisbett");
         urls.add(BASE_URL + "/Taeter-nach-Boellerwurf-in-Asylbewerberwohnung-gefasst");
+        urls.add(BASE_URL + "/Schwerer-Unfall-Strassenbahn-erfasst-Radfahrerin-in-Leipzig");
         urls.add("http://www.lvz.de/Specials/Themenspecials/Legida-und-Proteste"
                 + "/Pegida/Nach-Pegida-Auseinandersetzung-auch-am-Leipziger-Hauptbahnhof");
 

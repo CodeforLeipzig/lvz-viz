@@ -19,21 +19,21 @@ The crawling and indexing of new articles is activated by the startup parameter 
 You can build an executable jar with gradle and run it as a separate process.
 The client js dependencies will be downloaded with npm and packaged with Grunt during the build phase from gradle.
 
-```
+```bash
 ./gradlew build
 java -jar build/libs/lvz-viz-*.jar
 ```
 
 You can build an executable jar with gradle and skip all tests to speed up the build.
 
-```
+```bash
 ./gradlew build -x test
 java -jar build/libs/lvz-viz-*.jar
 ```
 
 Or you can simply run the project within gradle during development.
 
-```
+```bash
 ./gradlew bootRun
 ```
 
@@ -43,7 +43,7 @@ You can build and run the app within a Docker container.
 
 Required version for the multi-stage build: Docker 17.05+
 
-```
+```bash
 docker-compose build
 docker-compose up -d
 docker-compose logs -f

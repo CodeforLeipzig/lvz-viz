@@ -12,7 +12,7 @@ by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_v
 ## Usage
 
 Build and run the app with [npm](https://www.npmjs.com), [Grunt](http://gruntjs.com/) and [Gradle](https://gradle.org).
-The crawling and indexing of new articles is activated by the startup parameter --spring.profiles.active=crawl.
+The crawling and indexing of new articles is activated by the startup parameter `--spring.profiles.active=crawl`.
 
 ### Gradle, npm and Grunt
 

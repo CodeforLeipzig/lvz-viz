@@ -13,7 +13,7 @@ COPY --chown=app src/main/resources/public/js ./src/main/resources/public/js
 
 RUN npm install
 
-FROM gradle:4.6.0-jdk8 AS build-java
+FROM gradle:4.9.0-jdk8 AS build-java
 
 USER gradle
 RUN mkdir -p /home/gradle/app/build/resources/main/public/js

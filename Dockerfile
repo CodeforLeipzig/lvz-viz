@@ -2,17 +2,15 @@ FROM node:8.11-jessie AS build-js
 
 RUN npm install -g grunt-cli
 
-ENV USER app
-RUN adduser --disabled-password -gecos '' $USER
+# see https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
+USER node
+WORKDIR /home/node
 
-USER $USER
-WORKDIR /home/$USER
-
-COPY --chown=app package*.json ./
+COPY --chown=node package*.json ./
 RUN npm install
 
-COPY --chown=app Gruntfile.js ./
-COPY --chown=app src/main/resources/public/js ./src/main/resources/public/js
+COPY --chown=node Gruntfile.js ./
+COPY --chown=node src/main/resources/public/js ./src/main/resources/public/js
 RUN grunt
 
 FROM gradle:4.9.0-jdk8 AS build-java
@@ -24,7 +22,7 @@ WORKDIR /home/gradle/app
 COPY --chown=gradle build.gradle .
 COPY --chown=gradle src ./src
 RUN rm -f src/main/resources/public/js/*.js
-COPY --chown=gradle --from=build-js /home/app/build/resources/main/public/js/app.min.js ./src/main/resources/public/js/
+COPY --chown=gradle --from=build-js /home/node/build/resources/main/public/js/app.min.js ./src/main/resources/public/js/
 
 RUN gradle --no-daemon build -x test
 

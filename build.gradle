@@ -12,7 +12,6 @@ buildscript {
 }
 
 plugins {
-  id "com.moowork.grunt" version "1.2.0"
   id "io.franzbecker.gradle-lombok" version "1.14"
 }
 
@@ -81,8 +80,3 @@ eclipse {
     }
   }
 }
-
-// see https://github.com/srs/gradle-node-plugin/blob/master/docs/grunt.md
-grunt_default.dependsOn 'npmInstall'
-// run grunt default in findMainClass which runs after :processResources b/c all resources are copied and grunt can do his job
-findMainClass.dependsOn(grunt_default)

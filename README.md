@@ -14,10 +14,19 @@ by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_v
 Build and run the app with [npm](https://www.npmjs.com), [Grunt](http://gruntjs.com/) and [Gradle](https://gradle.org).
 The crawling and indexing of new articles is activated by the startup parameter `--spring.profiles.active=crawl`.
 
-### Gradle, npm and Grunt
+### npm and Grunt
+
+Download client js dependencies with npm and package them with Grunt.
+
+```bash
+npm install -g grunt-cli
+npm install
+grunt
+```
+
+### Gradle
 
 You can build an executable jar with gradle and run it as a separate process.
-The client js dependencies will be downloaded with npm and packaged with Grunt during the build phase from gradle.
 
 ```bash
 ./gradlew build

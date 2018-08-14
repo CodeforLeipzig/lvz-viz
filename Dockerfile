@@ -8,10 +8,12 @@ RUN adduser --disabled-password -gecos '' $USER
 USER $USER
 WORKDIR /home/$USER
 
-COPY --chown=app Gruntfile.js package*.json ./
-COPY --chown=app src/main/resources/public/js ./src/main/resources/public/js
-
+COPY --chown=app package*.json ./
 RUN npm install
+
+COPY --chown=app Gruntfile.js ./
+COPY --chown=app src/main/resources/public/js ./src/main/resources/public/js
+RUN grunt
 
 FROM gradle:4.9.0-jdk8 AS build-java
 

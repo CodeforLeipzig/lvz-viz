@@ -36,7 +36,7 @@ springBoot {
 repositories { mavenCentral() }
 dependencies {
   compile "com.google.guava:guava:18.0",
-          "org.jsoup:jsoup:1.11.2",
+          "org.jsoup:jsoup:1.11.3",
           "joda-time:joda-time:2.7",
           "edu.stanford.nlp:stanford-corenlp:3.9.1"
 

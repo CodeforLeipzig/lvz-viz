@@ -92,5 +92,8 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('default', [ 'jshint', 'concat', 'uglify', 'clean' ]);
+  // the build task for production usage without devDependencies
+  grunt.registerTask('build', [ 'concat', 'uglify', 'clean' ]);
+  // the default task for development usage
+  grunt.registerTask('default', [ 'jshint', 'build' ]);
 };

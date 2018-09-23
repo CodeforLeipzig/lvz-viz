@@ -1,6 +1,8 @@
 .git
 .gradle
 .settings
+.sts4-cache
+bin
 build
 !build/libs/*.jar
 data

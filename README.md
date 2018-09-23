@@ -20,9 +20,8 @@ or by setting the environment via `export SPRING_PROFILES_ACTIVE=crawl`.
 Download client js dependencies with npm and package them with Grunt.
 
 ```bash
-npm install -g grunt-cli
 npm install
-grunt
+npm run grunt-build
 ```
 
 ### Gradle

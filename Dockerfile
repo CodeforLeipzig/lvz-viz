@@ -1,7 +1,5 @@
 FROM node:10.11.0-jessie AS build-js
 
-RUN npm install -g grunt-cli
-
 # see https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
 USER node
 WORKDIR /home/node
@@ -11,7 +9,7 @@ RUN npm install --only=production
 
 COPY --chown=node Gruntfile.js ./
 COPY --chown=node src/main/resources/public/js ./src/main/resources/public/js
-RUN grunt
+RUN npm run --silent grunt-build
 
 FROM gradle:4.10.1-jdk8 AS build-java
 

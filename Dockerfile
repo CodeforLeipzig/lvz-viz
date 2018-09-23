@@ -1,4 +1,4 @@
-FROM node:8.11-jessie AS build-js
+FROM node:10.11.0-jessie AS build-js
 
 RUN npm install -g grunt-cli
 

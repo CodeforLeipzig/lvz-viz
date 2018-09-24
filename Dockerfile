@@ -11,7 +11,7 @@ COPY --chown=node Gruntfile.js ./
 COPY --chown=node src/main/resources/public/js ./src/main/resources/public/js
 RUN npm run --silent grunt-build
 
-FROM gradle:4.10.1-jdk8 AS build-java
+FROM gradle:4.10.2-jdk8 AS build-java
 
 USER gradle
 RUN mkdir -p /home/gradle/app/build/resources/main/public/js

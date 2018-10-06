@@ -17,7 +17,6 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
@@ -53,7 +52,7 @@ public final class NER {
         try {
             return CRFClassifier.<CoreLabel> getClassifier(new File(SERIALIZED_CLASSIFIER));
         } catch (ClassCastException | ClassNotFoundException | IOException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -96,7 +95,7 @@ public final class NER {
                 }
             });
         } catch (final IOException e) {
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
         logger.debug("initialized location blacklist: {}", blacklist);
         return blacklist;

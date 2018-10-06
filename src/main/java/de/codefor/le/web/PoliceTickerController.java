@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -58,44 +56,34 @@ public class PoliceTickerController {
     @RequestMapping(value = "/extractlocations", method = RequestMethod.POST)
     public Iterable<String> getLocations(@RequestBody final String locations) {
         logger.debug("extractlocations: {}", locations);
-        if (ner.isPresent()) {
-            return ner.get().getLocations(locations, false);
-        }
-        logger.debug("return empty result b/c NER is not initialized!");
-        return Collections.<String> emptyList();
+        return ner.map(n -> n.getLocations(locations, false)).orElseGet(() -> {
+            logger.debug("return empty result b/c NER is not initialized!");
+            return Collections.<String>emptyList();
+        });
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public Page<PoliceTicker> search(@RequestParam String query,
+    public Page<PoliceTicker> search(@RequestParam final String query,
             @PageableDefault(direction = Direction.DESC, sort = "datePublished") final Pageable pageable) {
         logger.debug("search query: {}", query);
-        Page<PoliceTicker> result;
-        if (!query.isEmpty()) {
-            query = query.toLowerCase();
-            final List<String> splitToList = Splitter.on(CharMatcher.WHITESPACE).splitToList(query);
-
-            final SearchQuery sq = new NativeSearchQueryBuilder().withPageable(pageable)
-                    .withQuery(createFulltextSearchQueryBuilder(splitToList)).build();
-
-            result = elasticsearchTemplate.queryForPage(sq, PoliceTicker.class);
-        } else {
-            result = getx(pageable);
-        }
-        return result;
+        return query.isEmpty() ? getx(pageable)
+                : elasticsearchTemplate.queryForPage(
+                        new NativeSearchQueryBuilder().withPageable(pageable)
+                                .withQuery(createFulltextSearchQueryBuilder(splitIntoTerms(query))).build(),
+                        PoliceTicker.class);
     }
 
     @RequestMapping(value = "/searchbetween", method = RequestMethod.GET)
-    public Page<PoliceTicker> searchBetween(@RequestParam(defaultValue = "") String query,
+    public Page<PoliceTicker> searchBetween(@RequestParam(defaultValue = "") final String query,
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime from,
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime to,
             @PageableDefault(direction = Direction.DESC, sort = "datePublished", size = Integer.MAX_VALUE) final Pageable pageable) {
         logger.debug("query: {} from: {}, to: {}", new Object[] { query, from, to });
-        query = query.toLowerCase();
-        final List<String> splitToList = Splitter.on(CharMatcher.WHITESPACE).splitToList(query);
-
-        final SearchQuery sq = new NativeSearchQueryBuilder().withPageable(pageable)
-                .withQuery(createFulltextSearchQueryBetween(splitToList, from, to)).build();
-        final Page<PoliceTicker> results = elasticsearchTemplate.queryForPage(sq, PoliceTicker.class);
+        final Page<PoliceTicker> results = elasticsearchTemplate
+                .queryForPage(
+                        new NativeSearchQueryBuilder().withPageable(pageable)
+                                .withQuery(createFulltextSearchQueryBetween(query, from, to)).build(),
+                        PoliceTicker.class);
         logger.debug("results {}", results.getSize());
         return results;
     }
@@ -105,15 +93,15 @@ public class PoliceTickerController {
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime to,
             @PageableDefault(direction = Direction.DESC, sort = "datePublished", page = 0, size = Integer.MAX_VALUE) final Pageable pageable) {
         logger.debug("from {}, to {}", from, to);
-        final Page<PoliceTicker> between = policeTickerRepository.findByDatePublishedBetween(convertToDate(from), convertToDate(to),
-                pageable);
-        return between;
+        return policeTickerRepository.findByDatePublishedBetween(convertToDate(from), convertToDate(to), pageable);
     }
 
     @RequestMapping(value = "/minmaxdate", method = RequestMethod.GET)
     public DateTime[] minMaxDate() {
-        final Page<PoliceTicker> minDate = policeTickerRepository.findAll(new PageRequest(0, 1, Direction.ASC, "datePublished"));
-        final Page<PoliceTicker> maxDate = policeTickerRepository.findAll(new PageRequest(0, 1, Direction.DESC, "datePublished"));
+        final Page<PoliceTicker> minDate = policeTickerRepository
+                .findAll(new PageRequest(0, 1, Direction.ASC, "datePublished"));
+        final Page<PoliceTicker> maxDate = policeTickerRepository
+                .findAll(new PageRequest(0, 1, Direction.DESC, "datePublished"));
         final DateTime minDatePublished = new DateTime(minDate.getContent().get(0).getDatePublished());
         final DateTime maxDatePublished = new DateTime(maxDate.getContent().get(0).getDatePublished());
         logger.debug("min {}, max {}", minDatePublished, maxDatePublished);
@@ -128,32 +116,26 @@ public class PoliceTickerController {
         return new DateTime[] { minus7days, now };
     }
 
-    private static BoolQueryBuilder createFulltextSearchQueryBetween(final List<String> splitToList, final LocalDateTime from,
-            final LocalDateTime to) {
-        BoolQueryBuilder searchQuery = null;
-        if (splitToList.isEmpty()) {
-            searchQuery = QueryBuilders.boolQuery().must(QueryBuilders.matchAllQuery());
-        } else {
-            searchQuery = createFulltextSearchQueryBuilder(splitToList);
-        }
-        final RangeQueryBuilder rqb = QueryBuilders.rangeQuery("datePublished").from(convertToDate(from)).to(convertToDate(to));
-
-        searchQuery.must(rqb);
-        return searchQuery;
+    private static List<String> splitIntoTerms(final String query) {
+        return Splitter.on(CharMatcher.WHITESPACE).splitToList(query.toLowerCase());
     }
 
-    private static BoolQueryBuilder createFulltextSearchQueryBuilder(final List<String> splitToList) {
+    private static BoolQueryBuilder createFulltextSearchQueryBetween(final String query, final LocalDateTime from,
+            final LocalDateTime to) {
+        final List<String> terms = splitIntoTerms(query);
+        return (terms.isEmpty() ? QueryBuilders.boolQuery().must(QueryBuilders.matchAllQuery())
+                : createFulltextSearchQueryBuilder(terms)).must(
+                        QueryBuilders.rangeQuery("datePublished").from(convertToDate(from)).to(convertToDate(to)));
+    }
+
+    private static BoolQueryBuilder createFulltextSearchQueryBuilder(final List<String> terms) {
         final BoolQueryBuilder articleBool = QueryBuilders.boolQuery();
         final BoolQueryBuilder titleBool = QueryBuilders.boolQuery();
-        for (final String s : splitToList) {
-            articleBool.must(QueryBuilders.termQuery("article", s));
-            titleBool.must(QueryBuilders.termQuery("title", s));
-
+        for (final String term : terms) {
+            articleBool.must(QueryBuilders.termQuery("article", term));
+            titleBool.must(QueryBuilders.termQuery("title", term));
         }
-        final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        boolQueryBuilder.should(articleBool);
-        boolQueryBuilder.should(titleBool);
-        return boolQueryBuilder;
+        return QueryBuilders.boolQuery().should(articleBool).should(titleBool);
     }
 
     private static Date convertToDate(final LocalDateTime localeDateTime) {

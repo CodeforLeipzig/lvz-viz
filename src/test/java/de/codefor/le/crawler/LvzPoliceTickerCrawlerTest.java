@@ -33,7 +33,7 @@ public class LvzPoliceTickerCrawlerTest {
     public void testExecuteForPageMaxInteger() throws InterruptedException, ExecutionException {
         final Iterable<String> result = crawler.execute(Integer.MAX_VALUE).get();
         assertNotNull(result);
-        Iterator it = result.iterator();
+        final Iterator<String> it = result.iterator();
         // in case of bigteaser-item we expect ONE result, otherwise ZERO
         if (it.hasNext()) {
             assertNotNull(it.next());

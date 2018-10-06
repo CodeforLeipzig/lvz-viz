@@ -111,7 +111,7 @@ public class PoliceTickerController {
     @RequestMapping(value = "/last7days", method = RequestMethod.GET)
     public DateTime[] last7Days() {
         final DateTime now = DateTime.now();
-        final DateTime minus7days = DateTime.now().minusDays(30);
+        final DateTime minus7days = DateTime.now().minusDays(7);
         logger.debug("last7days: fromDate {}, toDate {}", minus7days, now);
         return new DateTime[] { minus7days, now };
     }

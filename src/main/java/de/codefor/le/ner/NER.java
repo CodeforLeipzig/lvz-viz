@@ -41,10 +41,10 @@ public final class NER {
 
     private final ResourceLoader resourceLoader;
 
-    @Getter(lazy = true, onMethod = @__({ @SuppressWarnings("unchecked") }), value = AccessLevel.PRIVATE)
+    @Getter(lazy = true, onMethod = @__({ @SuppressWarnings({ "all", "unchecked" }) }), value = AccessLevel.PRIVATE)
     private final AbstractSequenceClassifier<CoreLabel> classifier = initClassifier();
 
-    @Getter(lazy = true, onMethod = @__({ @SuppressWarnings("unchecked") }), value = AccessLevel.PROTECTED)
+    @Getter(lazy = true, onMethod = @__({ @SuppressWarnings({ "all", "unchecked" }) }), value = AccessLevel.PROTECTED)
     private final Collection<String> blackListedLocations = initBlackListedLocations();
 
     private static AbstractSequenceClassifier<CoreLabel> initClassifier() {

@@ -12,6 +12,7 @@ buildscript {
 }
 
 plugins {
+  id 'com.adarshr.test-logger' version '1.2.0'
   id "io.franzbecker.gradle-lombok" version "1.14"
 }
 
@@ -51,6 +52,10 @@ dependencies {
 
 dockerCompose {
   captureContainersOutput = false
+}
+
+testlogger {
+  showStandardStreams true
 }
 
 // see http://www.rehpoehler.de/gradle/Gradle-Eclipse-WTP-Beispiel.html

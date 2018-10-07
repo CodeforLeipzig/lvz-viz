@@ -1,0 +1,9 @@
+language: java
+env:
+  global:
+  - JAVA_OPTS="-Xmx1g"
+jdk:
+  - openjdk8
+test:
+  post:
+  - bash <(curl -s https://codecov.io/bash)

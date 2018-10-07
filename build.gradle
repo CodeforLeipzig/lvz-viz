@@ -19,6 +19,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'idea'
+apply plugin: 'jacoco'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'docker-compose'
 
@@ -53,6 +54,15 @@ dependencies {
 dockerCompose {
   captureContainersOutput = false
 }
+
+jacocoTestReport {
+  reports {
+    xml.enabled true
+    html.enabled false
+  }
+}
+
+check.dependsOn jacocoTestReport
 
 testlogger {
   showStandardStreams true

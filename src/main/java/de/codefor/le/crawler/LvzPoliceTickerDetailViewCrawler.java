@@ -177,7 +177,7 @@ public class LvzPoliceTickerDetailViewCrawler {
                     normalizedDate = date.substring(0, date.length() - 1);
                 }
                 if (normalizedDate.length() == 19) {
-                    zonedDateTime = LocalDateTime.parse(normalizedDate).atZone(ZoneId.systemDefault());
+                    zonedDateTime = LocalDateTime.parse(normalizedDate).atZone(ZoneId.of("Europe/Berlin"));
                 } else {
                     zonedDateTime = ZonedDateTime.parse(normalizedDate);
                 }

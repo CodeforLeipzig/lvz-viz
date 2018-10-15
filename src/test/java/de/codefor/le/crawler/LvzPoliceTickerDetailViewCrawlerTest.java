@@ -37,7 +37,7 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     private final LvzPoliceTickerDetailViewCrawler crawler = new LvzPoliceTickerDetailViewCrawler();
 
     private static Date getDate(LocalDateTime localDate) {
-        return Date.from(localDate.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(localDate.atZone(ZoneId.of("Europe/Berlin")).toInstant());
     }
 
     @Test

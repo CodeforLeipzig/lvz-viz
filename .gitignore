@@ -1,7 +1,9 @@
 .sts4-cache/
+.vscode
 data/
 
-# Created by https://www.gitignore.io/api/eclipse,intellij,java,node,gradle,visualstudiocode
+# Created by https://www.gitignore.io/api/eclipse,intellij,java,node,gradle
+# Edit at https://www.gitignore.io/?templates=eclipse,intellij,java,node,gradle
 
 ### Eclipse ###
 
@@ -251,12 +253,8 @@ typings/
 # Serverless directories
 .serverless
 
-### VisualStudioCode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# FuseBox cache
+.fusebox/
 
 ### Gradle ###
 .gradle
@@ -274,5 +272,7 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
+### Gradle Patch ###
+**/build/
 
-# End of https://www.gitignore.io/api/eclipse,intellij,java,node,gradle,visualstudiocode
+# End of https://www.gitignore.io/api/eclipse,intellij,java,node,gradle

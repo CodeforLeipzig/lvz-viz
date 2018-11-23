@@ -102,8 +102,12 @@ public class PoliceTickerController {
                 .findAll(new PageRequest(0, 1, Direction.ASC, "datePublished"));
         final Page<PoliceTicker> maxDate = policeTickerRepository
                 .findAll(new PageRequest(0, 1, Direction.DESC, "datePublished"));
-        final DateTime minDatePublished = new DateTime(minDate.getContent().get(0).getDatePublished());
-        final DateTime maxDatePublished = new DateTime(maxDate.getContent().get(0).getDatePublished());
+        final DateTime minDatePublished = minDate.getContent().size() > 0
+                ? new DateTime(minDate.getContent().get(0).getDatePublished())
+                : DateTime.now();
+        final DateTime maxDatePublished = maxDate.getContent().size() > 0
+                ? new DateTime(maxDate.getContent().get(0).getDatePublished())
+                : DateTime.now();
         logger.debug("min {}, max {}", minDatePublished, maxDatePublished);
         return new DateTime[] { minDatePublished, maxDatePublished };
     }

@@ -1,6 +1,7 @@
 # lvz-viz
 
 [![Build Status](https://travis-ci.org/sepe81/lvz-viz.svg?branch=master)](https://travis-ci.org/sepe81/lvz-viz)
+![GitHub license](https://img.shields.io/github/license/CodeforLeipzig/lvz-viz.svg)
 [![Code Climate](https://codeclimate.com/github/CodeforLeipzig/lvz-viz/badges/gpa.svg)](https://codeclimate.com/github/CodeforLeipzig/lvz-viz)
 
 ## Intro

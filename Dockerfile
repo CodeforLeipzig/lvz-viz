@@ -28,7 +28,6 @@ FROM anapsix/alpine-java:8_server-jre_unlimited
 
 LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
 
-ARG APP_JAR=app-1.2.0-SNAPSHOT.jar
 ENV USER lvz-viz
 
 RUN addgroup $USER \
@@ -38,7 +37,7 @@ USER $USER
 WORKDIR /home/$USER
 
 COPY --chown=lvz-viz dewac_175m_600.crf.ser.gz .
-COPY --chown=lvz-viz --from=build-java /home/gradle/app/build/libs/$APP_JAR ./app.jar
+COPY --chown=lvz-viz --from=build-java /home/gradle/app/build/libs/*.jar ./app.jar
 
 EXPOSE 8080
 

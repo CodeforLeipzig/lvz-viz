@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   webapp:
     build: .
@@ -10,3 +10,5 @@ services:
       - ./data:/home/lvz-viz/data
     environment:
       - SPRING_PROFILES_ACTIVE=crawl
+    healthcheck:
+      test: wget --spider --quiet --tries=1 http://localhost:8080/health || exit 1

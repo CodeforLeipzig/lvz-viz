@@ -2,32 +2,32 @@
     "policeticker-type": {
         "properties": {
             "url": {
-                "type": "string",
-                "index": "not_analyzed"
+                "type": "text",
+                "index": false
             },
             "title": {
-                "type": "string",
-                "index": "analyzed"
+                "type": "text",
+                "index": true
             },
             "article": {
-                "type": "string",
-                "index": "analyzed"
+                "type": "text",
+                "index": true
             },
             "snippet": {
-                "type": "string",
-                "index": "not_analyzed"
+                "type": "text",
+                "index": false
             },
             "copyright": {
-                "type": "string",
-                "index": "not_analyzed"
+                "type": "text",
+                "index": false
             },
             "datePublished": {
                 "type": "date",
-                "index": "analyzed"
+                "index": true
             },
             "location": {
                 "type": "geo_point",
-                "index": "analyzed"
+                "index": true
             }
         }
     }

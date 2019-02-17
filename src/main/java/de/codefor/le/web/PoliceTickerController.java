@@ -101,10 +101,8 @@ public class PoliceTickerController {
 
     @GetMapping(value = "/minmaxdate")
     public DateTime[] minMaxDate() {
-        final Page<PoliceTicker> minDate = policeTickerRepository
-                .findAll(new PageRequest(0, 1, Direction.ASC, DATE_PUBLISHED));
-        final Page<PoliceTicker> maxDate = policeTickerRepository
-                .findAll(new PageRequest(0, 1, Direction.DESC, DATE_PUBLISHED));
+        final Page<PoliceTicker> minDate = policeTickerRepository.findAll(PageRequest.of(0, 1, Direction.ASC, DATE_PUBLISHED));
+        final Page<PoliceTicker> maxDate = policeTickerRepository.findAll(PageRequest.of(0, 1, Direction.DESC, DATE_PUBLISHED));
         final DateTime minDatePublished = minDate.getContent().size() > 0
                 ? new DateTime(minDate.getContent().get(0).getDatePublished())
                 : DateTime.now();
@@ -145,7 +143,7 @@ public class PoliceTickerController {
         return QueryBuilders.boolQuery().should(articleBool).should(titleBool);
     }
 
-    private static Date convertToDate(final LocalDateTime localeDateTime) {
-        return Date.from(localeDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    private static DateTime convertToDate(final LocalDateTime localeDateTime) {
+        return new DateTime(Date.from(localeDateTime.atZone(ZoneId.systemDefault()).toInstant()));
     }
 }

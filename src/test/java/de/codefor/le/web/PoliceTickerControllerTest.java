@@ -25,7 +25,7 @@ public class PoliceTickerControllerTest {
 
     @Test
     public void getx() {
-        assertThat(controller.getx(new PageRequest(0, 1))).isNotNull().isEmpty();
+        assertThat(controller.getx(PageRequest.of(0, 1))).isNotNull().isEmpty();
     }
 
     @Test
@@ -36,7 +36,7 @@ public class PoliceTickerControllerTest {
 
     @Test
     public void search() {
-        final Page<PoliceTicker> result = controller.search("term", new PageRequest(0, 1));
+        final Page<PoliceTicker> result = controller.search("term", PageRequest.of(0, 1));
         assertThat(result).isNotNull();
         assertThat(result.getNumberOfElements()).isZero();
     }
@@ -44,7 +44,7 @@ public class PoliceTickerControllerTest {
     @Test
     public void searchBetween() {
         final Page<PoliceTicker> result = controller.searchBetween("term",
-                LocalDateTime.now().minus(1, ChronoUnit.DAYS), LocalDateTime.now(), new PageRequest(0, 1));
+                LocalDateTime.now().minus(1, ChronoUnit.DAYS), LocalDateTime.now(), PageRequest.of(0, 1));
         assertThat(result).isNotNull();
         assertThat(result.getNumberOfElements()).isLessThanOrEqualTo(1);
     }

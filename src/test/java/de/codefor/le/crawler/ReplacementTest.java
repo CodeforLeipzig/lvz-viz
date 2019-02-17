@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import org.joda.time.DateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -46,11 +47,11 @@ public class ReplacementTest {
 
         policeTickerRepository.index(pt);
 
-        final Date fromDate = Date.from(LocalDateTime.of(2014, 7, 2, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-        final Date toDate = Date.from(LocalDateTime.of(2014, 8, 8, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-        final Page<PoliceTicker> findAll = policeTickerRepository.findAll(new PageRequest(0, 20));
+        final DateTime fromDate = new DateTime(Date.from(LocalDateTime.of(2014, 7, 2, 0, 0).atZone(ZoneId.systemDefault()).toInstant()));
+        final DateTime toDate = new DateTime(Date.from(LocalDateTime.of(2014, 8, 8, 0, 0).atZone(ZoneId.systemDefault()).toInstant()));
+        final Page<PoliceTicker> findAll = policeTickerRepository.findAll(PageRequest.of(0, 20));
         System.out.println(findAll.getContent());
-        final Page<PoliceTicker> res = policeTickerRepository.findByDatePublishedBetween(fromDate, toDate, new PageRequest(0, 20));
+        final Page<PoliceTicker> res = policeTickerRepository.findByDatePublishedBetween(fromDate, toDate, PageRequest.of(0, 20));
         System.out.println(res.getContent());
 
     }

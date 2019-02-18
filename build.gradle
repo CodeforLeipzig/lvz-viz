@@ -64,6 +64,13 @@ jacocoTestReport {
 
 check.dependsOn jacocoTestReport
 
+test {
+  testLogging {
+    exceptionFormat = 'full'
+  }
+  maxHeapSize = "2048m"
+}
+
 testlogger {
   showStandardStreams true
 }

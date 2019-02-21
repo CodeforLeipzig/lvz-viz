@@ -121,7 +121,7 @@ public class PoliceTickerController {
     }
 
     private static List<String> splitIntoTerms(final String query) {
-        return Splitter.on(CharMatcher.WHITESPACE).splitToList(query.toLowerCase());
+        return Splitter.on(CharMatcher.whitespace()).splitToList(query.toLowerCase());
     }
 
     private static BoolQueryBuilder createFulltextSearchQueryBetween(final String query, final LocalDateTime from,

@@ -37,7 +37,8 @@ springBoot {
 
 repositories { mavenCentral() }
 dependencies {
-  compile "org.jsoup:jsoup:1.11.3",
+  compile "com.google.guava:guava:27.0.1-jre",
+          "org.jsoup:jsoup:1.11.3",
           "edu.stanford.nlp:stanford-corenlp:3.9.2"
 
   compile "org.springframework.boot:spring-boot-starter-web",

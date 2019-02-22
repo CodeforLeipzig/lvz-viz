@@ -13,7 +13,7 @@ buildscript {
 
 plugins {
   id 'com.adarshr.test-logger' version '1.2.0'
-  id "io.franzbecker.gradle-lombok" version "1.14"
+  id "io.franzbecker.gradle-lombok" version "2.1"
 }
 
 apply plugin: 'java'

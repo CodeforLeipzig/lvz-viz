@@ -12,3 +12,4 @@ services:
       - SPRING_PROFILES_ACTIVE=crawl
     healthcheck:
       test: wget --spider --quiet --tries=1 http://localhost:8080/health || exit 1
+    restart: unless-stopped

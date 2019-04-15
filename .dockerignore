@@ -1,7 +1,9 @@
 .git
 .gradle
 .settings
+.sonarlint
 .sts4-cache
+.vscode
 bin
 build
 !build/libs/*.jar

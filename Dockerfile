@@ -24,7 +24,7 @@ COPY --chown=gradle --from=build-js /home/node/build/resources/main/public/js/ap
 
 RUN gradle --no-daemon build -x test
 
-FROM openjdk:8u191-jre-alpine
+FROM openjdk:8u201-jre-alpine
 
 LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
 

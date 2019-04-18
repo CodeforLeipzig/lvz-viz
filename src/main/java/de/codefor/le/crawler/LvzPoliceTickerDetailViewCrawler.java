@@ -68,7 +68,8 @@ public class LvzPoliceTickerDetailViewCrawler {
                 try {
                     Thread.sleep(WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING);
                 } catch (final InterruptedException e) {
-                    logger.error(e.toString(), e);
+                    logger.warn(e.toString(), e);
+                    Thread.currentThread().interrupt();
                 }
             }
         } finally {

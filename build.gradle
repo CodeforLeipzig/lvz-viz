@@ -3,7 +3,7 @@ plugins {
   id 'com.avast.gradle.docker-compose' version '0.8.14'
   id 'eclipse-wtp'
   id 'idea'
-  id 'io.franzbecker.gradle-lombok' version '2.1'
+  id 'io.franzbecker.gradle-lombok' version '2.2'
   id 'jacoco'
   id 'java'
   id 'org.springframework.boot' version '1.4.7.RELEASE'

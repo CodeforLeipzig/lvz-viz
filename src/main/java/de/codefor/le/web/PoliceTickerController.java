@@ -21,9 +21,10 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,12 +49,12 @@ public class PoliceTickerController {
 
     private final Optional<NER> ner;
 
-    @RequestMapping(value = "/getx", method = RequestMethod.GET)
+    @GetMapping(value = "/getx")
     public Page<PoliceTicker> getx(@PageableDefault final Pageable pageable) {
         return policeTickerRepository.findAll(pageable);
     }
 
-    @RequestMapping(value = "/extractlocations", method = RequestMethod.POST)
+    @PostMapping(value = "/extractlocations")
     public Iterable<String> getLocations(@RequestBody final String locations) {
         logger.debug("extractlocations: {}", locations);
         return ner.map(n -> n.getLocations(locations, false)).orElseGet(() -> {
@@ -62,7 +63,7 @@ public class PoliceTickerController {
         });
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @GetMapping(value = "/search")
     public Page<PoliceTicker> search(@RequestParam final String query,
             @PageableDefault(direction = Direction.DESC, sort = "datePublished") final Pageable pageable) {
         logger.debug("search query: {}", query);
@@ -73,7 +74,7 @@ public class PoliceTickerController {
                         PoliceTicker.class);
     }
 
-    @RequestMapping(value = "/searchbetween", method = RequestMethod.GET)
+    @GetMapping(value = "/searchbetween")
     public Page<PoliceTicker> searchBetween(@RequestParam(defaultValue = "") final String query,
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime from,
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime to,
@@ -88,7 +89,7 @@ public class PoliceTickerController {
         return results;
     }
 
-    @RequestMapping(value = "/between", method = RequestMethod.GET)
+    @GetMapping(value = "/between")
     public Page<PoliceTicker> between(@RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime from,
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime to,
             @PageableDefault(direction = Direction.DESC, sort = "datePublished", page = 0, size = Integer.MAX_VALUE) final Pageable pageable) {
@@ -96,7 +97,7 @@ public class PoliceTickerController {
         return policeTickerRepository.findByDatePublishedBetween(convertToDate(from), convertToDate(to), pageable);
     }
 
-    @RequestMapping(value = "/minmaxdate", method = RequestMethod.GET)
+    @GetMapping(value = "/minmaxdate")
     public DateTime[] minMaxDate() {
         final Page<PoliceTicker> minDate = policeTickerRepository
                 .findAll(new PageRequest(0, 1, Direction.ASC, "datePublished"));
@@ -112,7 +113,7 @@ public class PoliceTickerController {
         return new DateTime[] { minDatePublished, maxDatePublished };
     }
 
-    @RequestMapping(value = "/last7days", method = RequestMethod.GET)
+    @GetMapping(value = "/last7days")
     public DateTime[] last7Days() {
         final DateTime now = DateTime.now();
         final DateTime minus7days = DateTime.now().minusDays(7);

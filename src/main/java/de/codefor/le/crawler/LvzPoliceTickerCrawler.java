@@ -83,8 +83,8 @@ public class LvzPoliceTickerCrawler {
             logger.info("No links found on current page. This should be the last available page.");
             this.crawlMore = false;
         } else if (result.isEmpty()) {
-            logger.info("No new articles found on current page. "
-                    + (crawlAllMainPages ? "Nevertheless, continue crawling on next page." : "Stop crawling for now."));
+            logger.info("No new articles found on current page. {}",
+                    crawlAllMainPages ? "Nevertheless, continue crawling on next page." : "Stop crawling for now.");
             this.crawlMore = crawlAllMainPages;
         } else {
             logger.info("{} new articles found on current page.", result.size());

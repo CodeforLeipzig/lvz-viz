@@ -43,6 +43,13 @@ dockerCompose {
   captureContainersOutput = false
 }
 
+generateGitProperties {
+  // see https://github.com/n0mer/gradle-git-properties/issues/35
+  onlyIf {
+    !source.isEmpty()
+  }
+}
+
 jacocoTestReport {
   reports {
     xml.enabled true

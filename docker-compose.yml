@@ -6,7 +6,8 @@ services:
       dockerfile: Dockerfile.dev
     container_name: webapp
     depends_on:
-     - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=crawl,dev
     healthcheck:

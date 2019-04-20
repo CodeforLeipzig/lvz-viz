@@ -22,7 +22,7 @@ COPY --chown=gradle src ./src
 RUN rm -f src/main/resources/public/js/*.js
 COPY --chown=gradle --from=build-js /home/node/build/resources/main/public/js/app.min.js ./src/main/resources/public/js/
 
-RUN gradle build -x test
+RUN gradle --info build -x test
 
 FROM adoptopenjdk/openjdk8:alpine-jre
 

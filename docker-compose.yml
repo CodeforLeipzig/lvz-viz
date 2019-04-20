@@ -1,7 +1,9 @@
 version: '2.1'
 services:
   webapp:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: sepe81/lvz-viz:latest
     mem_limit: 1500m
     ports:

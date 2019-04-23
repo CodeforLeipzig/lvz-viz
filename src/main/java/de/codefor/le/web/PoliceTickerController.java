@@ -43,6 +43,8 @@ public class PoliceTickerController {
 
     private static final Logger logger = LoggerFactory.getLogger(PoliceTickerController.class);
 
+    private static final String DATE_PUBLISHED = "datePublished";
+
     private final PoliceTickerRepository policeTickerRepository;
 
     private final ElasticsearchTemplate elasticsearchTemplate;
@@ -65,7 +67,7 @@ public class PoliceTickerController {
 
     @GetMapping(value = "/search")
     public Page<PoliceTicker> search(@RequestParam final String query,
-            @PageableDefault(direction = Direction.DESC, sort = "datePublished") final Pageable pageable) {
+            @PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED) final Pageable pageable) {
         logger.debug("search query: {}", query);
         return query.isEmpty() ? getx(pageable)
                 : elasticsearchTemplate.queryForPage(
@@ -78,7 +80,7 @@ public class PoliceTickerController {
     public Page<PoliceTicker> searchBetween(@RequestParam(defaultValue = "") final String query,
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime from,
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime to,
-            @PageableDefault(direction = Direction.DESC, sort = "datePublished", size = Integer.MAX_VALUE) final Pageable pageable) {
+            @PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED, size = Integer.MAX_VALUE) final Pageable pageable) {
         logger.debug("query: {} from: {}, to: {}", new Object[] { query, from, to });
         final Page<PoliceTicker> results = elasticsearchTemplate
                 .queryForPage(
@@ -92,7 +94,7 @@ public class PoliceTickerController {
     @GetMapping(value = "/between")
     public Page<PoliceTicker> between(@RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime from,
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime to,
-            @PageableDefault(direction = Direction.DESC, sort = "datePublished", page = 0, size = Integer.MAX_VALUE) final Pageable pageable) {
+            @PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED, page = 0, size = Integer.MAX_VALUE) final Pageable pageable) {
         logger.debug("from {}, to {}", from, to);
         return policeTickerRepository.findByDatePublishedBetween(convertToDate(from), convertToDate(to), pageable);
     }
@@ -100,9 +102,9 @@ public class PoliceTickerController {
     @GetMapping(value = "/minmaxdate")
     public DateTime[] minMaxDate() {
         final Page<PoliceTicker> minDate = policeTickerRepository
-                .findAll(new PageRequest(0, 1, Direction.ASC, "datePublished"));
+                .findAll(new PageRequest(0, 1, Direction.ASC, DATE_PUBLISHED));
         final Page<PoliceTicker> maxDate = policeTickerRepository
-                .findAll(new PageRequest(0, 1, Direction.DESC, "datePublished"));
+                .findAll(new PageRequest(0, 1, Direction.DESC, DATE_PUBLISHED));
         final DateTime minDatePublished = minDate.getContent().size() > 0
                 ? new DateTime(minDate.getContent().get(0).getDatePublished())
                 : DateTime.now();
@@ -129,8 +131,8 @@ public class PoliceTickerController {
             final LocalDateTime to) {
         final List<String> terms = splitIntoTerms(query);
         return (terms.isEmpty() ? QueryBuilders.boolQuery().must(QueryBuilders.matchAllQuery())
-                : createFulltextSearchQueryBuilder(terms)).must(
-                        QueryBuilders.rangeQuery("datePublished").from(convertToDate(from)).to(convertToDate(to)));
+                : createFulltextSearchQueryBuilder(terms))
+                        .must(QueryBuilders.rangeQuery(DATE_PUBLISHED).from(convertToDate(from)).to(convertToDate(to)));
     }
 
     private static BoolQueryBuilder createFulltextSearchQueryBuilder(final List<String> terms) {

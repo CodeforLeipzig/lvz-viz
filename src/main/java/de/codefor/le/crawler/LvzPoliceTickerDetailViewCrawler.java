@@ -22,6 +22,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 
@@ -168,6 +169,7 @@ public class LvzPoliceTickerDetailViewCrawler {
         }
     }
 
+    @VisibleForTesting
     static Date extractDate(final String date) {
         Date result = null;
         if (!Strings.isNullOrEmpty(date)) {

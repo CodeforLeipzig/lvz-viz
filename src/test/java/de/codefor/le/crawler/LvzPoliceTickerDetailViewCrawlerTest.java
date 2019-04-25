@@ -1,11 +1,11 @@
 package de.codefor.le.crawler;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.iterableWithSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
@@ -54,21 +56,24 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
         assertNotNull(future);
         final Iterable<PoliceTicker> results = future.get();
         assertNotNull(results);
+        assertThat(results, iterableWithSize(5));
 
-        final Iterator<PoliceTicker> it = results.iterator();
-        PoliceTicker ticker = it.next();
-        assertEquals(PUBLISHING_DATE, ticker.getDatePublished());
-        assertThat(ticker.getArticle(), startsWith(ARTICLE));
-        assertEquals(COPYRIGHT, ticker.getCopyright());
+        final Optional<PoliceTicker> result = StreamSupport.stream(results.spliterator(), false)
+                .filter(ticker -> ticker.getArticle().startsWith(ARTICLE)).findFirst();
+        assertTrue(result.isPresent());
+        result.ifPresent(ticker -> {
+            assertEquals(PUBLISHING_DATE, ticker.getDatePublished());
+            assertEquals(COPYRIGHT, ticker.getCopyright());
+        });
 
-        while (it.hasNext()) {
-            ticker = it.next();
+        assertTrue(StreamSupport.stream(results.spliterator(), false)
+                .filter(ticker -> ticker.getArticle().contains("Identitätsfeststellung")).findFirst().isPresent());
+
+        for (PoliceTicker ticker : results) {
             assertNotNull(ticker.getDatePublished());
             assertNotNull(ticker.getArticle());
             assertEquals(COPYRIGHT, ticker.getCopyright());
         }
-
-        assertThat(ticker.getArticle(), containsString("Identitätsfeststellung"));
     }
 
     @Test

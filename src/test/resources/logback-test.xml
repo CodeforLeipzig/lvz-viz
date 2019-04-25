@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
-    <logger name="de.codefor.le" level="debug" />
+  <include resource="org/springframework/boot/logging/logback/base.xml"/>
+  <logger name="de.codefor.le" level="debug" />
 </configuration>

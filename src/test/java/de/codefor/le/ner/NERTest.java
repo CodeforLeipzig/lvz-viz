@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ActiveProfiles("crawl")
+@ActiveProfiles({ "crawl", "test" })
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(properties = { "app.initialDelay=300000" })
 public class NERTest {

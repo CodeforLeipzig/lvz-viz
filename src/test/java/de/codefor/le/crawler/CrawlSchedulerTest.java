@@ -17,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import de.codefor.le.model.PoliceTicker;
 
-@ActiveProfiles("crawl")
+@ActiveProfiles({ "crawl", "test" })
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(properties = { "app.initialDelay=300000" })
 public class CrawlSchedulerTest {

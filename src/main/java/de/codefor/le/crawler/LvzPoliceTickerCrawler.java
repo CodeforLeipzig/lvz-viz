@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
@@ -51,6 +52,8 @@ public class LvzPoliceTickerCrawler {
 
     private WebDriver driver;
 
+    private final AtomicBoolean reindex = new AtomicBoolean(true);
+
     @Async
     public Future<Iterable<String>> execute() {
         final var watch = Stopwatch.createStarted();
@@ -65,6 +68,13 @@ public class LvzPoliceTickerCrawler {
             }
             logger.debug("Finished crawling in {} ms.", watch.elapsed(TimeUnit.MILLISECONDS));
         }
+    }
+
+    private Collection<String> reindex(final Collection<String> urls) {
+        if (reindex.getAndSet(false)) {
+            urls.add(LVZ_POLICE_TICKER_BASE_URL + "/Leipziger-Linken-Stadtraetin-Riekewald-von-Passantin-angegriffen");
+        }
+        return urls;
     }
 
     /**
@@ -82,7 +92,7 @@ public class LvzPoliceTickerCrawler {
         } else {
             logger.info("{} new articles found.", result.size());
         }
-        return result;
+        return reindex(result);
     }
 
     private String initLoad(final String url) {

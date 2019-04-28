@@ -21,6 +21,7 @@ import com.google.common.base.Stopwatch;
 import de.codefor.le.repositories.PoliceTickerRepository;
 import de.codefor.le.utilities.Utils;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 
 /**
  * @author spinner0815
@@ -50,6 +51,8 @@ public class LvzPoliceTickerCrawler {
     /** hint for crawling the next site */
     private boolean crawlMore = true;
 
+    private boolean reindex = true;
+
     @Async
     public Future<Iterable<String>> execute(final int page) {
         final var watch = Stopwatch.createStarted();
@@ -64,7 +67,18 @@ public class LvzPoliceTickerCrawler {
             watch.stop();
             logger.info("Finished crawling page {} in {} ms.", page, watch.elapsed(TimeUnit.MILLISECONDS));
         }
+
+        reindex(crawledNews);
+
         return new AsyncResult<>(crawledNews);
+    }
+
+    @Synchronized
+    private void reindex(final Collection<String> urls) {
+        if (reindex) {
+            urls.add(LVZ_POLICE_TICKER_BASE_URL + "/Leipziger-Linken-Stadtraetin-Riekewald-von-Passantin-angegriffen");
+            reindex = false;
+        }
     }
 
     /**

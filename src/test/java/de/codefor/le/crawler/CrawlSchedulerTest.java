@@ -1,11 +1,13 @@
 package de.codefor.le.crawler;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
+import org.elasticsearch.common.geo.GeoPoint;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -59,6 +61,6 @@ public class CrawlSchedulerTest {
 
         ticker.setArticle(String.format(ARTICLE, "in Heiterblick und Gohlis-Süd "));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));
-        assertNotNull(ticker.getCoords());
+        assertEquals(new GeoPoint(51.3606724, 12.3592882289373), ticker.getCoords());
     }
 }

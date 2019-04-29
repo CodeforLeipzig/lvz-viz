@@ -1,6 +1,5 @@
 package de.codefor.le.crawler;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -73,46 +72,32 @@ public class CrawlScheduler {
         logger.debug("addCoordsToPoliceTickerInformation for various articles");
         for (final PoliceTicker policeTicker : articles) {
             logger.debug("process article {}", policeTicker.getUrl());
-            boolean coordsFound = false;
-            // TODO - replace to bulk threading (not every page in one thread)
             for (final String location : ner.getLocations(policeTicker.getArticle(), true)) {
-                logger.debug("search {} in nominatim", location);
-                final Future<List<Nominatim>> nomFutures = nominatimAsker.execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX + location);
-                final List<Nominatim> nominatim = nomFutures.get();
-                logger.debug("{} coords: {}", policeTicker.getUrl(), nominatim);
-                if (!nominatim.isEmpty()) {
-                    for (final Nominatim n : nominatim) {
-                        if (setCoordsIfValid(policeTicker, n)) {
-                            coordsFound = true;
-                            break;
-                        }
-                    }
-                }
-                // TODO better looping without two breaks
-                if (coordsFound) {
+                logger.debug("search '{}' in nominatim", location);
+                nominatimAsker.execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX + location).get().stream()
+                        .filter(CrawlScheduler::hasValidGeoCoords).map(CrawlScheduler::createGeoPoint).findFirst()
+                        .ifPresent(g -> {
+                            logger.debug("set GeoPoint {} to article", g);
+                            policeTicker.setCoords(g);
+                        });
+                if (policeTicker.getCoords() != null) {
                     break;
                 }
             }
         }
     }
 
-    /**
-     * Set coordinates from nominatim to policeTicker if valid
-     *
-     * @param policeTicker PoliceTicker
-     * @param nominatim Nominatim
-     * @return true if nominatim contains valid coordinates
-     */
-    private static boolean setCoordsIfValid(final PoliceTicker policeTicker, final Nominatim nominatim) {
+    private static boolean hasValidGeoCoords(final Nominatim nominatim) {
         final String lat = nominatim.getLat();
         final String lon = nominatim.getLon();
         if (NumberUtils.isNumber(lat) && NumberUtils.isNumber(lon)) {
-            final GeoPoint g = new GeoPoint(Double.valueOf(lat), Double.valueOf(lon));
-            logger.debug("set geoPoint {} to article", g);
-            policeTicker.setCoords(g);
             return true;
         }
         logger.warn("latitude {} and longitude {} must be non-empty numeric", lat, lon);
         return false;
+    }
+
+    private static GeoPoint createGeoPoint(final Nominatim nominatim) {
+        return new GeoPoint(Double.parseDouble(nominatim.getLat()), Double.parseDouble(nominatim.getLon()));
     }
 }

@@ -36,7 +36,7 @@ public class LvzPoliceTickerCrawler {
 
     protected static final String USER_AGENT = "leipzig crawler";
 
-    protected static final int REQUEST_TIMEOUT = 10000;
+    protected static final int REQUEST_TIMEOUT = 30000;
 
     protected static final String LVZ_BASE_URL = "http://www.lvz.de";
 

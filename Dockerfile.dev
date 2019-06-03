@@ -2,6 +2,11 @@ FROM adoptopenjdk/openjdk11:jre-11.0.3_7-alpine
 
 LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
 
+# see https://github.com/AdoptOpenJDK/openjdk-docker/blob/master/11/jre/alpine/Dockerfile.hotspot.releases.full#L22
+ENV LANG='de_DE.UTF-8' LANGUAGE='de_DE:de' LC_ALL='de_DE.UTF-8'
+
+RUN echo "Europe/Berlin" > /etc/timezone
+
 ENV USER lvz-viz
 
 RUN addgroup $USER \

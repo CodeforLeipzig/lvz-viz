@@ -4,8 +4,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.primitives.Doubles;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +93,7 @@ public class CrawlScheduler {
     private static boolean hasValidGeoCoords(final Nominatim nominatim) {
         final String lat = nominatim.getLat();
         final String lon = nominatim.getLon();
-        if (NumberUtils.isNumber(lat) && NumberUtils.isNumber(lon)) {
+        if (Doubles.tryParse(lat) != null && Doubles.tryParse(lon) != null) {
             return true;
         }
         logger.warn("latitude {} and longitude {} must be non-empty numeric", lat, lon);

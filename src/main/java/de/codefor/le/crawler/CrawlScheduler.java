@@ -3,6 +3,8 @@ package de.codefor.le.crawler;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.slf4j.Logger;
@@ -68,6 +70,7 @@ public class CrawlScheduler {
         return details;
     }
 
+    @VisibleForTesting
     void addCoordsToPoliceTickerInformation(final Iterable<PoliceTicker> articles) throws InterruptedException, ExecutionException {
         logger.debug("addCoordsToPoliceTickerInformation for various articles");
         for (final PoliceTicker policeTicker : articles) {

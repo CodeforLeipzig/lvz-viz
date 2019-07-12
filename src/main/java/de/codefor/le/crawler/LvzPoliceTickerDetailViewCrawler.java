@@ -161,7 +161,7 @@ public class LvzPoliceTickerDetailViewCrawler {
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
             final String date = elem.data();
-            final int startIndex = date.indexOf("datePublished") + 17;
+            final int startIndex = date.indexOf("datePublished") + 16;
             dm.setDatePublished(extractDate(date.substring(startIndex, startIndex + 25)));
         }
         if (dm.getDatePublished() == null) {
@@ -171,6 +171,7 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     @VisibleForTesting
     static Date extractDate(final String date) {
+        logger.debug("extractDate from {}", date);
         Date result = null;
         if (!Strings.isNullOrEmpty(date)) {
             ZonedDateTime zonedDateTime = null;

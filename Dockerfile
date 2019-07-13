@@ -1,4 +1,4 @@
-FROM node:10.15.3-jessie AS build-js
+FROM node:10-jessie-slim AS build-js
 
 # see https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
 USER node

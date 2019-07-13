@@ -45,8 +45,7 @@ dependencies {
 
   runtime "net.java.dev.jna:jna"
 
-  testCompile "org.springframework.boot:spring-boot-starter-test",
-              "junit:junit:4.12"
+  testCompile "org.springframework.boot:spring-boot-starter-test"
 }
 
 dockerCompose {

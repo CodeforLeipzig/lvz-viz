@@ -22,6 +22,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
@@ -54,6 +55,8 @@ public class LvzPoliceTickerDetailViewCrawler {
     private static final String LOG_ELEMENT_FOUND = "Element '{}' found with selector '{}' for article.";
 
     private static final String LOG_ELEMENT_NOT_FOUND = "Element '{}' not found for article.";
+
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     @Async
     public Future<Iterable<PoliceTicker>> execute(final Iterable<String> detailURLs) {
@@ -155,14 +158,16 @@ public class LvzPoliceTickerDetailViewCrawler {
      * @param dm PoliceTicker
      */
     private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
-        final String publishingDate = "publishing date";
+        final String publishingDate = "datePublished";
         final String cssQuery = ".pdb-article > script[type=application/ld+json]";
         final Element elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
-            final String date = elem.data();
-            final int startIndex = date.indexOf("datePublished") + 16;
-            dm.setDatePublished(extractDate(date.substring(startIndex, startIndex + 25)));
+            try {
+                dm.setDatePublished(extractDate(JSON_MAPPER.readTree(elem.data()).path(publishingDate).asText()));
+            } catch (IOException e) {
+                logger.error(e.toString(), e);
+            }
         }
         if (dm.getDatePublished() == null) {
             logger.warn(LOG_ELEMENT_NOT_FOUND, publishingDate);

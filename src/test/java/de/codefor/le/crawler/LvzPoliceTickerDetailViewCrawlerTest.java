@@ -96,14 +96,18 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     }
 
     @Test
-    public void extractDate() {
+    public void extractDateFails() {
         assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(null));
         assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(""));
         assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(" "));
         assertNull(LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11"));
+        assertNull(LvzPoliceTickerDetailViewCrawler.extractDate("015-10-11T15:13:00+02:00"));
+    }
+
+    @Test
+    public void extractDate() {
         assertEquals(PUBLISHING_DATE, LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11T15:13:00"));
         assertEquals(PUBLISHING_DATE, LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11T15:13:00Z"));
         assertEquals(PUBLISHING_DATE, LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11T15:13:00+02:00"));
-
     }
 }

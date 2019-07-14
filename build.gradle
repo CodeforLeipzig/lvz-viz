@@ -83,7 +83,7 @@ test {
 }
 
 testlogger {
-  showStandardStreams true
+  showStandardStreams false
 }
 
 // see http://www.rehpoehler.de/gradle/Gradle-Eclipse-WTP-Beispiel.html

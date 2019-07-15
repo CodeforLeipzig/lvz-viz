@@ -1,22 +1,16 @@
 package de.codefor.le.ner;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collection;
-
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ActiveProfiles("crawl")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class NERTest {
 
@@ -25,18 +19,14 @@ public class NERTest {
 
     @Test
     public void initBlackListedLocations() {
-        final Collection<String> blackListedLocations = ner.getBlackListedLocations();
-        assertNotNull(blackListedLocations);
-        assertThat(blackListedLocations, hasItem("Leipzig"));
-        assertThat(blackListedLocations, hasItem("Dresdens"));
-        assertThat(blackListedLocations, not(hasItem("# federal states")));
-        assertThat(blackListedLocations, not(hasItem("")));
+        assertThat(ner.getBlackListedLocations()).isNotNull().contains("Leipzig", "Dresdens")
+                .doesNotContain("# federal states", "");
     }
 
     @Test
     public void getLocationsForSimpleStringShouldReturnNull() {
-        assertNotNull(ner.getLocations("foo", false));
-        assertNotNull(ner.getLocations("foo", true));
+        assertThat(ner.getLocations("foo", false)).isNotNull();
+        assertThat(ner.getLocations("foo", true)).isNotNull();
     }
 
     private static final String ARTICLE = "Leipzig. Der Autoanhänger [...] ist am Montagabend in Leipzig-Plagwitz von [...]"
@@ -46,8 +36,7 @@ public class NERTest {
 
     @Test
     public void getLocationsForArticleShouldReturnCollection() {
-        final Collection<String> locations = ner.getLocations(ARTICLE, true);
-        assertNotNull(locations);
-        assertThat(locations, Matchers.containsInAnyOrder("Leipzig-Plagwitz", "Karl-Heine-Straße", "Brücke"));
+        assertThat(ner.getLocations(ARTICLE, true)).isNotNull().containsExactlyInAnyOrder("Leipzig-Plagwitz",
+                "Karl-Heine-Straße", "Brücke");
     }
 }

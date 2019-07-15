@@ -4,28 +4,28 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.repositories.PoliceTickerRepository;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@Disabled
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Ignore
 public class ReplacementTest {
 
     @Autowired
     private PoliceTickerRepository policeTickerRepository;
 
-    @Before
+    @BeforeEach
     public void empty() {
         policeTickerRepository.deleteAll();
     }

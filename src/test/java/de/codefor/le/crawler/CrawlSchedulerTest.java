@@ -1,26 +1,24 @@
 package de.codefor.le.crawler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 import org.elasticsearch.common.geo.GeoPoint;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import de.codefor.le.model.PoliceTicker;
 
 @ActiveProfiles("crawl")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class CrawlSchedulerTest {
 
@@ -34,33 +32,35 @@ public class CrawlSchedulerTest {
 
     private PoliceTicker ticker;
 
-    @Before
+    @BeforeEach
     public void setup() {
         ticker = new PoliceTicker();
         ticker.setUrl(URL);
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void crawlSchedule() throws ExecutionException, InterruptedException {
         scheduler.crawlSchedule();
     }
 
     @Test
-    public void addCoordsToPoliceTickerInformationWithNoSpecificLocation() throws ExecutionException, InterruptedException {
+    public void addCoordsToPoliceTickerInformationWithNoSpecificLocation()
+            throws ExecutionException, InterruptedException {
         ticker.setArticle(String.format(ARTICLE, ""));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));
-        assertNull(ticker.getCoords());
+        assertThat(ticker.getCoords()).isNull();
     }
 
     @Test
-    public void addCoordsToPoliceTickerInformationWithSpecificLocationInLeipzig() throws ExecutionException, InterruptedException {
+    public void addCoordsToPoliceTickerInformationWithSpecificLocationInLeipzig()
+            throws ExecutionException, InterruptedException {
         ticker.setArticle(String.format(ARTICLE, "in Kleinzschocher "));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));
-        assertNotNull(ticker.getCoords());
+        assertThat(ticker.getCoords()).isNotNull();
 
         ticker.setArticle(String.format(ARTICLE, "in Heiterblick und Gohlis-Süd "));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));
-        assertEquals(new GeoPoint(51.3606724, 12.3592882289373), ticker.getCoords());
+        assertThat(ticker.getCoords()).isEqualTo(new GeoPoint(51.3606724, 12.3592882289373));
     }
 }

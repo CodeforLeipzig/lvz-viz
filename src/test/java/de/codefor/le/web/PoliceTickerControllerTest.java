@@ -1,26 +1,23 @@
 package de.codefor.le.web;
 
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import org.joda.time.DateTime;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import de.codefor.le.model.PoliceTicker;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class PoliceTickerControllerTest {
 
@@ -29,45 +26,39 @@ public class PoliceTickerControllerTest {
 
     @Test
     public void getx() {
-        final Page<PoliceTicker> result = controller.getx(new PageRequest(0, 1));
-        assertNotNull(result);
-        assertEquals(1, result.getSize());
+        assertThat(controller.getx(new PageRequest(0, 1))).isNotNull().hasSize(1);
     }
 
     @Test
     public void getLocations() {
-        final Iterable<String> result = controller.getLocations("Lindenau");
-        assertNotNull(result);
-        assertFalse(result.iterator().hasNext());
+        assertThat(controller.getLocations("Lindenau")).isNotNull().isEmpty();
+        assertThat(controller.getLocations("Zentrum")).isNotNull().isEmpty();
     }
 
     @Test
     public void search() {
         final Page<PoliceTicker> result = controller.search("term", new PageRequest(0, 1));
-        assertNotNull(result);
-        assertEquals(0, result.getNumberOfElements());
+        assertThat(result).isNotNull();
+        assertThat(result.getNumberOfElements()).isZero();
     }
 
     @Test
     public void searchBetween() {
         final Page<PoliceTicker> result = controller.searchBetween("term",
                 LocalDateTime.now().minus(1, ChronoUnit.DAYS), LocalDateTime.now(), new PageRequest(0, 1));
-        assertNotNull(result);
-        assertThat(result.getNumberOfElements(), lessThanOrEqualTo(1));
+        assertThat(result).isNotNull();
+        assertThat(result.getNumberOfElements()).isLessThanOrEqualTo(1);
     }
 
     @Test
     public void minMaxDate() {
-        final DateTime[] result = controller.minMaxDate();
-        assertNotNull(result);
-        assertEquals(2, result.length);
+        assertThat(controller.minMaxDate()).isNotNull().hasSize(2);
     }
 
     @Test
     public void last7Days() {
         final DateTime[] result = controller.last7Days();
-        assertNotNull(result);
-        assertEquals(2, result.length);
-        assertEquals(DateTime.now().getDayOfMonth(), result[1].getDayOfMonth());
+        assertThat(result).isNotNull().hasSize(2);
+        assertThat(result[1].getDayOfMonth()).isEqualTo(DateTime.now().getDayOfMonth());
     }
 }

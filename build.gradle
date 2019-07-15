@@ -28,7 +28,11 @@ springBoot {
   mainClass = 'de.codefor.le.LvzViz'
 }
 
-repositories { mavenCentral() }
+repositories {
+  mavenCentral()
+  // needed for spring-test-junit5
+  maven { url 'https://jitpack.io' }
+}
 dependencies {
   implementation "com.google.guava:guava:28.0-jre",
                  "org.jsoup:jsoup:1.12.1",
@@ -49,13 +53,15 @@ dependencies {
 
   runtimeOnly "net.java.dev.jna:jna"
 
-  testImplementation "org.springframework.boot:spring-boot-starter-test",
-                     "org.assertj:assertj-core:3.12.2"
+  testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    exclude group: 'junit', module: 'junit'
+  }
+  testImplementation "org.assertj:assertj-core:3.12.2"
 
-  testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
+  testImplementation "com.github.sbrannen:spring-test-junit5:1.5.0",
+                     "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
                      "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}",
-                  "org.junit.vintage:junit-vintage-engine:${junitVersion}"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
 }
 
 dockerCompose {

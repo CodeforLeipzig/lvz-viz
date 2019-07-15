@@ -49,7 +49,8 @@ dependencies {
 
   runtimeOnly "net.java.dev.jna:jna"
 
-  testImplementation "org.springframework.boot:spring-boot-starter-test"
+  testImplementation "org.springframework.boot:spring-boot-starter-test",
+                     "org.assertj:assertj-core:3.12.2"
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
                      "org.junit.jupiter:junit-jupiter-params:${junitVersion}"

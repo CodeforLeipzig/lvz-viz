@@ -1,24 +1,22 @@
 package de.codefor.le.crawler;
 
-import static org.hamcrest.Matchers.iterableWithSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.stream.StreamSupport;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.converter.JavaTimeConversionPattern;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import de.codefor.le.model.PoliceTicker;
 
@@ -53,61 +51,49 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
                 + "/Pegida/Nach-Pegida-Auseinandersetzung-auch-am-Leipziger-Hauptbahnhof");
 
         final Future<Iterable<PoliceTicker>> future = crawler.execute(urls);
-        assertNotNull(future);
+        assertThat(future).isNotNull().isNotCancelled();
         final Iterable<PoliceTicker> results = future.get();
-        assertNotNull(results);
-        assertThat(results, iterableWithSize(5));
+        assertThat(results).isNotNull().hasSize(urls.size());
 
-        final Optional<PoliceTicker> result = StreamSupport.stream(results.spliterator(), false)
-                .filter(ticker -> ticker.getArticle().startsWith(ARTICLE)).findFirst();
-        assertTrue(result.isPresent());
-        result.ifPresent(ticker -> {
-            assertEquals(PUBLISHING_DATE, ticker.getDatePublished());
-            assertEquals(COPYRIGHT, ticker.getCopyright());
-        });
+        assertThat(results).filteredOn(ticker -> ticker.getArticle().startsWith(ARTICLE)).hasSize(1).first()
+                .satisfies(ticker -> {
+                    assertThat(ticker.getDatePublished()).isEqualTo(PUBLISHING_DATE);
+                    assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
+                });
 
-        assertTrue(StreamSupport.stream(results.spliterator(), false)
-                .filter(ticker -> ticker.getArticle().contains("Identitätsfeststellung")).findFirst().isPresent());
+        assertThat(results).filteredOn(ticker -> ticker.getArticle().contains("Identitätsfeststellung")).hasSize(1);
 
         for (PoliceTicker ticker : results) {
-            assertNotNull(ticker.getDatePublished());
-            assertNotNull(ticker.getArticle());
-            assertEquals(COPYRIGHT, ticker.getCopyright());
+            assertThat(ticker.getDatePublished()).isNotNull();
+            assertThat(ticker.getArticle()).isNotEmpty();
+            assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
         }
     }
 
-    @Test
-    public void extractPublishedDate() throws InterruptedException, ExecutionException {
-        final List<String> urls = new ArrayList<>();
-        urls.add(BASE_URL + "/Motorradfahrer-bei-Unfall-in-Leipzig-schwer-verletzt");
-        urls.add(BASE_URL + "/Krawalle-am-Leipziger-Amtsgericht-191-Verfahren-eingestellt");
-        final Future<Iterable<PoliceTicker>> future = crawler.execute(urls);
-        assertNotNull(future);
-        final Iterable<PoliceTicker> results = future.get();
-        assertNotNull(results);
-
-        final Iterator<PoliceTicker> it = results.iterator();
-        PoliceTicker ticker = it.next();
-
-        assertEquals(getDate(LocalDateTime.of(2016, 3, 30, 10, 35, 36)), ticker.getDatePublished());
-
-        ticker = it.next();
-        assertEquals(getDate(LocalDateTime.of(2016, 5, 7, 10, 00)), ticker.getDatePublished());
+    @ParameterizedTest
+    @CsvSource({ "/Motorradfahrer-bei-Unfall-in-Leipzig-schwer-verletzt, 30.03.2016 10:35:36",
+            "/Krawalle-am-Leipziger-Amtsgericht-191-Verfahren-eingestellt, 07.05.2016 10:00:00" })
+    public void extractPublishedDate(final String path,
+            @JavaTimeConversionPattern("dd.MM.yyyy HH:mm:ss") final LocalDateTime published)
+            throws InterruptedException, ExecutionException {
+        assertThat(crawler.execute(Collections.singletonList(BASE_URL + path)).get()).isNotNull().hasSize(1).first()
+                .satisfies(ticker -> {
+                    assertThat(ticker.getDatePublished()).isEqualTo(getDate(published));
+                    assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
+                });
     }
 
-    @Test
-    public void extractDateFails() {
-        assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(null));
-        assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(""));
-        assertNull(LvzPoliceTickerDetailViewCrawler.extractDate(" "));
-        assertNull(LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11"));
-        assertNull(LvzPoliceTickerDetailViewCrawler.extractDate("015-10-11T15:13:00+02:00"));
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = { " ", "2015-10-11", "015-10-11T15:13:00+02:00" })
+    public void extractDateFails(final String date) {
+        assertThat(LvzPoliceTickerDetailViewCrawler.extractDate(date)).isNull();
+        ;
     }
 
-    @Test
-    public void extractDate() {
-        assertEquals(PUBLISHING_DATE, LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11T15:13:00"));
-        assertEquals(PUBLISHING_DATE, LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11T15:13:00Z"));
-        assertEquals(PUBLISHING_DATE, LvzPoliceTickerDetailViewCrawler.extractDate("2015-10-11T15:13:00+02:00"));
+    @ParameterizedTest
+    @ValueSource(strings = { "2015-10-11T15:13:00", "2015-10-11T15:13:00Z", "2015-10-11T15:13:00+02:00" })
+    public void extractDate(final String date) {
+        assertThat(LvzPoliceTickerDetailViewCrawler.extractDate(date)).isEqualTo(PUBLISHING_DATE);
     }
 }

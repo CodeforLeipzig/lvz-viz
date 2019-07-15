@@ -1,12 +1,15 @@
 package de.codefor.le.crawler;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import de.codefor.le.crawler.model.Nominatim;
 
@@ -14,32 +17,29 @@ public class NominatimAskerTest {
 
     private final NominatimAsker asker = new NominatimAsker();
 
-    @Test
-    public void executeWithEmptyAddress() {
-        assertNotNull(asker.execute(null));
-        assertNotNull(asker.execute(""));
-        assertNotNull(asker.execute(" "));
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = { " " })
+    public void executeWithEmptyAddress(final String input) {
+        assertThat(asker.execute(input)).isNotNull();
     }
 
     @Test
     public void executeWithValidDistrictInLeipzig() throws InterruptedException, ExecutionException {
-        final Future<List<Nominatim>> future = asker.execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX + "Grünau");
-        checkResults(future);
+        checkResults(asker.execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX + "Grünau"));
     }
 
     @Test
     public void executeWithValidAddressInLeipzig() throws InterruptedException, ExecutionException {
-        final Future<List<Nominatim>> future = asker.execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX
-                + "Weißenfelser");
-        checkResults(future);
+        checkResults(asker.execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX + "Weißenfelser"));
     }
 
-    void checkResults(final Future<List<Nominatim>> future) throws InterruptedException, ExecutionException {
-        assertNotNull(future);
+    private void checkResults(final Future<List<Nominatim>> future) throws InterruptedException, ExecutionException {
+        assertThat(future).isNotNull();
         final List<Nominatim> res = future.get();
-        assertNotNull(res);
+        assertThat(res).isNotNull().hasSizeGreaterThanOrEqualTo(1);
         final Nominatim nominatim = res.get(0);
-        assertNotNull(nominatim.getLat());
-        assertNotNull(nominatim.getLon());
+        assertThat(nominatim.getLat()).isNotNull();
+        assertThat(nominatim.getLon()).isNotNull();
     }
 }

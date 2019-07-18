@@ -9,16 +9,13 @@ import org.elasticsearch.common.geo.GeoPoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import de.codefor.le.model.PoliceTicker;
 
 @ActiveProfiles({ "crawl", "test" })
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(properties = { "app.initialDelay=300000" })
 public class CrawlSchedulerTest {
 

@@ -20,7 +20,7 @@ targetCompatibility = '1.8'
 defaultTasks 'build'
 
 ext {
-  junitVersion = '5.5.0'
+  junitVersion = '5.5.1'
 }
 
 springBoot {

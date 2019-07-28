@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles({ "crawl", "test" })
-@SpringBootTest(properties = { "app.initialDelay=300000" })
+@SpringBootTest
 public class NERTest {
 
     @Autowired

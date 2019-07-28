@@ -16,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import de.codefor.le.model.PoliceTicker;
 
 @ActiveProfiles({ "crawl", "test" })
-@SpringBootTest(properties = { "app.initialDelay=300000" })
+@SpringBootTest
 public class CrawlSchedulerTest {
 
     private static final String URL = "http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Zwei-80-jaehrige-Damen-in-der-Eythraer-Strasse-ausgeraubt";

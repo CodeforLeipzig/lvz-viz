@@ -25,7 +25,7 @@ public class PoliceTickerControllerTest {
 
     @Test
     public void getx() {
-        assertThat(controller.getx(new PageRequest(0, 1))).isNotNull().hasSize(1);
+        assertThat(controller.getx(new PageRequest(0, 1))).isNotNull().isEmpty();
     }
 
     @Test

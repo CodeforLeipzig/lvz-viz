@@ -19,7 +19,7 @@ import de.codefor.le.model.PoliceTicker;
 
 @ActiveProfiles("crawl")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(properties = { "app.initialDelay=300000" })
 public class CrawlSchedulerTest {
 
     private static final String URL = "http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Zwei-80-jaehrige-Damen-in-der-Eythraer-Strasse-ausgeraubt";

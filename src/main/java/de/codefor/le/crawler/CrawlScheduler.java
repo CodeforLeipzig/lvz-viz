@@ -37,7 +37,7 @@ public class CrawlScheduler {
     private final NominatimAsker nominatimAsker;
 
     // 1_800_000ms = 30min
-    @Scheduled(fixedDelay = 1_800_000, initialDelay = 1000)
+    @Scheduled(fixedDelay = 1_800_000, initialDelayString = "${app.initialDelay}")
     public void crawlSchedule() throws ExecutionException, InterruptedException {
         logger.info("Start crawling police ticker.");
         int page = 1;

@@ -38,8 +38,6 @@ bootJar {
 
 repositories {
   mavenCentral()
-  // needed for spring-test-junit5
-  maven { url 'https://jitpack.io' }
 }
 dependencies {
   implementation "com.google.guava:guava:28.1-jre",

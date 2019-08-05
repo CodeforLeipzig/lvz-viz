@@ -67,7 +67,7 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
         final SoftAssertions softly = new SoftAssertions();
         for (PoliceTicker ticker : results) {
             softly.assertThat(ticker.getDatePublished()).isNotNull();
-            softly.assertThat(ticker.getArticle()).isEmpty();
+            softly.assertThat(ticker.getArticle()).isNotEmpty();
             softly.assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
         }
         softly.assertAll();

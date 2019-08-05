@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.JavaTimeConversionPattern;
@@ -63,11 +64,13 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
 
         assertThat(results).filteredOn(ticker -> ticker.getArticle().contains("Identitätsfeststellung")).hasSize(1);
 
+        final SoftAssertions softly = new SoftAssertions();
         for (PoliceTicker ticker : results) {
-            assertThat(ticker.getDatePublished()).isNotNull();
-            assertThat(ticker.getArticle()).isNotEmpty();
-            assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
+            softly.assertThat(ticker.getDatePublished()).isNotNull();
+            softly.assertThat(ticker.getArticle()).isEmpty();
+            softly.assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
         }
+        softly.assertAll();
     }
 
     @ParameterizedTest

@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:jre-11.0.3_7-alpine
+FROM adoptopenjdk/openjdk11:alpine-jre
 
 LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
 

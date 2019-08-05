@@ -88,7 +88,6 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     @ValueSource(strings = { " ", "2015-10-11", "015-10-11T15:13:00+02:00" })
     public void extractDateFails(final String date) {
         assertThat(LvzPoliceTickerDetailViewCrawler.extractDate(date)).isNull();
-        ;
     }
 
     @ParameterizedTest

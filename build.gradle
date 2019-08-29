@@ -34,7 +34,7 @@ repositories {
   maven { url 'https://jitpack.io' }
 }
 dependencies {
-  implementation "com.google.guava:guava:28.0-jre",
+  implementation "com.google.guava:guava:28.1-jre",
                  "org.jsoup:jsoup:1.12.1",
                  "edu.stanford.nlp:stanford-corenlp:3.9.2"
 

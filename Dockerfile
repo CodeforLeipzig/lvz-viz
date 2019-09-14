@@ -1,26 +1,28 @@
 FROM node:10-jessie-slim AS build-js
 
 # see https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
-USER node
-WORKDIR /home/node
+ENV USER node
+USER ${USER}
+WORKDIR /home/${USER}
 
-COPY --chown=node package*.json ./
+COPY --chown=${USER} package*.json ./
 RUN npm install --only=production
 
-COPY --chown=node Gruntfile.js ./
-COPY --chown=node src/main/resources/public/js ./src/main/resources/public/js
+COPY --chown=${USER} Gruntfile.js ./
+COPY --chown=${USER} src/main/resources/public/js ./src/main/resources/public/js
 RUN npm run --silent grunt-build
 
 FROM gradle:5.5.1-jdk8 AS build-java
 
-USER gradle
+ENV USER gradle
+USER ${USER}
 RUN mkdir -p /home/gradle/app/build/resources/main/public/js
 WORKDIR /home/gradle/app
 
-COPY --chown=gradle build.gradle .
-COPY --chown=gradle src ./src
+COPY --chown=${USER} build.gradle .
+COPY --chown=${USER} src ./src
 RUN rm -f src/main/resources/public/js/*.js
-COPY --chown=gradle --from=build-js /home/node/build/resources/main/public/js/app.min.js ./src/main/resources/public/js/
+COPY --chown=${USER} --from=build-js /home/node/build/resources/main/public/js/app.min.js ./src/main/resources/public/js/
 
 RUN gradle --info assemble
 
@@ -33,11 +35,11 @@ ENV USER lvz-viz
 RUN addgroup $USER \
   && adduser -D -G $USER -S $USER
 
-USER $USER
+USER ${USER}
 WORKDIR /home/$USER
 
-COPY --chown=lvz-viz dewac_175m_600.crf.ser.gz .
-COPY --chown=lvz-viz --from=build-java /home/gradle/app/build/libs/*.jar ./app.jar
+COPY --chown=${USER} dewac_175m_600.crf.ser.gz .
+COPY --chown=${USER} --from=build-java /home/gradle/app/build/libs/*.jar ./app.jar
 
 EXPOSE 8080
 

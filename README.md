@@ -52,7 +52,7 @@ Or you can simply run the project within gradle during development.
 
 You can build and run the app within a Docker container.
 
-Required version for the multi-stage build: Docker 17.05+
+Required version for the multi-stage build: Docker 19.03+
 
 ```bash
 docker-compose build

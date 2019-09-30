@@ -23,6 +23,10 @@ ext {
   junitVersion = '5.5.2'
 }
 
+// update vulnerable transitive jackson dependencies for spring-boot and elasticsearch
+// see https://app.snyk.io/vuln/SNYK-JAVA-COMFASTERXMLJACKSONCORE-467016
+ext['jackson.version'] = '2.10.0'
+
 springBoot {
   executable = true
   mainClass = 'de.codefor.le.LvzViz'

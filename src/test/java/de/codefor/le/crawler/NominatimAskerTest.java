@@ -38,8 +38,6 @@ public class NominatimAskerTest {
         assertThat(future).isNotNull();
         final List<Nominatim> res = future.get();
         assertThat(res).isNotNull().hasSizeGreaterThanOrEqualTo(1);
-        final Nominatim nominatim = res.get(0);
-        assertThat(nominatim.getLat()).isNotNull();
-        assertThat(nominatim.getLon()).isNotNull();
+        assertThat(res.get(0)).extracting(Nominatim::getLat, Nominatim::getLon).describedAs("lat/lon").isNotNull();
     }
 }

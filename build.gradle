@@ -52,8 +52,6 @@ dependencies {
   testImplementation("org.springframework.boot:spring-boot-starter-test") {
     exclude group: 'junit', module: 'junit'
   }
-  testImplementation "org.assertj:assertj-core:3.13.2"
-
   testImplementation "org.junit.jupiter:junit-jupiter-api",
                      "org.junit.jupiter:junit-jupiter-params"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"

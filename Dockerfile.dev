@@ -15,8 +15,8 @@ RUN addgroup $USER \
 USER $USER
 WORKDIR /home/$USER
 
-COPY --chown=lvz-viz dewac_175m_600.crf.ser.gz .
-COPY --chown=lvz-viz build/libs/*.jar ./app.jar
+COPY --chown=$USER dewac_175m_600.crf.ser.gz .
+COPY --chown=$USER build/libs/*.jar ./app.jar
 
 EXPOSE 8080
 

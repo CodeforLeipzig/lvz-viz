@@ -20,11 +20,6 @@ targetCompatibility = '1.8'
 
 defaultTasks 'build'
 
-// update vulnerable transitive jackson dependencies for spring-boot and elasticsearch
-// see https://app.snyk.io/vuln/SNYK-JAVA-COMFASTERXMLJACKSONCORE-467016
-ext['jackson.version'] = '2.10.0'
-ext['junit-jupiter.version'] = '5.5.2'
-
 springBoot {
   mainClassName = 'de.codefor.le.LvzViz'
 }

@@ -5,11 +5,12 @@ plugins {
   id 'eclipse-wtp'
   id 'idea'
   id 'io.franzbecker.gradle-lombok' version '3.2.0'
+  id 'io.spring.dependency-management' version '1.0.8.RELEASE'
   id 'jacoco'
   id 'java'
   id 'org.ec4j.editorconfig' version '0.0.3'
   id 'org.sonarqube' version '2.8'
-  id 'org.springframework.boot' version '1.4.7.RELEASE'
+  id 'org.springframework.boot' version '2.2.0.RELEASE'
 }
 
 group = 'de.codefor.le'
@@ -19,23 +20,16 @@ targetCompatibility = '1.8'
 
 defaultTasks 'build'
 
-ext {
-  junitVersion = '5.5.2'
+springBoot {
+  mainClassName = 'de.codefor.le.LvzViz'
 }
 
-// update vulnerable transitive jackson dependencies for spring-boot and elasticsearch
-// see https://app.snyk.io/vuln/SNYK-JAVA-COMFASTERXMLJACKSONCORE-467016
-ext['jackson.version'] = '2.10.0'
-
-springBoot {
-  executable = true
-  mainClass = 'de.codefor.le.LvzViz'
+bootJar {
+  launchScript()
 }
 
 repositories {
   mavenCentral()
-  // needed for spring-test-junit5
-  maven { url 'https://jitpack.io' }
 }
 dependencies {
   implementation "com.google.guava:guava:28.1-jre",
@@ -55,17 +49,12 @@ dependencies {
                  "org.springframework.boot:spring-boot-starter-data-elasticsearch",
                  "org.springframework.boot:spring-boot-starter-actuator"
 
-  runtimeOnly "net.java.dev.jna:jna"
-
   testImplementation("org.springframework.boot:spring-boot-starter-test") {
     exclude group: 'junit', module: 'junit'
   }
-  testImplementation "org.assertj:assertj-core:3.13.2"
-
-  testImplementation "com.github.sbrannen:spring-test-junit5:1.5.0",
-                     "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
-                     "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+  testImplementation "org.junit.jupiter:junit-jupiter-api",
+                     "org.junit.jupiter:junit-jupiter-params"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }
 
 dockerCompose {

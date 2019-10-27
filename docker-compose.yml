@@ -3,15 +3,54 @@ services:
   webapp:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: sepe81/lvz-viz:latest
+      dockerfile: Dockerfile.dev
+    container_name: webapp
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=crawl,dev
+    healthcheck:
+      test: wget --spider --quiet --tries=1 http://localhost:8080/actuator/info || exit 0
+    image: sepe81/lvz-viz:jre11-1.3.0-SNAPSHOT
     mem_limit: 1500m
+    networks:
+      - esnet
     ports:
       - 8080:8080
-    volumes:
-      - ./data:/home/lvz-viz/data
-    environment:
-      - SPRING_PROFILES_ACTIVE=crawl
-    healthcheck:
-      test: wget --spider --quiet --tries=1 http://localhost:8080/health || exit 1
     restart: unless-stopped
+  elasticsearch:
+    container_name: elasticsearch
+    environment:
+      - cluster.name=policeticker
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - node.name=policeticker-1
+      - network.host=0.0.0.0
+      - discovery.type=single-node
+      - discovery.zen.minimum_master_nodes=1
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.ml.enabled=false
+      - xpack.graph.enabled=false
+      - xpack.watcher.enabled=false
+    healthcheck:
+      test: wget --spider --quiet --tries=1 http://localhost:9200 || exit 0
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.3
+    networks:
+      - esnet
+    ports:
+      - 9200:9200
+      - 9300:9300
+    restart: unless-stopped
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+volumes:
+  esdata1:
+    driver: local
+networks:
+  esnet:

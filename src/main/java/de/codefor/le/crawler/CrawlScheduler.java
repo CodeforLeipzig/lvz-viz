@@ -49,7 +49,7 @@ public class CrawlScheduler {
                     addCoordsToPoliceTickerInformation(details);
                 }
                 if (details.iterator().hasNext()) {
-                    policeTickerRepository.save(details);
+                    policeTickerRepository.saveAll(details);
                 }
             }
         }

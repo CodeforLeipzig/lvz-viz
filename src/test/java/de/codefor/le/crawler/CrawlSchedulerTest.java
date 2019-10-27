@@ -9,17 +9,14 @@ import org.elasticsearch.common.geo.GeoPoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import de.codefor.le.model.PoliceTicker;
 
-@ActiveProfiles("crawl")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(properties = { "app.initialDelay=300000" })
+@ActiveProfiles({ "crawl", "test" })
+@SpringBootTest
 public class CrawlSchedulerTest {
 
     private static final String URL = "http://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig/Zwei-80-jaehrige-Damen-in-der-Eythraer-Strasse-ausgeraubt";

@@ -103,7 +103,7 @@ public class LvzPoliceTickerCrawler {
             }
             boolean newArticle = true;
             if (policeTickerRepository.isPresent()) {
-                if (!policeTickerRepository.get().exists(Utils.generateHashForUrl(detailLink))) {
+                if (!policeTickerRepository.get().existsById(Utils.generateHashForUrl(detailLink))) {
                     logger.debug("article not stored yet - save it");
                 } else {
                     logger.debug("article already stored - skip it");

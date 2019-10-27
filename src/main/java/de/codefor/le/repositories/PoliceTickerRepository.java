@@ -1,8 +1,8 @@
 package de.codefor.le.repositories;
 
-import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
@@ -23,7 +23,5 @@ public interface PoliceTickerRepository extends ElasticsearchRepository<PoliceTi
 
     List<PoliceTicker> findByArticle(String article);
 
-    Page<PoliceTicker> findByDatePublishedBetween(Date fromDate, Date toDate, Pageable page);
-
-    List<PoliceTicker> findByDatePublishedBetween(Date fromDate, Date toDate);
+    Page<PoliceTicker> findByDatePublishedBetween(DateTime fromDate, DateTime toDate, Pageable page);
 }

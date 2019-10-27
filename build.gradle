@@ -38,7 +38,7 @@ repositories {
   maven { url 'https://jitpack.io' }
 }
 dependencies {
-  compile        "com.google.guava:guava:28.1-jre",
+  implementation "com.google.guava:guava:28.1-jre",
                  "org.jsoup:jsoup:1.12.1",
                  "edu.stanford.nlp:stanford-corenlp:3.9.2"
 
@@ -46,16 +46,16 @@ dependencies {
   // see https://app.snyk.io/vuln/SNYK-JAVA-COMGOOGLEPROTOBUF-173761
   // see https://app.snyk.io/vuln/SNYK-JAVA-XALAN-31385
   // see https://app.snyk.io/vuln/SNYK-JAVA-XERCES-31585
-  runtime     "com.google.protobuf:protobuf-java:3.10.0",
+  runtimeOnly "com.google.protobuf:protobuf-java:3.10.0",
               "xalan:xalan:2.7.2",
               "xerces:xercesImpl:2.12.0"
 
-  compile        "org.springframework.boot:spring-boot-starter-web",
+  implementation "org.springframework.boot:spring-boot-starter-web",
                  "org.springframework.boot:spring-boot-starter-logging",
                  "org.springframework.boot:spring-boot-starter-data-elasticsearch",
                  "org.springframework.boot:spring-boot-starter-actuator"
 
-  runtime "net.java.dev.jna:jna"
+  runtimeOnly "net.java.dev.jna:jna"
 
   testImplementation("org.springframework.boot:spring-boot-starter-test") {
     exclude group: 'junit', module: 'junit'

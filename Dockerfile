@@ -12,7 +12,7 @@ COPY --chown=${USER} Gruntfile.js ./
 COPY --chown=${USER} src/main/resources/public/js ./src/main/resources/public/js
 RUN npm run --silent grunt-build
 
-FROM gradle:5.6.2-jdk8 AS build-java
+FROM gradle:5.6.2-jdk11 AS build-java
 
 ENV USER gradle
 USER ${USER}
@@ -26,7 +26,7 @@ COPY --chown=${USER} --from=build-js /home/node/build/resources/main/public/js/a
 
 RUN gradle --info assemble
 
-FROM adoptopenjdk/openjdk8:alpine-jre
+FROM adoptopenjdk/openjdk11:alpine-jre
 
 LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
 
@@ -43,4 +43,4 @@ COPY --chown=${USER} --from=build-java /home/gradle/app/build/libs/*.jar ./app.j
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-XshowSettings:vm","-XX:+UnlockExperimentalVMOptions","-XX:+UseCGroupMemoryLimitForHeap","-XX:MaxRAMFraction=1","-Djava.security.egd=file:/dev/./urandom","-jar","./app.jar"]
+ENTRYPOINT ["java","-XshowSettings:vm","-XX:MaxRAMPercentage=95","-Djava.security.egd=file:/dev/./urandom","-jar","./app.jar"]

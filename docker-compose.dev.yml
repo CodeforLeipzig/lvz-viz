@@ -1,0 +1,8 @@
+version: '2.1'
+services:
+  webapp:
+    build:
+      dockerfile: Dockerfile.dev
+    environment:
+      - SPRING_PROFILES_ACTIVE=crawl,dev
+    image: sepe81/lvz-viz:2.0.0-dev

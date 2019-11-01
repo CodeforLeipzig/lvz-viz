@@ -3,13 +3,13 @@ services:
   webapp:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: webapp
     depends_on:
       elasticsearch:
         condition: service_healthy
     environment:
-      - SPRING_PROFILES_ACTIVE=crawl,dev
+      - SPRING_PROFILES_ACTIVE=crawl
     healthcheck:
       test: wget --spider --quiet --tries=1 http://localhost:8080/actuator/info || exit 0
     image: sepe81/lvz-viz:2.0.0

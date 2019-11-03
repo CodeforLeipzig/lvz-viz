@@ -20,4 +20,4 @@ COPY --chown=$USER build/libs/*.jar ./app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-XshowSettings:vm","-XX:MaxRAMPercentage=95","-Djava.security.egd=file:/dev/./urandom","-jar","./app.jar"]
+ENTRYPOINT ["java","-XshowSettings:vm","-XX:MaxRAMPercentage=95","-jar","./app.jar"]

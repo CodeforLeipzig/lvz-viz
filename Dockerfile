@@ -43,4 +43,4 @@ COPY --chown=${USER} --from=build-java /home/gradle/app/build/libs/*.jar ./app.j
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-XshowSettings:vm","-XX:MaxRAMPercentage=95","-Djava.security.egd=file:/dev/./urandom","-jar","./app.jar"]
+ENTRYPOINT ["java","-XshowSettings:vm","-XX:MaxRAMPercentage=95","-jar","./app.jar"]

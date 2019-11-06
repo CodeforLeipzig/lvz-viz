@@ -1,8 +1,8 @@
 .vscode
 data/
 
-# Created by https://www.gitignore.io/api/eclipse,intellij,java,node,gradle
-# Edit at https://www.gitignore.io/?templates=eclipse,intellij,java,node,gradle
+# Created by https://www.gitignore.io/api/node,java,gradle,eclipse,intellij+all
+# Edit at https://www.gitignore.io/?templates=node,java,gradle,eclipse,intellij+all
 
 ### Eclipse ###
 .metadata
@@ -73,7 +73,7 @@ local.properties
 
 .sts4-cache/
 
-### Intellij ###
+### Intellij+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
@@ -107,6 +107,8 @@ local.properties
 # .idea/modules.xml
 # .idea/*.iml
 # .idea/modules
+# *.iml
+# *.ipr
 
 # CMake
 cmake-build-*/
@@ -141,16 +143,18 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-# JetBrains templates
-**___jb_tmp___
+### Intellij+all Patch ###
+# Ignores the whole .idea folder and all .iml files
+# See https://github.com/joeblau/gitignore.io/issues/186 and https://github.com/joeblau/gitignore.io/issues/360
 
-### Intellij Patch ###
-# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
+.idea/
 
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
+# Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
+
+*.iml
+modules.xml
+.idea/misc.xml
+*.ipr
 
 # Sonarlint plugin
 .idea/sonarlint
@@ -202,6 +206,7 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+*.lcov
 
 # nyc test coverage
 .nyc_output
@@ -224,6 +229,9 @@ jspm_packages/
 
 # TypeScript v1 declaration files
 typings/
+
+# TypeScript cache
+*.tsbuildinfo
 
 # Optional npm cache directory
 .npm
@@ -252,6 +260,9 @@ typings/
 
 # nuxt.js build output
 .nuxt
+
+# react / gatsby
+public/
 
 # vuepress build output
 .vuepress/dist
@@ -284,4 +295,4 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
-# End of https://www.gitignore.io/api/eclipse,intellij,java,node,gradle
+# End of https://www.gitignore.io/api/node,java,gradle,eclipse,intellij+all

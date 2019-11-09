@@ -9,14 +9,14 @@ RUN echo "Europe/Berlin" > /etc/timezone
 
 ENV USER lvz-viz
 
-RUN addgroup $USER \
-  && adduser -D -G $USER -S $USER
+RUN addgroup ${USER} \
+  && adduser -D -G ${USER} -S ${USER}
 
-USER $USER
-WORKDIR /home/$USER
+USER ${USER}
+WORKDIR /home/${USER}
 
-COPY --chown=$USER dewac_175m_600.crf.ser.gz .
-COPY --chown=$USER build/libs/*.jar ./app.jar
+COPY --chown=${USER} dewac_175m_600.crf.ser.gz .
+COPY --chown=${USER} build/libs/*.jar ./app.jar
 
 EXPOSE 8080
 

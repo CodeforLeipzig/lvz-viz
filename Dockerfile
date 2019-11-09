@@ -32,11 +32,11 @@ LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
 
 ENV USER lvz-viz
 
-RUN addgroup $USER \
-  && adduser -D -G $USER -S $USER
+RUN addgroup ${USER} \
+  && adduser -D -G ${USER} -S ${USER}
 
 USER ${USER}
-WORKDIR /home/$USER
+WORKDIR /home/${USER}
 
 COPY --chown=${USER} dewac_175m_600.crf.ser.gz .
 COPY --chown=${USER} --from=build-java /home/gradle/app/build/libs/*.jar ./app.jar

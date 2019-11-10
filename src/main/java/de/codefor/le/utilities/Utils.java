@@ -18,8 +18,8 @@ public final class Utils {
     /**
      * Generate sha1 hash for url.
      *
-     * @see https://code.google.com/p/guava-libraries/wiki/HashingExplained
-     * @param url
+     * @see <a href="https://github.com/google/guava/wiki/HashingExplained">Guava hashing explained</a>
+     * @param url the url
      * @return sha1 hash of given url
      */
     public static String generateHashForUrl(final String url) {

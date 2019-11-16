@@ -47,10 +47,5 @@ services:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - esdata1:/usr/share/elasticsearch/data
-volumes:
-  esdata1:
-    driver: local
 networks:
   esnet:

@@ -6,3 +6,9 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=crawl,dev
     image: sepe81/lvz-viz:2.0.0-dev
+  elasticsearch:
+    volumes:
+      - esdata-dev:/usr/share/elasticsearch/data
+volumes:
+  esdata-dev:
+    driver: local

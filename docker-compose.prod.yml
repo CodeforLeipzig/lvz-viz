@@ -1,0 +1,8 @@
+version: '2.1'
+services:
+  elasticsearch:
+    volumes:
+      - esdata-prod:/usr/share/elasticsearch/data
+volumes:
+  esdata-prod:
+    driver: local

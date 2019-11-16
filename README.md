@@ -28,9 +28,10 @@ npm run grunt-build
 
 ### Gradle
 
-You can build an executable jar with gradle and run it as a separate process.
+You can build and test an executable jar with gradle and run it as a separate process.
 
 ```bash
+docker-compose up -d elasticsearch
 ./gradlew build
 java -jar build/libs/lvz-viz-*.jar
 ```
@@ -64,6 +65,11 @@ docker-compose up -d
 ```bash
 -- Build services and start containers with dev profile
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+```
+
+```bash
+-- Build services and start containers with prod profile
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 ```
 
 ```bash

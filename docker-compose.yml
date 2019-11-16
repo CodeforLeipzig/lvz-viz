@@ -37,6 +37,7 @@ services:
     healthcheck:
       test: wget --spider --quiet --tries=1 http://localhost:9200 || exit 0
     image: docker.elastic.co/elasticsearch/elasticsearch:6.8.4
+    mem_limit: 2g
     networks:
       - esnet
     ports:

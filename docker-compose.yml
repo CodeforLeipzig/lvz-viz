@@ -42,7 +42,6 @@ services:
       - esnet
     ports:
       - 9200:9200
-      - 9300:9300
     restart: unless-stopped
     ulimits:
       memlock:

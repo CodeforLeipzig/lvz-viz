@@ -16,7 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -47,7 +47,7 @@ public class PoliceTickerController {
 
     private final PoliceTickerRepository policeTickerRepository;
 
-    private final ElasticsearchTemplate elasticsearchTemplate;
+    private final ElasticsearchRestTemplate elasticsearchTemplate;
 
     private final Optional<NER> ner;
 

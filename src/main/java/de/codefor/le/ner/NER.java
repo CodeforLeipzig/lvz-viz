@@ -1,13 +1,15 @@
 package de.codefor.le.ner;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,17 +88,15 @@ public final class NER {
 
     private Collection<String> initBlackListedLocations() {
         logger.info("Init location blacklist from {}", BLACKLIST_FILE);
-        final Collection<String> blacklist = new HashSet<>();
-        try {
-            new BufferedReader(new InputStreamReader(resourceLoader.getResource(BLACKLIST_FILE).getInputStream())).lines().forEach(line -> {
-                if (!Strings.isNullOrEmpty(line) && !line.startsWith(BLACKLIST_COMMENT)) {
-                    blacklist.add(line);
-                }
-            });
+        try (var lines = Files.lines(Path.of(resourceLoader.getResource(BLACKLIST_FILE).getURI()),
+                StandardCharsets.UTF_8)) {
+            final var blacklist = lines
+                    .filter(line -> !Strings.isNullOrEmpty(line) && !line.startsWith(BLACKLIST_COMMENT))
+                    .collect(Collectors.toUnmodifiableSet());
+            logger.debug("initialized location blacklist: {}", blacklist);
+            return blacklist;
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
-        logger.debug("initialized location blacklist: {}", blacklist);
-        return blacklist;
     }
 }

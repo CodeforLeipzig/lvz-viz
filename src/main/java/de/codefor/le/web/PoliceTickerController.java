@@ -82,7 +82,7 @@ public class PoliceTickerController {
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime to,
             @PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED, size = Integer.MAX_VALUE) final Pageable pageable) {
         logger.debug("query: {} from: {}, to: {}", new Object[] { query, from, to });
-        final Page<PoliceTicker> results = elasticsearchTemplate
+        final var results = elasticsearchTemplate
                 .queryForPage(
                         new NativeSearchQueryBuilder().withPageable(pageable)
                                 .withQuery(createFulltextSearchQueryBetween(query, from, to)).build(),
@@ -101,12 +101,12 @@ public class PoliceTickerController {
 
     @GetMapping(value = "/minmaxdate")
     public DateTime[] minMaxDate() {
-        final Page<PoliceTicker> minDate = policeTickerRepository.findAll(PageRequest.of(0, 1, Direction.ASC, DATE_PUBLISHED));
-        final Page<PoliceTicker> maxDate = policeTickerRepository.findAll(PageRequest.of(0, 1, Direction.DESC, DATE_PUBLISHED));
-        final DateTime minDatePublished = minDate.getContent().size() > 0
+        final var minDate = policeTickerRepository.findAll(PageRequest.of(0, 1, Direction.ASC, DATE_PUBLISHED));
+        final var maxDate = policeTickerRepository.findAll(PageRequest.of(0, 1, Direction.DESC, DATE_PUBLISHED));
+        final var minDatePublished = minDate.getContent().size() > 0
                 ? new DateTime(minDate.getContent().get(0).getDatePublished())
                 : DateTime.now();
-        final DateTime maxDatePublished = maxDate.getContent().size() > 0
+        final var maxDatePublished = maxDate.getContent().size() > 0
                 ? new DateTime(maxDate.getContent().get(0).getDatePublished())
                 : DateTime.now();
         logger.debug("min {}, max {}", minDatePublished, maxDatePublished);
@@ -115,8 +115,8 @@ public class PoliceTickerController {
 
     @GetMapping(value = "/last7days")
     public DateTime[] last7Days() {
-        final DateTime now = DateTime.now();
-        final DateTime minus7days = DateTime.now().minusDays(7);
+        final var now = DateTime.now();
+        final var minus7days = DateTime.now().minusDays(7);
         logger.debug("last7days: fromDate {}, toDate {}", minus7days, now);
         return new DateTime[] { minus7days, now };
     }
@@ -127,15 +127,15 @@ public class PoliceTickerController {
 
     private static BoolQueryBuilder createFulltextSearchQueryBetween(final String query, final LocalDateTime from,
             final LocalDateTime to) {
-        final List<String> terms = splitIntoTerms(query);
+        final var terms = splitIntoTerms(query);
         return (terms.isEmpty() ? QueryBuilders.boolQuery().must(QueryBuilders.matchAllQuery())
                 : createFulltextSearchQueryBuilder(terms))
                         .must(QueryBuilders.rangeQuery(DATE_PUBLISHED).from(convertToDate(from)).to(convertToDate(to)));
     }
 
     private static BoolQueryBuilder createFulltextSearchQueryBuilder(final List<String> terms) {
-        final BoolQueryBuilder articleBool = QueryBuilders.boolQuery();
-        final BoolQueryBuilder titleBool = QueryBuilders.boolQuery();
+        final var articleBool = QueryBuilders.boolQuery();
+        final var titleBool = QueryBuilders.boolQuery();
         for (final String term : terms) {
             articleBool.must(QueryBuilders.termQuery("article", term));
             titleBool.must(QueryBuilders.termQuery("title", term));

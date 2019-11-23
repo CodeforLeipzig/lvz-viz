@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -18,8 +17,6 @@ import org.junit.jupiter.params.converter.JavaTimeConversionPattern;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import de.codefor.le.model.PoliceTicker;
 
 public class LvzPoliceTickerDetailViewCrawlerTest {
 
@@ -51,9 +48,9 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
         urls.add("http://www.lvz.de/Specials/Themenspecials/Legida-und-Proteste"
                 + "/Pegida/Nach-Pegida-Auseinandersetzung-auch-am-Leipziger-Hauptbahnhof");
 
-        final Future<Iterable<PoliceTicker>> future = crawler.execute(urls);
+        final var future = crawler.execute(urls);
         assertThat(future).isNotNull().isNotCancelled();
-        final Iterable<PoliceTicker> results = future.get();
+        final var results = future.get();
         assertThat(results).isNotNull().hasSize(urls.size());
 
         assertThat(results).filteredOn(ticker -> ticker.getArticle().startsWith(ARTICLE)).hasSize(1).first()
@@ -64,8 +61,8 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
 
         assertThat(results).filteredOn(ticker -> ticker.getArticle().contains("Identitätsfeststellung")).hasSize(1);
 
-        final SoftAssertions softly = new SoftAssertions();
-        for (PoliceTicker ticker : results) {
+        final var softly = new SoftAssertions();
+        for (var ticker : results) {
             softly.assertThat(ticker.getDatePublished()).isNotNull();
             softly.assertThat(ticker.getArticle()).isNotEmpty();
             softly.assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);

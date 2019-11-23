@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -75,9 +74,9 @@ public final class NER {
     }
 
     private void blackListCheck(final Iterable<String> results) {
-        final Iterator<String> iterator = results.iterator();
+        final var iterator = results.iterator();
         while (iterator.hasNext()) {
-            final String next = iterator.next();
+            final var next = iterator.next();
             if (getBlackListedLocations().contains(next)) {
                 logger.debug("remove blacklisted location {}", next);
                 iterator.remove();

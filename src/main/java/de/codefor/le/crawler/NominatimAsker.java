@@ -41,10 +41,10 @@ public class NominatimAsker {
     }
 
     private List<Nominatim> getCoords(final String address) {
-        final String url = String.format(NOMINATIM_SEARCH_URL, address);
+        final var url = String.format(NOMINATIM_SEARCH_URL, address);
         logger.debug("url {}", url);
 
-        final List<Nominatim> result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
+        final var result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
         logger.debug("nominatim search result: {}", result);
         return result;
     }

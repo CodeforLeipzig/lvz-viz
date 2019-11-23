@@ -1,7 +1,6 @@
 package de.codefor.le.crawler;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.primitives.Doubles;
@@ -42,9 +41,9 @@ public class CrawlScheduler {
         logger.info("Start crawling police ticker.");
         int page = 1;
         while (crawler.isMoreToCrawl()) {
-            final Iterable<String> detailPageUrls = crawlMainPage(page++);
+            final var detailPageUrls = crawlMainPage(page++);
             if (detailPageUrls.iterator().hasNext()) {
-                final Iterable<PoliceTicker> details = crawlDetailPages(detailPageUrls);
+                final var details = crawlDetailPages(detailPageUrls);
                 if (ner != null) {
                     addCoordsToPoliceTickerInformation(details);
                 }
@@ -59,21 +58,17 @@ public class CrawlScheduler {
     }
 
     private Iterable<String> crawlMainPage(final int page) throws InterruptedException, ExecutionException {
-        final Future<Iterable<String>> mainFuture = crawler.execute(page);
-        final Iterable<String> result = mainFuture.get();
-        return result;
+        return crawler.execute(page).get();
     }
 
     private Iterable<PoliceTicker> crawlDetailPages(final Iterable<String> detailPageUrls) throws InterruptedException, ExecutionException {
-        final Future<Iterable<PoliceTicker>> detailFuture = detailCrawler.execute(detailPageUrls);
-        final Iterable<PoliceTicker> details = detailFuture.get();
-        return details;
+        return detailCrawler.execute(detailPageUrls).get();
     }
 
     @VisibleForTesting
     void addCoordsToPoliceTickerInformation(final Iterable<PoliceTicker> articles) throws InterruptedException, ExecutionException {
         logger.debug("addCoordsToPoliceTickerInformation for various articles");
-        for (final PoliceTicker policeTicker : articles) {
+        for (final var policeTicker : articles) {
             logger.debug("process article {}", policeTicker.getUrl());
             for (final String location : ner.getLocations(policeTicker.getArticle(), true)) {
                 logger.debug("search '{}' in nominatim", location);

@@ -13,8 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -60,12 +58,12 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     @Async
     public Future<Iterable<PoliceTicker>> execute(final Iterable<String> detailURLs) {
-        final Stopwatch watch = Stopwatch.createStarted();
+        final var watch = Stopwatch.createStarted();
         logger.info("Start crawling detail pages.");
         final List<PoliceTicker> policeTickers = new ArrayList<>();
         try {
-            for (final String url : detailURLs) {
-                final PoliceTicker ticker = crawl(url);
+            for (final var url : detailURLs) {
+                final var ticker = crawl(url);
                 if (ticker != null) {
                     policeTickers.add(ticker);
                 }
@@ -116,7 +114,7 @@ public class LvzPoliceTickerDetailViewCrawler {
      * @return the model with all information which are needed
      */
     private static PoliceTicker convertToDataModel(final Document doc) {
-        final PoliceTicker dm = new PoliceTicker();
+        final var dm = new PoliceTicker();
         extractTitle(doc, dm);
         extractArticle(doc, dm);
         extractTeaser(doc, dm);
@@ -126,9 +124,9 @@ public class LvzPoliceTickerDetailViewCrawler {
     }
 
     private static void extractTitle(final Document doc, final PoliceTicker dm) {
-        final String title = "title";
-        final String cssQuery = ".pdb-article-teaser-breadcrumb-headline-title";
-        final Element elem = doc.selectFirst(cssQuery);
+        final var title = "title";
+        final var cssQuery = ".pdb-article-teaser-breadcrumb-headline-title";
+        final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, title, cssQuery);
             dm.setTitle(elem.ownText());
@@ -139,9 +137,9 @@ public class LvzPoliceTickerDetailViewCrawler {
     }
 
     private static void extractCopyright(final Document doc, final PoliceTicker dm) {
-        final String copyright = "copyright";
-        final String cssQuery = "li:contains(©)";
-        final Element elem = doc.selectFirst(cssQuery);
+        final var copyright = "copyright";
+        final var cssQuery = "li:contains(©)";
+        final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, copyright, cssQuery);
             dm.setCopyright(elem.text());
@@ -158,9 +156,9 @@ public class LvzPoliceTickerDetailViewCrawler {
      * @param dm PoliceTicker
      */
     private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
-        final String publishingDate = "datePublished";
-        final String cssQuery = ".pdb-article > script[type=application/ld+json]";
-        final Element elem = doc.selectFirst(cssQuery);
+        final var publishingDate = "datePublished";
+        final var cssQuery = ".pdb-article > script[type=application/ld+json]";
+        final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
             try {
@@ -199,15 +197,15 @@ public class LvzPoliceTickerDetailViewCrawler {
     }
 
     private static void extractArticle(final Document doc, final PoliceTicker dm) {
-        final String content = "articlecontent";
-        final String cssQuery = ".pdb-article-body > .pdb-richtext-field > p";
-        final Elements elements = doc.select(cssQuery);
+        final var content = "articlecontent";
+        final var cssQuery = ".pdb-article-body > .pdb-richtext-field > p";
+        final var elements = doc.select(cssQuery);
         if (!elements.isEmpty()) {
             logger.debug(LOG_ELEMENT_FOUND, content, cssQuery);
         }
 
-        final StringBuilder article = new StringBuilder();
-        for (final Element e : elements) {
+        final var article = new StringBuilder();
+        for (final var e : elements) {
             if (e.hasText()) {
                 if (article.length() > 0) {
                     article.append(" ");
@@ -223,9 +221,9 @@ public class LvzPoliceTickerDetailViewCrawler {
     }
 
     private static void extractTeaser(final Document doc, final PoliceTicker dm) {
-        final String teaser = "teaser";
-        final String cssQuery = ".pdb-article-teaser-intro > .pdb-richtext-field > p";
-        final Element elem = doc.selectFirst(cssQuery);
+        final var teaser = "teaser";
+        final var cssQuery = ".pdb-article-teaser-intro > .pdb-richtext-field > p";
+        final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, teaser, cssQuery);
             dm.setSnippet(elem.ownText().trim());

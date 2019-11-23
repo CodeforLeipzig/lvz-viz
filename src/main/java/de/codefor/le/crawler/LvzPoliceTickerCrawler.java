@@ -8,8 +8,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +52,8 @@ public class LvzPoliceTickerCrawler {
 
     @Async
     public Future<Iterable<String>> execute(final int page) {
-        final Stopwatch watch = Stopwatch.createStarted();
-        final String url = String.format(LVZ_POLICE_TICKER_PAGE_URL, page);
+        final var watch = Stopwatch.createStarted();
+        final var url = String.format(LVZ_POLICE_TICKER_PAGE_URL, page);
         logger.info("Start crawling {}.", url);
         final Collection<String> crawledNews = new ArrayList<>();
         try {
@@ -75,10 +73,10 @@ public class LvzPoliceTickerCrawler {
      * @throws IOException if there are problems while writing the detail links to a file
      */
     private Collection<String> crawlNewsFromPage(final String url) throws IOException {
-        final Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
-        final Elements links = doc.select("a.pdb-teaser3-teaser-breadcrumb-headline-title-link");
+        final var doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
+        final var links = doc.select("a.pdb-teaser3-teaser-breadcrumb-headline-title-link");
         links.addAll(doc.select("a.pdb-bigteaser-item-teaser-breadcrumb-headline-title-link"));
-        final Collection<String> result = extractNewArticleLinks(links);
+        final var result = extractNewArticleLinks(links);
         if (links.isEmpty()) {
             logger.info("No links found on current page. This should be the last available page.");
             this.crawlMore = false;
@@ -94,7 +92,7 @@ public class LvzPoliceTickerCrawler {
 
     private Collection<String> extractNewArticleLinks(final Elements links) {
         final Collection<String> result = new ArrayList<>();
-        for (final Element link : links) {
+        for (final var link : links) {
             final String detailLink = LVZ_BASE_URL + link.attr("href");
             logger.debug("article url: {}", detailLink);
             if (!detailLink.startsWith(LVZ_POLICE_TICKER_BASE_URL)) {

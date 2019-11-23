@@ -36,7 +36,7 @@ public class NominatimAskerTest {
 
     private void checkResults(final Future<List<Nominatim>> future) throws InterruptedException, ExecutionException {
         assertThat(future).isNotNull();
-        final List<Nominatim> res = future.get();
+        final var res = future.get();
         assertThat(res).isNotNull().hasSizeGreaterThanOrEqualTo(1);
         assertThat(res.get(0)).extracting(Nominatim::getLat, Nominatim::getLon).describedAs("lat/lon").isNotNull();
     }

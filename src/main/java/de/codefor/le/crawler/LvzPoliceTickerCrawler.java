@@ -91,7 +91,7 @@ public class LvzPoliceTickerCrawler {
     }
 
     private Collection<String> extractNewArticleLinks(final Elements links) {
-        final Collection<String> result = new ArrayList<>();
+        final Collection<String> result = new ArrayList<>(links.size());
         for (final var link : links) {
             final String detailLink = LVZ_BASE_URL + link.attr("href");
             logger.debug("article url: {}", detailLink);

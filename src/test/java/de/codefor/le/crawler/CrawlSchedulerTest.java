@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import de.codefor.le.model.PoliceTicker;
 
-@ActiveProfiles({ "crawl", "test" })
+@ActiveProfiles("test")
 @SpringBootTest
 public class CrawlSchedulerTest {
 

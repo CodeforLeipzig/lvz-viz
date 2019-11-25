@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.repositories.PoliceTickerRepository;
 
-@ActiveProfiles({ "test" })
+@ActiveProfiles("test")
 @SpringBootTest
 public class ReplacementTest {
 

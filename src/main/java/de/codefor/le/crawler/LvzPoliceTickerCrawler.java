@@ -99,18 +99,14 @@ public class LvzPoliceTickerCrawler {
                 logger.debug("article not from policeticker - skip it");
                 continue;
             }
-            boolean newArticle = true;
-            if (policeTickerRepository.isPresent()) {
-                if (!policeTickerRepository.get().existsById(Utils.generateHashForUrl(detailLink))) {
+            policeTickerRepository.ifPresentOrElse(repo -> {
+                if (!repo.existsById(Utils.generateHashForUrl(detailLink))) {
                     logger.debug("article not stored yet - save it");
+                    result.add(detailLink);
                 } else {
                     logger.debug("article already stored - skip it");
-                    newArticle = false;
                 }
-            }
-            if (newArticle) {
-                result.add(detailLink);
-            }
+            }, () -> result.add(detailLink));
         }
         return result;
     }

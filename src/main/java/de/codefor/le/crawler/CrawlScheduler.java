@@ -19,7 +19,7 @@ import de.codefor.le.repositories.PoliceTickerRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@Profile("crawl")
+@Profile({ "crawl", "test" })
 @RequiredArgsConstructor
 public class CrawlScheduler {
 

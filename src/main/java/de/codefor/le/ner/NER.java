@@ -1,11 +1,10 @@
 package de.codefor.le.ner;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -87,8 +86,8 @@ public final class NER {
 
     private Collection<String> initBlackListedLocations() {
         logger.info("Init location blacklist from {}", BLACKLIST_FILE);
-        try (var lines = Files.lines(Path.of(resourceLoader.getResource(BLACKLIST_FILE).getURI()),
-                StandardCharsets.UTF_8)) {
+        try (var lines = new BufferedReader(
+                new InputStreamReader(resourceLoader.getResource(BLACKLIST_FILE).getInputStream())).lines()) {
             final var blacklist = lines
                     .filter(line -> !Strings.isNullOrEmpty(line) && !line.startsWith(BLACKLIST_COMMENT))
                     .collect(Collectors.toUnmodifiableSet());

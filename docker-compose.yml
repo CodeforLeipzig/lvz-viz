@@ -11,7 +11,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=crawl
     healthcheck:
-      test: wget --spider --quiet --tries=1 http://localhost:8080/actuator/info || exit 0
+      test: wget --spider --quiet --tries=1 http://localhost:8080/actuator/info || exit 1
     image: sepe81/lvz-viz:2.0.0
     mem_limit: 1500m
     networks:
@@ -35,7 +35,7 @@ services:
       - xpack.graph.enabled=false
       - xpack.watcher.enabled=false
     healthcheck:
-      test: wget --spider --quiet --tries=1 http://localhost:9200 || exit 0
+      test: wget --spider --quiet --tries=1 http://localhost:9200 || exit 1
     image: docker.elastic.co/elasticsearch/elasticsearch:6.8.5
     mem_limit: 2g
     networks:

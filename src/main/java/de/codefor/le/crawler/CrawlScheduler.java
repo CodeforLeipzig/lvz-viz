@@ -25,6 +25,8 @@ public class CrawlScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(CrawlScheduler.class);
 
+    private static final int WAIT_TO_PREVENT_BANNING_IN_MS = 50;
+
     private final PoliceTickerRepository policeTickerRepository;
 
     private final LvzPoliceTickerCrawler crawler;
@@ -81,6 +83,7 @@ public class CrawlScheduler {
                 if (policeTicker.getCoords() != null) {
                     break;
                 }
+                Thread.sleep(WAIT_TO_PREVENT_BANNING_IN_MS);
             }
         }
     }

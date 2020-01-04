@@ -1,7 +1,7 @@
 package de.codefor.le.crawler;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import com.google.common.base.Strings;
 
 import de.codefor.le.crawler.model.Nominatim;
 
@@ -23,29 +25,20 @@ public class NominatimAsker {
 
     private static final String NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search?q=%s&format=json";
 
-    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 50;
-
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Async
     public Future<List<Nominatim>> execute(final String address) {
-        List<Nominatim> result = null;
-        try {
-            result = getCoords(address);
-            Thread.sleep(WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING);
-        } catch (final InterruptedException e) {
-            logger.warn(e.toString(), e);
-            Thread.currentThread().interrupt();
+        List<Nominatim> result;
+        if (!Strings.isNullOrEmpty(address)) {
+            final var url = String.format(NOMINATIM_SEARCH_URL, address);
+            logger.debug("url {}", url);
+            result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
+        } else {
+            result = Collections.emptyList();
         }
-        return new AsyncResult<>(result != null ? result : new ArrayList<Nominatim>());
-    }
 
-    private List<Nominatim> getCoords(final String address) {
-        final var url = String.format(NOMINATIM_SEARCH_URL, address);
-        logger.debug("url {}", url);
-
-        final var result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
         logger.debug("nominatim search result: {}", result);
-        return result;
+        return new AsyncResult<>(result);
     }
 }

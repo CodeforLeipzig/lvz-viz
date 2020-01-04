@@ -70,7 +70,7 @@ public class LvzPoliceTickerCrawler {
     /**
      * @param url the url to crawl
      * @return links of new articles
-     * @throws IOException if there are problems while writing the detail links to a file
+     * @throws IOException if there are problems while crawling the page
      */
     private Collection<String> crawlNewsFromPage(final String url) throws IOException {
         final var doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();

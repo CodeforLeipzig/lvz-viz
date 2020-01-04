@@ -5,9 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -46,8 +44,6 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LvzPoliceTickerDetailViewCrawler.class);
 
-    private static final int WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING = 50;
-
     private static final String LOG_ELEMENT_FOUND = "Element '{}' found with selector '{}' for article.";
 
     private static final String LOG_ELEMENT_NOT_FOUND = "Element '{}' not found for article.";
@@ -55,28 +51,15 @@ public class LvzPoliceTickerDetailViewCrawler {
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     @Async
-    public Future<Iterable<PoliceTicker>> execute(final Iterable<String> detailURLs) {
+    public Future<PoliceTicker> execute(final String url) {
+        logger.debug("Start crawling detail page {}.", url);
         final var watch = Stopwatch.createStarted();
-        logger.info("Start crawling detail pages.");
-        final List<PoliceTicker> policeTickers = new ArrayList<>();
         try {
-            for (final var url : detailURLs) {
-                final var ticker = crawl(url);
-                if (ticker != null) {
-                    policeTickers.add(ticker);
-                }
-                try {
-                    Thread.sleep(WAIT_BEFORE_EACH_ACCESS_TO_PREVENT_BANNING);
-                } catch (final InterruptedException e) {
-                    logger.warn(e.toString(), e);
-                    Thread.currentThread().interrupt();
-                }
-            }
+            return new AsyncResult<>(crawl(url));
         } finally {
             watch.stop();
-            logger.info("Finished crawling {} detail pages in {} ms.", policeTickers.size(), watch.elapsed(TimeUnit.MILLISECONDS));
+            logger.debug("Finished crawling detail page {} in {} ms.", url, watch.elapsed(TimeUnit.MILLISECONDS));
         }
-        return new AsyncResult<>(policeTickers);
     }
 
     /**

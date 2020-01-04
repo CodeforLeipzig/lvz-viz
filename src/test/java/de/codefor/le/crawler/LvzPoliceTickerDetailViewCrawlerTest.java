@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -17,6 +16,8 @@ import org.junit.jupiter.params.converter.JavaTimeConversionPattern;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import de.codefor.le.model.PoliceTicker;
 
 public class LvzPoliceTickerDetailViewCrawlerTest {
 
@@ -48,9 +49,12 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
         urls.add("http://www.lvz.de/Specials/Themenspecials/Legida-und-Proteste"
                 + "/Pegida/Nach-Pegida-Auseinandersetzung-auch-am-Leipziger-Hauptbahnhof");
 
-        final var future = crawler.execute(urls);
-        assertThat(future).isNotNull().isNotCancelled();
-        final var results = future.get();
+        final List<PoliceTicker> results = new ArrayList<>(urls.size());
+        for (var url : urls) {
+            final var future = crawler.execute(url);
+            assertThat(future).isNotNull().isNotCancelled();
+            results.add(future.get());
+        }
         assertThat(results).isNotNull().hasSize(urls.size());
 
         assertThat(results).filteredOn(ticker -> ticker.getArticle().startsWith(ARTICLE)).hasSize(1).first()
@@ -76,11 +80,10 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     public void extractPublishedDate(final String path,
             @JavaTimeConversionPattern("dd.MM.yyyy HH:mm:ss") final LocalDateTime published)
             throws InterruptedException, ExecutionException {
-        assertThat(crawler.execute(Collections.singletonList(BASE_URL + path)).get()).isNotNull().hasSize(1).first()
-                .satisfies(ticker -> {
-                    assertThat(ticker.getDatePublished()).isEqualTo(getDate(published));
-                    assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
-                });
+        assertThat(crawler.execute(BASE_URL + path).get()).isNotNull().satisfies(ticker -> {
+            assertThat(ticker.getDatePublished()).isEqualTo(getDate(published));
+            assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
+        });
     }
 
     @ParameterizedTest

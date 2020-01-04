@@ -1,8 +1,12 @@
 package de.codefor.le.crawler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Stopwatch;
 import com.google.common.primitives.Doubles;
 
 import org.elasticsearch.common.geo.GeoPoint;
@@ -64,7 +68,22 @@ public class CrawlScheduler {
     }
 
     private Iterable<PoliceTicker> crawlDetailPages(final Iterable<String> detailPageUrls) throws InterruptedException, ExecutionException {
-        return detailCrawler.execute(detailPageUrls).get();
+        logger.info("Start crawling detail pages.");
+        final var watch = Stopwatch.createStarted();
+        final List<PoliceTicker> policeTickers = new ArrayList<>();
+        try {
+            for (final var url : detailPageUrls) {
+                final var ticker = detailCrawler.execute(url).get();
+                if (ticker != null) {
+                    policeTickers.add(ticker);
+                }
+                Thread.sleep(WAIT_TO_PREVENT_BANNING_IN_MS);
+            }
+        } finally {
+            watch.stop();
+            logger.info("Finished crawling {} detail pages in {} ms.", policeTickers.size(), watch.elapsed(TimeUnit.MILLISECONDS));
+        }
+        return policeTickers;
     }
 
     @VisibleForTesting

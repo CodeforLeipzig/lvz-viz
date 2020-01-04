@@ -25,6 +25,7 @@ java {
 
 springBoot {
   mainClassName = 'de.codefor.le.LvzViz'
+  buildInfo()
 }
 
 bootJar {

@@ -83,7 +83,7 @@ public class LvzPoliceTickerDetailViewCrawler {
      * Crawl concrete url for one ticker article.
      *
      * @param url article url
-     * @return PoliceTickers
+     * @return PoliceTicker
      */
     private static PoliceTicker crawl(final String url) {
         Document doc = null;

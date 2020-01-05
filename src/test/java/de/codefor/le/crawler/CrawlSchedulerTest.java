@@ -37,8 +37,8 @@ public class CrawlSchedulerTest {
 
     @Test
     @Disabled
-    public void crawlSchedule() throws ExecutionException, InterruptedException {
-        scheduler.crawlSchedule();
+    public void crawl() throws ExecutionException, InterruptedException {
+        scheduler.crawl();
     }
 
     @Test

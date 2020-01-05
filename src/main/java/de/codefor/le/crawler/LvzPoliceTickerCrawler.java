@@ -1,6 +1,7 @@
 package de.codefor.le.crawler;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,25 +57,25 @@ public class LvzPoliceTickerCrawler {
         final var watch = Stopwatch.createStarted();
         final var url = String.format(LVZ_POLICE_TICKER_PAGE_URL, page);
         logger.info("Start crawling {}.", url);
-        final Collection<String> crawledNews = new ArrayList<>();
         try {
-            crawledNews.addAll(crawlNewsFromPage(url));
-        } catch (final IOException e) {
-            logger.error(e.toString(), e);
+            return new AsyncResult<>(crawlNewsFromPage(url));
         } finally {
             watch.stop();
             logger.info("Finished crawling page {} in {} ms.", page, watch.elapsed(TimeUnit.MILLISECONDS));
         }
-        return new AsyncResult<>(crawledNews);
     }
 
     /**
      * @param url the url to crawl
      * @return links of new articles
-     * @throws IOException if there are problems while crawling the page
      */
-    private Collection<String> crawlNewsFromPage(final String url) throws IOException {
-        final var doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
+    private Collection<String> crawlNewsFromPage(final String url) {
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
+        } catch (IOException e) {
+            throw new UncheckedIOException("Request for url " + url + " failed.", e);
+        }
         final var links = doc.select("a.pdb-teaser3-teaser-breadcrumb-headline-title-link");
         links.addAll(doc.select("a.pdb-bigteaser-item-teaser-breadcrumb-headline-title-link"));
         final var result = extractNewArticleLinks(links);

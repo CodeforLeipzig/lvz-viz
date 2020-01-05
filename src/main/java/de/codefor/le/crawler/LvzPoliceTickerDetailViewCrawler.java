@@ -1,6 +1,7 @@
 package de.codefor.le.crawler;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -73,7 +74,7 @@ public class LvzPoliceTickerDetailViewCrawler {
         try {
             doc = Jsoup.connect(url).userAgent(LvzPoliceTickerCrawler.USER_AGENT).timeout(LvzPoliceTickerCrawler.REQUEST_TIMEOUT).get();
         } catch (final IOException e) {
-            logger.error(e.toString(), e);
+            throw new UncheckedIOException("Request for url " + url + " failed.", e);
         }
         PoliceTicker result = null;
         if (doc != null) {

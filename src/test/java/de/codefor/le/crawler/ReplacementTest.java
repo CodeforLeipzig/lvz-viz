@@ -48,12 +48,12 @@ public class ReplacementTest {
     }
 
     @Test
-    public void findAll() {
+    void findAll() {
         assertThat(policeTickerRepository.findAll(PageRequest.of(0, 20))).hasSize(2);
     }
 
     @Test
-    public void findByDatePublishedBetween() {
+    void findByDatePublishedBetween() {
         final var fromDate = new DateTime(Date.from(LocalDateTime.of(2014, 7, 2, 0, 0).atZone(DEFAULT_ZONE).toInstant()));
         final var toDate = new DateTime(Date.from(LocalDateTime.of(2014, 8, 8, 0, 0).atZone(DEFAULT_ZONE).toInstant()));
         assertThat(policeTickerRepository.findByDatePublishedBetween(fromDate, toDate, PageRequest.of(0, 20))).hasSize(1);

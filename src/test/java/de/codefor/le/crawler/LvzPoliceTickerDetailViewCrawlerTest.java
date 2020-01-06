@@ -40,7 +40,7 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     }
 
     @Test
-    public void extractArticles() throws InterruptedException, ExecutionException {
+    void extractArticles() throws InterruptedException, ExecutionException {
         final List<String> urls = new ArrayList<>();
         urls.add(BASE_URL + "/Ermittlungen-nach-toedlichem-Kranunfall-in-Leipzig-City-dauern-an");
         urls.add(BASE_URL + "/Betrunkene-rauscht-im-Leipziger-Zentrum-ins-Gleisbett");
@@ -84,7 +84,7 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     @ParameterizedTest
     @CsvSource({ "/Motorradfahrer-bei-Unfall-in-Leipzig-schwer-verletzt, 30.03.2016 10:35:36",
             "/Krawalle-am-Leipziger-Amtsgericht-191-Verfahren-eingestellt, 07.05.2016 10:00:00" })
-    public void extractPublishedDate(final String path,
+    void extractPublishedDate(final String path,
             @JavaTimeConversionPattern("dd.MM.yyyy HH:mm:ss") final LocalDateTime published)
             throws InterruptedException, ExecutionException {
         assertThat(crawler.execute(BASE_URL + path).get()).isNotNull().satisfies(ticker -> {
@@ -96,13 +96,13 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = { " ", "2015-10-11", "015-10-11T15:13:00+02:00" })
-    public void extractDateFails(final String date) {
+    void extractDateFails(final String date) {
         assertThat(LvzPoliceTickerDetailViewCrawler.extractDate(date)).isNull();
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "2015-10-11T15:13:00", "2015-10-11T15:13:00Z", "2015-10-11T15:13:00+02:00" })
-    public void extractDate(final String date) {
+    void extractDate(final String date) {
         assertThat(LvzPoliceTickerDetailViewCrawler.extractDate(date)).isEqualTo(PUBLISHING_DATE);
     }
 }

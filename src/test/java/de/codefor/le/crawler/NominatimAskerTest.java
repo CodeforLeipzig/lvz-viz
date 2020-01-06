@@ -20,17 +20,17 @@ public class NominatimAskerTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = { " " })
-    public void executeWithEmptyAddress(final String input) {
+    void executeWithEmptyAddress(final String input) {
         assertThat(asker.execute(input)).isNotNull();
     }
 
     @Test
-    public void executeWithValidDistrictInLeipzig() throws InterruptedException, ExecutionException {
+    void executeWithValidDistrictInLeipzig() throws InterruptedException, ExecutionException {
         checkResults(asker.execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX + "Grünau"));
     }
 
     @Test
-    public void executeWithValidAddressInLeipzig() throws InterruptedException, ExecutionException {
+    void executeWithValidAddressInLeipzig() throws InterruptedException, ExecutionException {
         checkResults(asker.execute(NominatimAsker.NOMINATIM_SEARCH_CITY_PREFIX + "Weißenfelser"));
     }
 

@@ -15,13 +15,13 @@ public class NERTest {
     private NER ner;
 
     @Test
-    public void initBlackListedLocations() {
+    void initBlackListedLocations() {
         assertThat(ner.getBlackListedLocations()).isNotNull().contains("Leipzig", "Dresdens")
                 .doesNotContain("# federal states", "");
     }
 
     @Test
-    public void getLocationsForSimpleStringShouldReturnNull() {
+    void getLocationsForSimpleStringShouldReturnNull() {
         assertThat(ner.getLocations("foo", false)).isNotNull();
         assertThat(ner.getLocations("foo", true)).isNotNull();
     }
@@ -32,7 +32,7 @@ public class NERTest {
             + "[...] Von LVZ";
 
     @Test
-    public void getLocationsForArticleShouldReturnCollection() {
+    void getLocationsForArticleShouldReturnCollection() {
         assertThat(ner.getLocations(ARTICLE, true)).isNotNull().containsExactlyInAnyOrder("Leipzig-Plagwitz",
                 "Karl-Heine-Straße", "Brücke");
     }

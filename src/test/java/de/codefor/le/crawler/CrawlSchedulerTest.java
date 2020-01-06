@@ -37,12 +37,12 @@ public class CrawlSchedulerTest {
 
     @Test
     @Disabled
-    public void crawl() throws ExecutionException, InterruptedException {
+    void crawl() throws ExecutionException, InterruptedException {
         scheduler.crawl();
     }
 
     @Test
-    public void addCoordsToPoliceTickerInformationWithNoSpecificLocation()
+    void addCoordsToPoliceTickerInformationWithNoSpecificLocation()
             throws ExecutionException, InterruptedException {
         ticker.setArticle(String.format(ARTICLE, ""));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));
@@ -50,7 +50,7 @@ public class CrawlSchedulerTest {
     }
 
     @Test
-    public void addCoordsToPoliceTickerInformationWithSpecificLocationInLeipzig()
+    void addCoordsToPoliceTickerInformationWithSpecificLocationInLeipzig()
             throws ExecutionException, InterruptedException {
         ticker.setArticle(String.format(ARTICLE, "in Kleinzschocher "));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));

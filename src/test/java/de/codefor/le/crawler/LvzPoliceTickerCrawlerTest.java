@@ -12,7 +12,7 @@ public class LvzPoliceTickerCrawlerTest {
     private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler(Optional.empty());
 
     @Test
-    public void testExecuteForPageZeroAndOne() throws InterruptedException, ExecutionException {
+    void testExecuteForPageZeroAndOne() throws InterruptedException, ExecutionException {
         final var future = crawler.execute(0);
         assertThat(future).isNotNull();
         final var pageOne = future.get();
@@ -24,7 +24,7 @@ public class LvzPoliceTickerCrawlerTest {
     }
 
     @Test
-    public void testExecuteForPageMaxInteger() throws InterruptedException, ExecutionException {
+    void testExecuteForPageMaxInteger() throws InterruptedException, ExecutionException {
         final var result = crawler.execute(Integer.MAX_VALUE).get();
         assertThat(result).isNotNull();
         final var it = result.iterator();

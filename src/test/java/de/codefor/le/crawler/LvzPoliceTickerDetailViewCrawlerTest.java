@@ -74,6 +74,13 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
         softly.assertAll();
     }
 
+    @Test
+    void extractArticleWithPaidContent() throws InterruptedException, ExecutionException {
+        final var result = crawler.execute(BASE_URL + "/25-Scheiben-an-Thomaskirche-zerstoert-Pfarrerin-hat-einen-Verdacht").get();
+        assertThat(result.getArticle()).isEqualTo("So beginnt kein frohes neues Jahr: Die Buntglasfenster "
+                + "über dem Mendelssohn-Portal der Thomaskirche wurden in der Silvesternacht eingeschmissen, auß...");
+    }
+
     @ParameterizedTest
     @CsvSource({ "/Motorradfahrer-bei-Unfall-in-Leipzig-schwer-verletzt, 30.03.2016 10:35:36",
             "/Krawalle-am-Leipziger-Amtsgericht-191-Verfahren-eingestellt, 07.05.2016 10:00:00" })

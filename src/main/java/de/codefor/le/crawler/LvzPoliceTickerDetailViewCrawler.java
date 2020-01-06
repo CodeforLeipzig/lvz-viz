@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -180,12 +181,28 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static void extractArticle(final Document doc, final PoliceTicker dm) {
         final var content = "articlecontent";
-        final var cssQuery = ".pdb-article-body > .pdb-richtext-field > p";
-        final var elements = doc.select(cssQuery);
-        if (!elements.isEmpty()) {
+        var cssQuery = ".pdb-article-body > .pdb-richtext-field > p";
+        if (!extractArticle(doc, dm, cssQuery)) {
+            cssQuery = ".pdb-article-body > .pdb-article-body-paidcontentintro > .pdb-richtext-field > p";
+            extractArticle(doc, dm, cssQuery);
+        }
+        if (Strings.isNullOrEmpty(dm.getArticle())) {
+            logger.warn(LOG_ELEMENT_NOT_FOUND, content);
+        } else {
             logger.debug(LOG_ELEMENT_FOUND, content, cssQuery);
         }
+    }
 
+    private static boolean extractArticle(final Document doc, final PoliceTicker dm, final String cssQuery) {
+        final var elements = doc.select(cssQuery);
+        if (!elements.isEmpty()) {
+            dm.setArticle(extractArticle(elements));
+            return true;
+        }
+        return false;
+    }
+
+    private static String extractArticle(final Elements elements) {
         final var article = new StringBuilder();
         for (final var e : elements) {
             if (e.hasText()) {
@@ -195,11 +212,7 @@ public class LvzPoliceTickerDetailViewCrawler {
                 article.append(e.text());
             }
         }
-        dm.setArticle(article.toString());
-
-        if (Strings.isNullOrEmpty(dm.getArticle())) {
-            logger.warn(LOG_ELEMENT_NOT_FOUND, content);
-        }
+        return article.toString();
     }
 
     private static void extractTeaser(final Document doc, final PoliceTicker dm) {

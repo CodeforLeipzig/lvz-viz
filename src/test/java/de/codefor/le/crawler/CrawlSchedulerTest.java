@@ -58,6 +58,6 @@ public class CrawlSchedulerTest {
 
         ticker.setArticle(String.format(ARTICLE, "in Heiterblick und Gohlis-Süd "));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));
-        assertThat(ticker.getCoords()).isEqualTo(new GeoPoint(51.3579278, 12.4737699));
+        assertThat(ticker.getCoords()).isEqualTo(new GeoPoint(51.3606724, 12.359288228937256));
     }
 }

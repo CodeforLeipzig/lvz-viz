@@ -4,7 +4,7 @@ services:
     build:
       dockerfile: Dockerfile.dev
     environment:
-      - SPRING_PROFILES_ACTIVE=crawl,dev
+      - SPRING_PROFILES_ACTIVE=dev
     image: sepe81/lvz-viz:2.0.0-dev
   elasticsearch:
     volumes:

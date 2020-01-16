@@ -12,7 +12,6 @@ import com.google.common.primitives.Doubles;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,6 @@ import de.codefor.le.repositories.PoliceTickerRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@Profile({ "crawl", "test" })
 @RequiredArgsConstructor
 public class CrawlScheduler {
 

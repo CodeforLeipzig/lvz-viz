@@ -14,8 +14,13 @@ by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_v
 ## Usage
 
 Build and run the app with [npm](https://www.npmjs.com), [Grunt](http://gruntjs.com/) and [Gradle](https://gradle.org).
-The crawling and indexing of new articles is activated by the startup parameter `--spring.profiles.active=crawl`
-or by setting the environment via `export SPRING_PROFILES_ACTIVE=crawl`.
+
+The crawling and indexing of new articles is activated by default.
+It can be delayed by setting the startup parameter `--app.initialDelay=<time in ms>` to a high value (e.g. `1800000` for 30 minutes)
+or by setting an environment variable via `export APP_INITIALDELAY=<time in ms>`.
+
+Profiles (`dev|local|prod|test`) can be set by the startup parameter `--spring.profiles.active=<profile>`
+or by setting an environment variable via `export SPRING_PROFILES_ACTIVE=<profile>`.
 
 ### npm and Grunt
 
@@ -28,24 +33,29 @@ npm run grunt-build
 
 ### Gradle
 
-You can build and test an executable jar with gradle and run it as a separate process.
+For local development and testing you need to startup elasticsearch via [docker-compose](https://docs.docker.com/compose/).
 
 ```bash
 docker-compose up -d elasticsearch
-./gradlew build
-java -jar build/libs/lvz-viz-*.jar
 ```
 
-You can build an executable jar with gradle and skip all tests to speed up the build.
+You can build and test an executable jar with gradle.
 
 ```bash
-./gradlew build -x test
-java -jar build/libs/lvz-viz-*.jar
+./gradlew build
+```
+
+You can build an executable jar with gradle and run it as a separate process.
+
+```bash
+./gradlew assemble
+java -jar build/libs/lvz-viz-*.jar --spring.profiles.active=local
 ```
 
 Or you can simply run the project within gradle during development.
 
 ```bash
+export SPRING_PROFILES_ACTIVE=local
 ./gradlew bootRun
 ```
 

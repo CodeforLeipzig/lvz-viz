@@ -42,7 +42,7 @@ dependencies {
 
   // update vulnerable transitive dependencies for stanford-corenlp
   constraints {
-    implementation('com.google.protobuf:protobuf-java:3.11.1') {
+    implementation('com.google.protobuf:protobuf-java:3.11.3') {
       because 'https://app.snyk.io/vuln/SNYK-JAVA-COMGOOGLEPROTOBUF-173761'
     }
     implementation('xalan:xalan:2.7.2') {

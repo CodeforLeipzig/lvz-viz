@@ -76,9 +76,9 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
 
     @Test
     void extractArticleWithPaidContent() throws InterruptedException, ExecutionException {
-        final var result = crawler.execute(BASE_URL + "/25-Scheiben-an-Thomaskirche-zerstoert-Pfarrerin-hat-einen-Verdacht").get();
-        assertThat(result.getArticle()).isEqualTo("So beginnt kein frohes neues Jahr: Die Buntglasfenster "
-                + "über dem Mendelssohn-Portal der Thomaskirche wurden in der Silvesternacht eingeschmissen, auß...");
+        final var result = crawler.execute(BASE_URL + "/Mordversuch-in-Markranstaedt-Ich-stech-dich-ab-das-ueberlebst-du-nicht").get();
+        assertThat(result.getArticle()).isEqualTo("Sie saßen auf dem Sofa und hörten Musik, dann zückte einer von ihnen ganz plötzlich ein Messer:"
+                + " Nach einer vollkommen unerklärlichen Bluttat in Markr...");
     }
 
     @ParameterizedTest

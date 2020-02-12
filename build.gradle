@@ -5,7 +5,7 @@ plugins {
   id 'com.gorylenko.gradle-git-properties' version '2.2.1'
   id 'eclipse-wtp'
   id 'idea'
-  id 'io.franzbecker.gradle-lombok' version '3.2.0'
+  id 'io.franzbecker.gradle-lombok' version '3.3.0'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
   id 'jacoco'
   id 'java'

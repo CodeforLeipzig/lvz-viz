@@ -59,7 +59,7 @@ dependencies {
                  "org.springframework.boot:spring-boot-starter-actuator"
 
   testImplementation("org.springframework.boot:spring-boot-starter-test") {
-    exclude group: 'junit', module: 'junit'
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }
 }
 

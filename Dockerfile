@@ -28,7 +28,10 @@ RUN gradle --info assemble
 
 FROM adoptopenjdk/openjdk11:alpine-jre
 
-LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
+LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>" \
+      org.opencontainers.image.authors="Sebastian Peters <Sebastian.Peters@gmail.com>" \
+      org.opencontainers.image.source="https://github.com/CodeforLeipzig/lvz-viz" \
+      org.opencontainers.image.vendor="Open Knowledge Foundation Deutschland e.V."
 
 ENV USER lvz-viz
 

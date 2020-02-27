@@ -86,8 +86,9 @@ public final class NER {
 
     private Collection<String> initBlackListedLocations() {
         logger.info("Init location blacklist from {}", BLACKLIST_FILE);
-        try (var lines = new BufferedReader(
-                new InputStreamReader(resourceLoader.getResource(BLACKLIST_FILE).getInputStream())).lines()) {
+        try (var br = new BufferedReader(
+                new InputStreamReader(resourceLoader.getResource(BLACKLIST_FILE).getInputStream()));
+                var lines = br.lines()) {
             final var blacklist = lines
                     .filter(line -> !Strings.isNullOrEmpty(line) && !line.startsWith(BLACKLIST_COMMENT))
                     .collect(Collectors.toUnmodifiableSet());

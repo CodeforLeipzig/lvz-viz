@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.JavaTimeConversionPattern;
@@ -74,6 +75,7 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
         softly.assertAll();
     }
 
+    @Disabled("until new paid content is available")
     @Test
     void extractArticleWithPaidContent() throws InterruptedException, ExecutionException {
         final var result = crawler.execute(BASE_URL + "/Mordversuch-in-Markranstaedt-Ich-stech-dich-ab-das-ueberlebst-du-nicht").get();

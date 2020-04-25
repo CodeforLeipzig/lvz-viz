@@ -45,6 +45,12 @@ You can build and test an executable jar with gradle.
 ./gradlew build
 ```
 
+You can run a specific test with gradle.
+
+```bash
+./gradlew test --tests *CrawlSchedulerTest
+```
+
 You can build an executable jar with gradle and run it as a separate process.
 
 ```bash

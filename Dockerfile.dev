@@ -1,8 +1,8 @@
-FROM adoptopenjdk/openjdk13:alpine-jre
+FROM adoptopenjdk/openjdk14:alpine-jre
 
 LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
 
-# see https://github.com/AdoptOpenJDK/openjdk-docker/blob/master/11/jre/alpine/Dockerfile.hotspot.releases.full#L22
+# see https://github.com/AdoptOpenJDK/openjdk-docker/blob/master/14/jre/alpine/Dockerfile.hotspot.releases.full#L22
 ENV LANG='de_DE.UTF-8' LANGUAGE='de_DE:de' LC_ALL='de_DE.UTF-8'
 
 RUN echo "Europe/Berlin" > /etc/timezone

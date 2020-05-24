@@ -97,3 +97,10 @@ docker-compose logs -f
 -- Stop and remove containers, networks, images, and volumes
 docker-compose down
 ```
+
+## Maintenance
+
+```bash
+-- Display dependency updates
+./gradlew dependencyUpdates
+```

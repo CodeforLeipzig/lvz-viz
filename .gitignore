@@ -249,7 +249,8 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+# sepe81: need .env for docker-compose
+# .env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)

@@ -10,7 +10,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: wget --spider --quiet --tries=1 http://localhost:8080/actuator/info || exit 1
-    image: sepe81/lvz-viz:2.0.0
+    image: ${IMAGE}:${VERSION}
     mem_limit: 1500m
     networks:
       - esnet
@@ -34,7 +34,7 @@ services:
       - xpack.watcher.enabled=false
     healthcheck:
       test: wget --spider --quiet --tries=1 http://localhost:9200 || exit 1
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.10
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ES_VERSION}
     mem_limit: 2g
     networks:
       - esnet

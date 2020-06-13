@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile.dev
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-    image: sepe81/lvz-viz:2.0.0-dev
+    image: ${IMAGE}:${VERSION}-dev
   elasticsearch:
     volumes:
       - esdata-dev:/usr/share/elasticsearch/data

@@ -8,7 +8,7 @@
 
 Visualization of [LVZ police ticker](https://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig).
 
-The official website is hosted at [https://lvz-viz.leipzig.codefor.de](https://lvz-viz.leipzig.codefor.de)
+The official website is hosted at <https://lvz-viz.leipzig.codefor.de>
 by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_visualisierung.html).
 
 ## Usage

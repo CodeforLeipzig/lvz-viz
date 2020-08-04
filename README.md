@@ -22,6 +22,8 @@ or by setting an environment variable via `export APP_INITIALDELAY=<time in ms>`
 Profiles (`dev|local|prod|test`) can be set by the startup parameter `--spring.profiles.active=<profile>`
 or by setting an environment variable via `export SPRING_PROFILES_ACTIVE=<profile>`.
 
+Please use the `prod` profile for production systems with a dedicated data volume (see `docker-compose.prod.yml`).
+
 ### npm and Grunt
 
 Download client js dependencies with npm and package them with Grunt.

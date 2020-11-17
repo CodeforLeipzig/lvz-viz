@@ -38,7 +38,7 @@ repositories {
 dependencies {
   implementation "com.google.guava:guava:30.0-jre",
                  "org.jsoup:jsoup:1.13.1",
-                 "edu.stanford.nlp:stanford-corenlp:3.9.2"
+                 "edu.stanford.nlp:stanford-corenlp:4.2.0"
 
   // update vulnerable transitive dependencies for stanford-corenlp
   constraints {

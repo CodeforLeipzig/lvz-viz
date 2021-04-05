@@ -12,7 +12,7 @@ COPY --chown=${USER} Gruntfile.js ./
 COPY --chown=${USER} src/main/resources/public/js ./src/main/resources/public/js
 RUN npm run --silent grunt-build
 
-FROM gradle:6.4.1-jdk11 AS build-java
+FROM gradle:6.8.3-jdk11 AS build-java
 
 ENV USER gradle
 USER ${USER}

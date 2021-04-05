@@ -78,7 +78,7 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     void extractArticleWithPaidContent() throws InterruptedException, ExecutionException {
         final var result = crawler.execute(BASE_URL + "/Mordversuch-in-Markranstaedt-Ich-stech-dich-ab-das-ueberlebst-du-nicht").get();
         assertThat(result.getArticle()).isEqualTo("Sie saßen auf dem Sofa und hörten Musik, dann zückte einer von ihnen ganz plötzlich ein Messer:"
-                + " Nach einer vollkommen unerklärlichen Bluttat in Markr...");
+                + " Nach einer vollkommen unerklärlichen Bluttat in Markra...");
     }
 
     @ParameterizedTest

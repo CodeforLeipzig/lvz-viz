@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: webapp
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -18,7 +17,6 @@ services:
       - 8080:8080
     restart: unless-stopped
   elasticsearch:
-    container_name: elasticsearch
     environment:
       - cluster.name=policeticker
       - bootstrap.memory_lock=true

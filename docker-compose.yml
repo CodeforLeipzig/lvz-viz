@@ -20,7 +20,7 @@ services:
     environment:
       - cluster.name=policeticker
       - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
       - node.name=policeticker-1
       - network.host=0.0.0.0
       - discovery.type=single-node

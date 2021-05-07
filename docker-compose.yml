@@ -10,6 +10,10 @@ services:
     healthcheck:
       test: wget --spider --quiet --tries=1 http://localhost:8080/actuator/info || exit 1
     image: ${IMAGE}:${VERSION}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
     mem_limit: 1500m
     networks:
       - esnet
@@ -33,6 +37,10 @@ services:
     healthcheck:
       test: wget --spider --quiet --tries=1 http://localhost:9200 || exit 1
     image: docker.elastic.co/elasticsearch/elasticsearch:${ES_VERSION}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
     mem_limit: 2g
     networks:
       - esnet

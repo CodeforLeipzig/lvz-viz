@@ -61,7 +61,7 @@ public class PoliceTickerController {
         logger.debug("extractlocations: {}", locations);
         return ner.map(n -> n.getLocations(locations, false)).orElseGet(() -> {
             logger.debug("return empty result b/c NER is not initialized!");
-            return Collections.<String>emptyList();
+            return Collections.emptyList();
         });
     }
 
@@ -81,7 +81,7 @@ public class PoliceTickerController {
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime from,
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime to,
             @PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED, size = Integer.MAX_VALUE) final Pageable pageable) {
-        logger.debug("query: {} from: {}, to: {}", new Object[] { query, from, to });
+        logger.debug("query: {} from: {}, to: {}", query, from, to);
         final var results = elasticsearchTemplate
                 .queryForPage(
                         new NativeSearchQueryBuilder().withPageable(pageable)
@@ -89,14 +89,6 @@ public class PoliceTickerController {
                         PoliceTicker.class);
         logger.debug("results {}", results.getSize());
         return results;
-    }
-
-    @GetMapping(value = "/between")
-    public Page<PoliceTicker> between(@RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime from,
-            @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime to,
-            @PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED, page = 0, size = Integer.MAX_VALUE) final Pageable pageable) {
-        logger.debug("from {}, to {}", from, to);
-        return policeTickerRepository.findByDatePublishedBetween(convertToDate(from), convertToDate(to), pageable);
     }
 
     @GetMapping(value = "/minmaxdate")

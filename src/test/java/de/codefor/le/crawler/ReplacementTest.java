@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,12 +49,5 @@ public class ReplacementTest {
     @Test
     void findAll() {
         assertThat(policeTickerRepository.findAll(PageRequest.of(0, 20))).hasSize(2);
-    }
-
-    @Test
-    void findByDatePublishedBetween() {
-        final var fromDate = new DateTime(Date.from(LocalDateTime.of(2014, 7, 2, 0, 0).atZone(DEFAULT_ZONE).toInstant()));
-        final var toDate = new DateTime(Date.from(LocalDateTime.of(2014, 8, 8, 0, 0).atZone(DEFAULT_ZONE).toInstant()));
-        assertThat(policeTickerRepository.findByDatePublishedBetween(fromDate, toDate, PageRequest.of(0, 20))).hasSize(1);
     }
 }

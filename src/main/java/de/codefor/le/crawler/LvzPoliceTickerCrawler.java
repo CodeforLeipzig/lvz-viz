@@ -100,6 +100,9 @@ public class LvzPoliceTickerCrawler {
             if (!detailLink.startsWith(LVZ_POLICE_TICKER_BASE_URL)) {
                 logger.debug("article not from policeticker - skip it");
                 continue;
+            } else if (detailLink.contains("Blitzer-in-Leipzig")) {
+                logger.debug("recurring speed control article - skip it");
+                continue;
             }
             policeTickerRepository.ifPresentOrElse(repo -> {
                 if (!repo.existsById(Utils.generateHashForUrl(detailLink))) {

@@ -82,8 +82,20 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
     }
 
     @ParameterizedTest
-    @CsvSource({ "/Motorradfahrer-bei-Unfall-in-Leipzig-schwer-verletzt, 30.03.2016 10:35:36",
-            "/Krawalle-am-Leipziger-Amtsgericht-191-Verfahren-eingestellt, 07.05.2016 10:00:00" })
+    @CsvSource({
+        "/Blitzer-in-Leipzig-Wo-wird-heute-geblitzt-1.-Maerz-2021",
+        "/Blitzer-in-Leipzig-Wo-wird-heute-am-12.-Mai-2021-geblitzt"
+    })
+    void extractArticlesWithSpeedControls(final String path) throws ExecutionException, InterruptedException {
+        assertThat(crawler.execute(BASE_URL + path).get())
+            .satisfies(ticker -> assertThat(ticker.getTitle()).matches("Hier wird am \\w* in Leipzig geblitzt"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "/Motorradfahrer-bei-Unfall-in-Leipzig-schwer-verletzt, 30.03.2016 10:35:36",
+        "/Krawalle-am-Leipziger-Amtsgericht-191-Verfahren-eingestellt, 07.05.2016 10:00:00"
+    })
     void extractPublishedDate(final String path,
             @JavaTimeConversionPattern("dd.MM.yyyy HH:mm:ss") final LocalDateTime published)
             throws InterruptedException, ExecutionException {

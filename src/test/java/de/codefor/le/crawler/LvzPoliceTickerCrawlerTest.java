@@ -35,4 +35,10 @@ public class LvzPoliceTickerCrawlerTest {
         }
     }
 
+    @Test
+    void excludeRecurringSpeedControlArticles() throws ExecutionException, InterruptedException {
+        assertThat(crawler.execute(1).get())
+            .allSatisfy(article -> assertThat(article).doesNotContain("Blitzer-in-Leipzig"));
+    }
+
 }

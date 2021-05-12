@@ -70,7 +70,7 @@ public class LvzPoliceTickerCrawler {
      * @return links of new articles
      */
     private Collection<String> crawlNewsFromPage(final String url) {
-        Document doc = null;
+        Document doc;
         try {
             doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(REQUEST_TIMEOUT).get();
         } catch (IOException e) {

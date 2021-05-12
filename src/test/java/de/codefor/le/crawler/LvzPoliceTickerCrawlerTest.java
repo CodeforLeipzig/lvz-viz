@@ -20,7 +20,7 @@ public class LvzPoliceTickerCrawlerTest {
         final var firstArticleUrl = pageOne.iterator().next();
         assertThat(firstArticleUrl).startsWith(LvzPoliceTickerCrawler.LVZ_POLICE_TICKER_BASE_URL);
 
-        assertThat(crawler.execute(1).get().iterator().next()).isEqualTo(firstArticleUrl);
+        assertThat(crawler.execute(1).get()).first().isEqualTo(firstArticleUrl);
     }
 
     @Test

@@ -71,7 +71,7 @@ public class LvzPoliceTickerDetailViewCrawler {
      * @return PoliceTicker
      */
     private static PoliceTicker crawl(final String url) {
-        Document doc = null;
+        Document doc;
         try {
             doc = Jsoup.connect(url).userAgent(LvzPoliceTickerCrawler.USER_AGENT).timeout(LvzPoliceTickerCrawler.REQUEST_TIMEOUT).get();
         } catch (final IOException e) {
@@ -160,7 +160,7 @@ public class LvzPoliceTickerDetailViewCrawler {
         logger.debug("extractDate from {}", date);
         Date result = null;
         if (!Strings.isNullOrEmpty(date)) {
-            ZonedDateTime zonedDateTime = null;
+            ZonedDateTime zonedDateTime;
             try {
                 String normalizedDate = date;
                 if (date.length() == 20 && date.endsWith("Z")) {

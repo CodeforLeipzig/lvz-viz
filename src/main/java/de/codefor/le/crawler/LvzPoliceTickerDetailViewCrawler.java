@@ -82,6 +82,7 @@ public class LvzPoliceTickerDetailViewCrawler {
             result = convertToDataModel(doc);
             result.setUrl(url);
             result.setId(Utils.generateHashForUrl(url));
+            logger.info("Crawled {}.", url);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Extracted {}.", result);

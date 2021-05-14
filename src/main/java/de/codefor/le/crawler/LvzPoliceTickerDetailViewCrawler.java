@@ -60,7 +60,7 @@ public class LvzPoliceTickerDetailViewCrawler {
             return new AsyncResult<>(crawl(url));
         } finally {
             watch.stop();
-            logger.debug("Finished crawling detail page {} in {} ms.", url, watch.elapsed(TimeUnit.MILLISECONDS));
+            logger.debug("Finished crawling detail page in {} ms.", watch.elapsed(TimeUnit.MILLISECONDS));
         }
     }
 
@@ -82,7 +82,6 @@ public class LvzPoliceTickerDetailViewCrawler {
             result = convertToDataModel(doc);
             result.setUrl(url);
             result.setId(Utils.generateHashForUrl(url));
-            logger.info("Crawled {}.", url);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Extracted {}.", result);

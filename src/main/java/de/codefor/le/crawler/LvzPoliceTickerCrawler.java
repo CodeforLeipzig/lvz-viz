@@ -56,12 +56,12 @@ public class LvzPoliceTickerCrawler {
     public Future<Iterable<String>> execute(final int page) {
         final var watch = Stopwatch.createStarted();
         final var url = String.format(LVZ_POLICE_TICKER_PAGE_URL, page);
-        logger.info("Start crawling {}.", url);
+        logger.debug("Start crawling {}.", url);
         try {
             return new AsyncResult<>(crawlNewsFromPage(url));
         } finally {
             watch.stop();
-            logger.info("Finished crawling page {} in {} ms.", page, watch.elapsed(TimeUnit.MILLISECONDS));
+            logger.debug("Finished crawling page {} in {} ms.", page, watch.elapsed(TimeUnit.MILLISECONDS));
         }
     }
 
@@ -80,10 +80,10 @@ public class LvzPoliceTickerCrawler {
         links.addAll(doc.select("a.pdb-bigteaser-item-teaser-breadcrumb-headline-title-link"));
         final var result = extractNewArticleLinks(links);
         if (links.isEmpty()) {
-            logger.info("No links found on current page. This should be the last available page.");
+            logger.debug("No links found on current page. This should be the last available page.");
             this.crawlMore = false;
         } else if (result.isEmpty()) {
-            logger.info("No new articles found on current page. {}",
+            logger.debug("No new articles found on current page. {}",
                     crawlAllMainPages ? "Nevertheless, continue crawling on next page." : "Stop crawling for now.");
             this.crawlMore = crawlAllMainPages;
         } else {

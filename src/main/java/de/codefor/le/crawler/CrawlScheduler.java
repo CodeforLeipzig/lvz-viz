@@ -62,7 +62,7 @@ public class CrawlScheduler {
     }
 
     private Iterable<PoliceTicker> crawlDetailPages(final Iterable<String> detailPageUrls) throws InterruptedException, ExecutionException {
-        logger.info("Start crawling detail pages.");
+        logger.debug("Start crawling detail pages.");
         final var watch = Stopwatch.createStarted();
         final List<PoliceTicker> policeTickers = new ArrayList<>();
         try {
@@ -75,7 +75,7 @@ public class CrawlScheduler {
             }
         } finally {
             watch.stop();
-            logger.info("Finished crawling {} detail pages in {} ms.", policeTickers.size(), watch.elapsed(TimeUnit.MILLISECONDS));
+            logger.debug("Finished crawling {} detail pages in {} ms.", policeTickers.size(), watch.elapsed(TimeUnit.MILLISECONDS));
         }
         return policeTickers;
     }

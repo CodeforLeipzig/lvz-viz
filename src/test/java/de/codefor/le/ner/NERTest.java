@@ -21,9 +21,11 @@ public class NERTest {
     }
 
     @Test
-    void getLocationsForSimpleStringShouldReturnNull() {
-        assertThat(ner.getLocations("foo", false)).isNotNull();
-        assertThat(ner.getLocations("foo", true)).isNotNull();
+    void getLocationsForSimpleStringShouldReturnEmptyCollection() {
+        assertThat(ner.getLocations(null, false)).isEmpty();
+        assertThat(ner.getLocations("", false)).isEmpty();
+        assertThat(ner.getLocations("foo", false)).isEmpty();
+        assertThat(ner.getLocations("foo", true)).isEmpty();
     }
 
     private static final String ARTICLE = "Leipzig. Der Autoanhänger [...] ist am Montagabend in Leipzig-Plagwitz von [...]"
@@ -33,7 +35,7 @@ public class NERTest {
 
     @Test
     void getLocationsForArticleShouldReturnCollection() {
-        assertThat(ner.getLocations(ARTICLE, true)).isNotNull().containsExactlyInAnyOrder("Leipzig-Plagwitz",
-                "Karl-Heine-Straße", "Brücke");
+        assertThat(ner.getLocations(ARTICLE, true))
+            .containsExactlyInAnyOrder("Leipzig-Plagwitz", "Karl-Heine-Straße", "König-Albert-Brücke");
     }
 }

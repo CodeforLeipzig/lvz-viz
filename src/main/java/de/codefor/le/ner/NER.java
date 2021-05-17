@@ -57,7 +57,7 @@ public final class NER {
 
     public Collection<String> getLocations(final String text, final boolean removeBlackListed) {
         final Set<String> result = new HashSet<>();
-        for (final List<CoreLabel> classifiedSentences : getClassifier().classify(text)) {
+        for (final List<CoreLabel> classifiedSentences : getClassifier().classify(normalizeKnownLocations(Strings.nullToEmpty(text)))) {
             for (final CoreLabel coreLabel : classifiedSentences) {
                 if (coreLabel.get(AnswerAnnotation.class).equals("I-LOC")) {
                     final String originalText = coreLabel.originalText();
@@ -97,5 +97,9 @@ public final class NER {
         } catch (final IOException e) {
             throw new UncheckedIOException("Error during init of blacklist", e);
         }
+    }
+
+    private String normalizeKnownLocations(String text) {
+        return text.replace("König-Albert Brücke", "König-Albert-Brücke");
     }
 }

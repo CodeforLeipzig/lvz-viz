@@ -49,7 +49,7 @@ public final class NER {
     private static AbstractSequenceClassifier<CoreLabel> initClassifier() {
         logger.info("Init classifier for Named-entity recognition (NER).");
         try {
-            return CRFClassifier.<CoreLabel> getClassifier(new File(SERIALIZED_CLASSIFIER));
+            return CRFClassifier.getClassifier(new File(SERIALIZED_CLASSIFIER));
         } catch (ClassCastException | ClassNotFoundException | IOException e) {
             throw new RuntimeException(e);
         }

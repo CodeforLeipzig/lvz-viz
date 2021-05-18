@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -56,32 +53,25 @@ public final class NER {
     }
 
     public Collection<String> getLocations(final String text, final boolean removeBlackListed) {
-        final Set<String> result = new HashSet<>();
-        for (final List<CoreLabel> classifiedSentences : getClassifier().classify(normalizeKnownLocations(Strings.nullToEmpty(text)))) {
-            for (final CoreLabel coreLabel : classifiedSentences) {
-                if (coreLabel.get(AnswerAnnotation.class).equals("I-LOC")) {
-                    final String originalText = coreLabel.originalText();
-                    logger.trace("{}", originalText);
-                    result.add(originalText);
-                }
-            }
-        }
-        if (removeBlackListed) {
-            blackListCheck(result);
-        }
-        logger.debug("{} locations found: {}", result.size(), result);
-        return result;
+        final var locations = getClassifier().classify(normalizeKnownLocations(Strings.nullToEmpty(text))).stream()
+            .flatMap(Collection::stream)
+            .filter(coreLabel -> coreLabel.get(AnswerAnnotation.class).equals("I-LOC"))
+            .map(CoreLabel::originalText)
+            .peek(logger::trace)
+            .filter(loc -> !removeBlackListed || isAllowed(loc))
+            .collect(Collectors.toUnmodifiableSet());
+
+        logger.debug("{} location(s) found: {}", locations.size(), locations);
+        return locations;
     }
 
-    private void blackListCheck(final Iterable<String> results) {
-        final var iterator = results.iterator();
-        while (iterator.hasNext()) {
-            final var next = iterator.next();
-            if (getBlackListedLocations().contains(next)) {
-                logger.debug("remove blacklisted location {}", next);
-                iterator.remove();
-            }
+    private boolean isAllowed(final String location) {
+        if (getBlackListedLocations().contains(location)) {
+            logger.trace("ignore location {}", location);
+            return false;
         }
+        logger.trace("allow location {}", location);
+        return true;
     }
 
     private Collection<String> initBlackListedLocations() {

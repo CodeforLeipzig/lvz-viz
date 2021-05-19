@@ -37,20 +37,15 @@ repositories {
 }
 dependencies {
   implementation "com.google.guava:guava:30.1.1-jre",
-                 "org.jsoup:jsoup:1.13.1",
-                 "edu.stanford.nlp:stanford-corenlp:3.9.2"
+                 "org.jsoup:jsoup:1.13.1"
 
-  // update vulnerable transitive dependencies for stanford-corenlp
-  constraints {
-    implementation('com.google.protobuf:protobuf-java:3.15.8') {
-      because 'https://app.snyk.io/vuln/SNYK-JAVA-COMGOOGLEPROTOBUF-173761'
-    }
-    implementation('xalan:xalan:2.7.2') {
-      because 'https://app.snyk.io/vuln/SNYK-JAVA-XALAN-31385'
-    }
-    implementation('xerces:xercesImpl:2.12.1') {
-      because 'https://app.snyk.io/vuln/SNYK-JAVA-XERCES-31585'
-    }
+  implementation("edu.stanford.nlp:stanford-corenlp:3.9.2") {
+    // because https://app.snyk.io/vuln/SNYK-JAVA-COMGOOGLEPROTOBUF-173761
+    exclude group: "com.google.protobuf", module: "protobuf-java"
+    // because https://app.snyk.io/vuln/SNYK-JAVA-XALAN-31385
+    exclude group: "xalan", module: "xalan"
+    // because https://app.snyk.io/vuln/SNYK-JAVA-XERCES-31585
+    exclude group: "xerces", module: "xercesImpl"
   }
 
   implementation "org.springframework.boot:spring-boot-starter-web",

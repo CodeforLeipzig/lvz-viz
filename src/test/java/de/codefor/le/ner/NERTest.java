@@ -15,9 +15,10 @@ public class NERTest {
     private NER ner;
 
     @Test
-    void initBlackListedLocations() {
-        assertThat(ner.getBlackListedLocations()).isNotNull().contains("Leipzig", "Dresdens")
-                .doesNotContain("# federal states", "");
+    void initUnspecificLocations() {
+        assertThat(ner.getUnspecificLocations())
+            .contains("Leipzig", "Dresdens")
+            .doesNotContain("# federal states", "");
     }
 
     @Test

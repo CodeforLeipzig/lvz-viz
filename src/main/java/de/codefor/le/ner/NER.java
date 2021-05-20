@@ -29,9 +29,9 @@ public final class NER {
 
     private static final Logger logger = LoggerFactory.getLogger(NER.class);
 
-    private static final String BLACKLIST_FILE = "classpath:locationBlacklist";
+    private static final String UNSPECIFIC_LOCATIONS_FILE = "classpath:unspecific-locations.txt";
 
-    private static final String BLACKLIST_COMMENT = "#";
+    private static final String COMMENT = "#";
 
     private static final String SERIALIZED_CLASSIFIER = "dewac_175m_600.crf.ser.gz";
 
@@ -41,7 +41,7 @@ public final class NER {
     private final AbstractSequenceClassifier<CoreLabel> classifier = initClassifier();
 
     @Getter(lazy = true, onMethod = @__({ @SuppressWarnings({ "all", "unchecked" }) }), value = AccessLevel.PROTECTED)
-    private final Collection<String> blackListedLocations = initBlackListedLocations();
+    private final Collection<String> unspecificLocations = initUnspecificLocations();
 
     private static AbstractSequenceClassifier<CoreLabel> initClassifier() {
         logger.info("Init classifier for Named-entity recognition (NER).");
@@ -52,13 +52,13 @@ public final class NER {
         }
     }
 
-    public Collection<String> getLocations(final String text, final boolean removeBlackListed) {
+    public Collection<String> getLocations(final String text, final boolean removeUnspecificLocations) {
         final var locations = getClassifier().classify(normalizeKnownLocations(Strings.nullToEmpty(text))).stream()
             .flatMap(Collection::stream)
             .filter(coreLabel -> coreLabel.get(AnswerAnnotation.class).equals("I-LOC"))
             .map(CoreLabel::originalText)
             .peek(logger::trace)
-            .filter(loc -> !removeBlackListed || isAllowed(loc))
+            .filter(loc -> !removeUnspecificLocations || isAllowed(loc))
             .collect(Collectors.toUnmodifiableSet());
 
         logger.debug("{} location(s) found: {}", locations.size(), locations);
@@ -66,7 +66,7 @@ public final class NER {
     }
 
     private boolean isAllowed(final String location) {
-        if (getBlackListedLocations().contains(location)) {
+        if (getUnspecificLocations().contains(location)) {
             logger.trace("ignore location {}", location);
             return false;
         }
@@ -74,18 +74,18 @@ public final class NER {
         return true;
     }
 
-    private Collection<String> initBlackListedLocations() {
-        logger.info("Init location blacklist from {}", BLACKLIST_FILE);
+    private Collection<String> initUnspecificLocations() {
+        logger.info("Init unspecific locations from {}", UNSPECIFIC_LOCATIONS_FILE);
         try (var br = new BufferedReader(
-                new InputStreamReader(resourceLoader.getResource(BLACKLIST_FILE).getInputStream()));
+                new InputStreamReader(resourceLoader.getResource(UNSPECIFIC_LOCATIONS_FILE).getInputStream()));
                 var lines = br.lines()) {
-            final var blacklist = lines
-                    .filter(line -> !Strings.isNullOrEmpty(line) && !line.startsWith(BLACKLIST_COMMENT))
+            final var unspecificLocations = lines
+                    .filter(line -> !Strings.isNullOrEmpty(line) && !line.startsWith(COMMENT))
                     .collect(Collectors.toUnmodifiableSet());
-            logger.debug("initialized location blacklist: {}", blacklist);
-            return blacklist;
+            logger.debug("Initialized unspecific locations: {}", unspecificLocations);
+            return unspecificLocations;
         } catch (final IOException e) {
-            throw new UncheckedIOException("Error during init of blacklist", e);
+            throw new UncheckedIOException("Error during init of unspecific locations", e);
         }
     }
 

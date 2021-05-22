@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.JavaTimeConversionPattern;
@@ -81,6 +82,7 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
                 + " Nach einer vollkommen unerklärlichen Bluttat in Markra...");
     }
 
+    @Disabled("no active sites with speed controls available")
     @ParameterizedTest
     @CsvSource({
         "/Blitzer-in-Leipzig-Wo-wird-heute-geblitzt-1.-Maerz-2021",

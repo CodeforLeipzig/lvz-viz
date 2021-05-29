@@ -59,7 +59,7 @@ public final class NER {
             .map(CoreLabel::originalText)
             .peek(logger::trace)
             .filter(loc -> !removeUnspecificLocations || isAllowed(loc))
-            .collect(Collectors.toUnmodifiableSet());
+            .collect(Collectors.toUnmodifiableList());
 
         logger.debug("{} location(s) found: {}", locations.size(), locations);
         return locations;

@@ -37,6 +37,6 @@ public class NERTest {
     @Test
     void getLocationsForArticleShouldReturnCollection() {
         assertThat(ner.getLocations(ARTICLE, true))
-            .containsExactlyInAnyOrder("Leipzig-Plagwitz", "Karl-Heine-Straße", "König-Albert-Brücke");
+            .containsExactly("Leipzig-Plagwitz", "Karl-Heine-Straße", "König-Albert-Brücke");
     }
 }

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.JavaTimeConversionPattern;
@@ -82,15 +81,15 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
                 + " Nach einer vollkommen unerklärlichen Bluttat in Markra...");
     }
 
-    @Disabled("no active sites with speed controls available")
     @ParameterizedTest
     @CsvSource({
+        "/Blitzer-heute-in-Leipzig-Wo-wird-am-Montag-18.-Oktober-2021-geblitzt",
         "/Blitzer-in-Leipzig-Wo-wird-heute-geblitzt-1.-Maerz-2021",
         "/Blitzer-in-Leipzig-Wo-wird-heute-am-12.-Mai-2021-geblitzt"
     })
     void extractArticlesWithSpeedControls(final String path) throws ExecutionException, InterruptedException {
         assertThat(crawler.execute(BASE_URL + path).get())
-            .satisfies(ticker -> assertThat(ticker.getTitle()).matches("Hier wird am \\w* in Leipzig geblitzt"));
+            .satisfies(ticker -> assertThat(ticker.getTitle()).matches("Hier wird am \\w+ in Leipzig geblitzt"));
     }
 
     @ParameterizedTest

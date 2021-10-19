@@ -26,6 +26,12 @@ Please use the `prod` profile for production systems with a dedicated data volum
 
 ### npm and Grunt
 
+Use appropriate node and npm version via [nvm](https://github.com/nvm-sh/nvm#nvmrc).
+
+```bash
+nvm use
+```
+
 Download client js dependencies with npm and package them with Grunt.
 
 ```bash

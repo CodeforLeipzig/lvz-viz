@@ -32,6 +32,10 @@ bootJar {
   launchScript()
 }
 
+configurations.implementation {
+  exclude group: "org.hamcrest"
+}
+
 repositories {
   mavenCentral()
 }

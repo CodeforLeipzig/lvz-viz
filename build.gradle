@@ -20,7 +20,9 @@ version = '2.1.0-SNAPSHOT'
 defaultTasks 'build'
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_11
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(11)
+  }
 }
 
 springBoot {

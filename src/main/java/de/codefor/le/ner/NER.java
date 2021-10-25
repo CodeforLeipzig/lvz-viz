@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -77,8 +78,8 @@ public final class NER {
     private Collection<String> initUnspecificLocations() {
         logger.info("Init unspecific locations from {}", UNSPECIFIC_LOCATIONS_FILE);
         try (var br = new BufferedReader(
-                new InputStreamReader(resourceLoader.getResource(UNSPECIFIC_LOCATIONS_FILE).getInputStream()));
-                var lines = br.lines()) {
+            new InputStreamReader(resourceLoader.getResource(UNSPECIFIC_LOCATIONS_FILE).getInputStream(), StandardCharsets.UTF_8));
+            var lines = br.lines()) {
             final var unspecificLocations = lines
                     .filter(line -> !Strings.isNullOrEmpty(line) && !line.startsWith(COMMENT))
                     .collect(Collectors.toUnmodifiableSet());

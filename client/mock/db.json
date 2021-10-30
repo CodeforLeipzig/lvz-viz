@@ -1,0 +1,10 @@
+{
+  "getx": {
+    "content": [{
+      "id": 1,
+      "username": "lvz-viz",
+      "password": "lvz-viz"
+    }],
+    "totalElements": 1
+  }
+}

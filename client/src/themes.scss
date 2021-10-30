@@ -1,0 +1,50 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+$indigo-pink-primary: mat-palette($mat-indigo);
+$indigo-pink-accent:  mat-palette($mat-pink, A200, A100, A400);
+$indigo-pink-theme:   mat-light-theme($indigo-pink-primary, $indigo-pink-accent);
+
+.indigo-pink-theme {
+  @include angular-material-theme($indigo-pink-theme);
+}
+
+$deeppurple-amber-primary: mat-palette($mat-deep-purple);
+$deeppurple-amber-accent:  mat-palette($mat-amber, A200, A100, A400);
+$deeppurple-amber-theme:   mat-light-theme($deeppurple-amber-primary, $deeppurple-amber-accent);
+
+.deeppurple-amber-theme {
+  @include angular-material-theme($deeppurple-amber-theme);
+}
+
+$pink-bluegrey-primary: mat-palette($mat-pink);
+$pink-bluegrey-accent:  mat-palette($mat-blue-grey, A200, A100, A400);
+$pink-bluegrey-theme:   mat-dark-theme($pink-bluegrey-primary, $pink-bluegrey-accent);
+
+.pink-bluegrey-theme {
+  @include angular-material-theme($pink-bluegrey-theme);
+}
+
+$purple-green-primary: mat-palette($mat-purple);
+$purple-green-accent:  mat-palette($mat-green, A200, A100, A400);
+$purple-green-theme:   mat-dark-theme($purple-green-primary, $purple-green-accent);
+
+.purple-green-theme {
+  @include angular-material-theme($purple-green-theme);
+}
+
+$custom-light-primary: mat-palette($mat-light-blue);
+$custom-light-accent:  mat-palette($mat-orange, A200, A100, A400);
+$custom-light-theme:   mat-light-theme($custom-light-primary, $custom-light-accent);
+
+.custom-light-theme {
+  @include angular-material-theme($custom-light-theme);
+}
+
+$custom-dark-primary: mat-palette($mat-grey);
+$custom-dark-accent:  mat-palette($mat-blue, A200, A100, A400);
+$custom-dark-theme:   mat-dark-theme($custom-dark-primary, $custom-dark-accent);
+
+.custom-dark-theme {
+  @include angular-material-theme($custom-dark-theme);
+}

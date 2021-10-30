@@ -1,0 +1,54 @@
+{
+  "client": {
+    "buildDir": "dist",
+    "ghUser": "inpercima",
+    "installDependencies": true,
+    "language": "en",
+    "modules": {
+      "enabled": true,
+      "features": {
+        "defaultRoute": "dashboard",
+        "name": "features"
+      },
+      "notFound": {
+        "enabled": false,
+        "name": ""
+      },
+      "routing": false
+    },
+    "packageJson": {
+      "contributors": [{
+        "name": "Marcel Jänicke",
+        "email": "inpercima@gmail.com"
+      }],
+      "homepage": "https://lvz-viz.leipzig.codefor.de",
+      "repository": "https://github.com/CodeforLeipzig/lvz-viz"
+    },
+    "prefix": "lvzviz",
+    "theme": "indigo-pink",
+    "useGoogleFonts": true,
+    "useYarn": false
+  },
+  "general": {
+    "author": "Marcel Jänicke",
+    "description": "Visualization of LVZ police ticker",
+    "modRewriteIndex": false,
+    "name": "lvz-viz",
+    "title": "LVZ Polizeiticker",
+    "useDocker": false,
+    "useMITLicense": false,
+    "useMock": true,
+    "useSecurity": false
+  },
+  "server": {
+    "backend": "js",
+    "javaKt": {
+      "management": "",
+      "packagePath": ""
+    },
+    "php": {
+      "modRewritePhpExtension": false,
+      "serverAsApi": false
+    }
+  }
+}

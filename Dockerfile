@@ -33,6 +33,11 @@ LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>" \
       org.opencontainers.image.source="https://github.com/CodeforLeipzig/lvz-viz" \
       org.opencontainers.image.vendor="Open Knowledge Foundation Deutschland e.V."
 
+# see https://github.com/adoptium/containers/blob/main/11/jdk/alpine/Dockerfile.releases.full#L22
+ENV LANG='de_DE.UTF-8' LANGUAGE='de_DE:de' LC_ALL='de_DE.UTF-8'
+
+RUN echo "Europe/Berlin" > /etc/timezone
+
 ENV USER lvz-viz
 
 RUN addgroup ${USER} \

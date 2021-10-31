@@ -45,7 +45,7 @@ dependencies {
   implementation "com.google.guava:guava:30.1.1-jre",
                  "org.jsoup:jsoup:1.14.3"
 
-  implementation("edu.stanford.nlp:stanford-corenlp:3.9.2") {
+  implementation("edu.stanford.nlp:stanford-corenlp:4.3.1") {
     // because https://app.snyk.io/vuln/SNYK-JAVA-COMGOOGLEPROTOBUF-173761
     exclude group: "com.google.protobuf", module: "protobuf-java"
     // because https://app.snyk.io/vuln/SNYK-JAVA-XALAN-31385

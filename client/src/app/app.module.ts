@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { FeaturesModule } from './features/features.module';
+import { MaterialModule } from './shared/material/material.module';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { FeaturesModule } from './features/features.module';
     MatToolbarModule,
     OverlayModule,
     FeaturesModule,
+    MaterialModule,
   ],
   providers: [],
   bootstrap: [

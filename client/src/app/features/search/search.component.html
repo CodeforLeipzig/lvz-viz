@@ -1,1 +1,24 @@
-<p>dashboard works!</p>
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="title">
+    <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.title }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="publication">
+    <mat-header-cell *matHeaderCellDef>Veröffentlichung</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.title }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+      <div [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <div>{{ element.article }}</div>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let element; columns: displayedColumns;" (click)="expandedElement = expandedElement === element ? null : element"></mat-row>
+  <mat-row *matRowDef="let row; columns: ['expandedDetail']"></mat-row>
+</mat-table>

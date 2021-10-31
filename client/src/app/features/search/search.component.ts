@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+
+import { SearchService } from './search.service';
+import { pipe } from 'rxjs';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'lvzviz-search',
@@ -9,10 +11,15 @@ import { environment } from 'src/environments/environment';
 })
 export class SearchComponent implements OnInit {
 
-  constructor(private http: HttpClient) { }
+  displayedColumns: string[] = ['title', 'publication'];
+  dataSource = new MatTableDataSource();
+  expandedElement!: null;
+
+  constructor(private searchService: SearchService) { }
 
   ngOnInit(): void {
-    this.http.get(environment.api + 'getx').subscribe();
+    this.searchService.getx().subscribe((response: any) => {
+      this.dataSource = new MatTableDataSource(response.content);
+    });
   }
-
 }

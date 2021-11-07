@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public final class NER {
         try {
             return CRFClassifier.getClassifier(new File(SERIALIZED_CLASSIFIER));
         } catch (ClassCastException | ClassNotFoundException | IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -78,13 +79,14 @@ public final class NER {
     private Collection<String> initUnspecificLocations() {
         logger.info("Init unspecific locations from {}", UNSPECIFIC_LOCATIONS_FILE);
         try (var br = new BufferedReader(
-            new InputStreamReader(resourceLoader.getResource(UNSPECIFIC_LOCATIONS_FILE).getInputStream(), StandardCharsets.UTF_8));
+            new InputStreamReader(Objects.requireNonNull(resourceLoader).getResource(UNSPECIFIC_LOCATIONS_FILE).getInputStream(),
+                StandardCharsets.UTF_8));
             var lines = br.lines()) {
-            final var unspecificLocations = lines
+            final var locations = lines
                     .filter(line -> !Strings.isNullOrEmpty(line) && !line.startsWith(COMMENT))
                     .collect(Collectors.toUnmodifiableSet());
-            logger.debug("Initialized unspecific locations: {}", unspecificLocations);
-            return unspecificLocations;
+            logger.debug("Initialized unspecific locations: {}", locations);
+            return locations;
         } catch (final IOException e) {
             throw new UncheckedIOException("Error during init of unspecific locations", e);
         }

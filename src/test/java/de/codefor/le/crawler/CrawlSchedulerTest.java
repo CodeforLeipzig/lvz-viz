@@ -1,6 +1,7 @@
 package de.codefor.le.crawler;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
@@ -36,9 +37,9 @@ class CrawlSchedulerTest {
     }
 
     @Test
-    @Disabled
-    void crawl() throws ExecutionException, InterruptedException {
-        scheduler.crawl();
+    @Disabled("for local tests only")
+    void crawl() {
+        assertThatCode(() -> scheduler.crawl()).doesNotThrowAnyException();
     }
 
     @Test

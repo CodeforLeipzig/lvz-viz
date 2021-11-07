@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class PoliceTickerControllerTest {
+class PoliceTickerControllerTest {
 
     @Autowired
     PoliceTickerController controller;

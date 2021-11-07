@@ -20,7 +20,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import de.codefor.le.model.PoliceTicker;
 
-public class LvzPoliceTickerDetailViewCrawlerTest {
+class LvzPoliceTickerDetailViewCrawlerTest {
 
     private static final String BASE_URL = LvzPoliceTickerCrawler.LVZ_POLICE_TICKER_BASE_URL;
 

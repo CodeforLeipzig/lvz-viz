@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import de.codefor.le.crawler.model.Nominatim;
 
-public class NominatimAskerTest {
+class NominatimAskerTest {
 
     private final NominatimAsker asker = new NominatimAsker();
 

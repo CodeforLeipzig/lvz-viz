@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.junit.jupiter.api.Test;
 
-public class LvzPoliceTickerCrawlerTest {
+class LvzPoliceTickerCrawlerTest {
 
     private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler(Optional.empty());
 

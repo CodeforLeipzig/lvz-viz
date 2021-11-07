@@ -19,7 +19,7 @@ import de.codefor.le.repositories.PoliceTickerRepository;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class ReplacementTest {
+class ReplacementTest {
 
     private static final ZoneId DEFAULT_ZONE = ZoneId.systemDefault();
 

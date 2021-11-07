@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-public class UtilsTest {
+class UtilsTest {
 
     private static final String URL_70905 = "http://nachrichten.lvz-online.de/leipzig/polizeiticker/polizeiticker-leipzig/diebe-stehlen-sich-mit-eis-und-nuernberger-wuerstchen-davon/r-polizeiticker-leipzig-a-70905.html";
 

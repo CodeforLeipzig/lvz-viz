@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class NERTest {
+class NERTest {
 
     @Autowired
     private NER ner;

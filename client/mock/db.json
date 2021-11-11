@@ -393,8 +393,8 @@
     "aggregations": null,
     "scrollId": null,
     "maxScore": "NaN",
-    "totalElements": 13706,
-    "totalPages": 457,
+    "totalElements": 30,
+    "totalPages": 1,
     "first": true,
     "sort": {
       "sorted": true,

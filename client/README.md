@@ -5,27 +5,19 @@
 
 Visualization of LVZ police ticker
 
-This project was generated with [swaaplate](https://github.com/inpercima/swaaplate) version 2.3.2-SNAPSHOT.
+This project was generated with [swaaplate](https://github.com/inpercima/swaaplate) version 2.3.2.
 
 ## Prerequisites
 
 ### Angular CLI
 
-* `angular-cli 12.1.1` or higher
+* `angular-cli 13.0.1` or higher
 
 ### Node, npm or yarn
 
-* `node 14.16.1` or higher in combination with
-  * `npm 6.14.12` or higher, used in this repository,  or
-  * `yarn 1.22.5` or higher
-
-## Dependency check
-
-Some libraries could not be updated b/c of peer dependencies or knowing issues.
-
-| library    | current version | last version | reason |
-| ---------- | --------------- | ------------ | ------ |
-| rxjs       | 6.6.0           | 7.2.0        | "@angular/common@12.1.1" has incorrect peer dependency "rxjs@^6.5.3" |
+* `node 16.13.0` or higher in combination with
+  * `npm 8.1.0` or higher or
+  * `yarn 1.22.11` or higher, used in this repository
 
 ## Getting started
 

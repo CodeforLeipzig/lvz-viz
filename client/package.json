@@ -59,7 +59,7 @@
     "serve:dev": "ng serve -o --configuration=development",
     "watch:dev": "ng build --watch --configuration=development",
     "build:mock": "ng lint && ng build --configuration=mock",
-    "run:mock": "json-server mock/db.json --middlewares mock/middleware.js",
+    "run:mock": "json-server mock/db.json",
     "serve:mock": "ng serve -o --configuration=mock",
     "watch:mock": "ng build --watch --configuration=mock",
     "build:prod": "ng lint && ng build"

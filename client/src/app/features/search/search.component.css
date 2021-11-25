@@ -2,3 +2,24 @@
   height: 620px;
   width: 100%;
 }
+
+mat-cell .article {
+  padding: 8px 0;
+}
+
+mat-row.article-row {
+  min-height: 0;
+}
+
+mat-row.element-row:not(.article-expanded-row):hover {
+  background: whitesmoke;
+}
+
+mat-row.element-row:not(.article-expanded-row):active {
+  background: #efefef;
+}
+
+mat-row.element-row mat-cell {
+  border-bottom-width: 0;
+  cursor: pointer;
+}

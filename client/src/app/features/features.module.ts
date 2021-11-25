@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AngularSplitModule } from 'angular-split';
 
@@ -17,6 +18,7 @@ import { MaterialModule } from '../shared/material/material.module';
   imports: [
     CommonModule,
     HttpClientModule,
+    FlexLayoutModule,
     AngularSplitModule,
     MaterialModule,
   ],

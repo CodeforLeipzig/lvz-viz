@@ -12,6 +12,6 @@ export class SearchService {
   constructor(private httpClient: HttpClient) { }
 
   getx(): Observable<any> {
-    return this.httpClient.get(environment.api + 'getx');
+    return this.httpClient.get<any>(environment.api + 'getx');
   }
 }

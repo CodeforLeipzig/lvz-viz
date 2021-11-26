@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SplitComponent } from 'angular-split';
 import * as L from 'leaflet';
 
+import { Content } from './content.model';
 import { SearchService } from './search.service';
 
 @Component({
@@ -22,8 +23,11 @@ import { SearchService } from './search.service';
 export class SearchComponent implements AfterViewInit {
   displayedColumns: string[] = ['title', 'publication'];
   dataSource = new MatTableDataSource();
+
   expandedElement: any;
-  private map: any;
+
+  private map!: L.Map;
+  private markers!: L.FeatureGroup;
 
   @ViewChild('split') split!: SplitComponent;
 
@@ -32,9 +36,10 @@ export class SearchComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.searchService.getx().subscribe((response: any) => {
       this.dataSource = new MatTableDataSource(response.content);
+      this.initMap();
+      this.addToMap(response.content);
     });
 
-    this.initMap();
     this.split.dragProgress$.subscribe(() => {
       this.map.invalidateSize();
     });
@@ -46,5 +51,19 @@ export class SearchComponent implements AfterViewInit {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(this.map);
+  }
+
+  private addToMap(content: Content[]): void {
+    if (this.markers) {
+      this.map.removeLayer(this.markers);
+    }
+    this.markers = new L.FeatureGroup();
+    content.forEach((c) => {
+      if (c.coords) {
+        var marker = L.marker([c.coords.lat, c.coords.lon]).bindPopup('<a href=' + c.url + '>' + c.title + '</a><br>' + c.snippet);
+        this.markers.addLayer(marker);
+      }
+    });
+    this.map.addLayer(this.markers);
   }
 }

@@ -1,5 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { SplitComponent } from 'angular-split';
@@ -30,12 +31,14 @@ export class SearchComponent implements AfterViewInit {
   private markers!: L.FeatureGroup;
 
   @ViewChild('split') split!: SplitComponent;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private searchService: SearchService) {}
 
   ngAfterViewInit(): void {
     this.searchService.getx().subscribe((response: any) => {
       this.dataSource = new MatTableDataSource(response.content);
+      this.dataSource.paginator = this.paginator;
       this.initMap();
       this.addToMap(response.content);
     });

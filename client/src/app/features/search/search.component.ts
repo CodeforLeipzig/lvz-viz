@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -21,7 +21,7 @@ import { SearchService } from './search.service';
     ]),
   ],
 })
-export class SearchComponent implements AfterViewInit {
+export class SearchComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['title', 'publication'];
   dataSource = new MatTableDataSource();
 
@@ -33,7 +33,12 @@ export class SearchComponent implements AfterViewInit {
   @ViewChild('split') split!: SplitComponent;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private searchService: SearchService) {}
+  constructor(private searchService: SearchService) { }
+
+  ngOnInit(): void {
+    /** workaround: images not loaded correctly so images are copied from node_modules leaflet folder into assets folder */
+    L.Icon.Default.imagePath = "assets/leaflet/";
+  }
 
   ngAfterViewInit(): void {
     this.searchService.getx().subscribe((response: any) => {

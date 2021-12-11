@@ -1,7 +1,7 @@
 <div style="width: 100%; height: 100%;">
   <as-split #split direction="horizontal">
     <as-split-area [size]="40">
-        <div id="map"></div>
+        <div id="mapSearch" class="map"></div>
       </as-split-area>
     <as-split-area [size]="60">
       <mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
@@ -33,7 +33,7 @@
         <mat-row *matRowDef="let row; columns: ['article']" class="article-row"></mat-row>
       </mat-table>
 
-      <mat-paginator [pageSizeOptions]="[5, 10]" aria-label="Select page of articles"></mat-paginator>
+      <mat-paginator [length]="length" [pageSizeOptions]="[5]" aria-label="Select page of articles"></mat-paginator>
     </as-split-area>
   </as-split>
 </div>

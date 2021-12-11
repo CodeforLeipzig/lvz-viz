@@ -2,11 +2,22 @@
   <mat-toolbar color="primary" class="mat-elevation-z4">
     {{ appname }}
   </mat-toolbar>
-  <mat-tab-group mat-align-tabs="start">
+  <mat-tab-group>
     <mat-tab label="Suche">
-      <lvzviz-search></lvzviz-search>
+      <!-- 
+        workaround:
+        Inactive tab content is initialized by ngOnInit but DOM is not loaded, this causes errors due the DOM is not ready on tab activation.
+        https://stackoverflow.com/a/56634256
+        https://material.angular.io/components/tabs/overview#lazy-loading
+      -->
+      <ng-template matTabContent>
+        <lvzviz-search></lvzviz-search>
+      </ng-template>
     </mat-tab>
     <mat-tab label="Statistik">
+      <ng-template matTabContent>
+        <lvzviz-statistic></lvzviz-statistic>
+      </ng-template>
     </mat-tab>
   </mat-tab-group>
 </div>

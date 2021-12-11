@@ -1,10 +1,11 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { SplitComponent } from 'angular-split';
 import * as L from 'leaflet';
+import { catchError, map, of, startWith, switchMap } from 'rxjs';
 
 import { Content } from './content.model';
 import { SearchService } from './search.service';
@@ -21,11 +22,12 @@ import { SearchService } from './search.service';
     ]),
   ],
 })
-export class SearchComponent implements OnInit, AfterViewInit {
+export class SearchComponent implements AfterViewInit {
   displayedColumns: string[] = ['title', 'publication'];
   dataSource = new MatTableDataSource();
 
   expandedElement: any;
+  length = 0;
 
   private map!: L.Map;
   private markers!: L.FeatureGroup;
@@ -35,26 +37,38 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   constructor(private searchService: SearchService) { }
 
-  ngOnInit(): void {
-    /** workaround: images not loaded correctly so images are copied from node_modules leaflet folder into assets folder */
-    L.Icon.Default.imagePath = "assets/leaflet/";
-  }
-
   ngAfterViewInit(): void {
-    this.searchService.getx().subscribe((response: any) => {
-      this.dataSource = new MatTableDataSource(response.content);
-      this.dataSource.paginator = this.paginator;
-      this.initMap();
-      this.addToMap(response.content);
-    });
+    this.initMap();
 
     this.split.dragProgress$.subscribe(() => {
       this.map.invalidateSize();
     });
+
+    this.paginator.page.pipe(
+      startWith({}),
+      switchMap(() => {
+        return this.searchService.fetch(this.paginator.pageIndex, this.paginator.pageSize, 'datePublished,desc').pipe(
+          catchError(() => of(null))
+        );
+      }),
+      map(data => {
+        if (data === null) {
+          return [];
+        }
+        this.length = data.totalElements;
+        return data.content;
+      }),
+    ).subscribe(data => {
+      this.addToMap(data);
+      this.dataSource = new MatTableDataSource(data);
+    });
   }
 
-  private initMap(): void {
-    this.map = L.map('map').setView([51.339695, 12.373075], 11);
+  initMap(): void {
+    /** workaround: images not loaded correctly so images are copied from node_modules leaflet folder into assets folder */
+    L.Icon.Default.imagePath = "assets/leaflet/";
+
+    this.map = L.map('mapSearch').setView([51.339695, 12.373075], 11);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',

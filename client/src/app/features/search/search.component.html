@@ -1,8 +1,13 @@
-<div style="width: 100%; height: 100%;">
+<p>
+  Auf der Karte werden die Orte dargestellt, welche aus den LVZ-Polizeiticker-Artikeln erkannt wurden.
+  <br>
+  Sie können auch über die Suche nach speziellen Orten und Begriffen suchen.
+</p>
+<div id="split-wrapper">
   <as-split #split direction="horizontal">
-    <as-split-area [size]="40">
-        <div id="mapSearch" class="map"></div>
-      </as-split-area>
+    <as-split-area [size]="40" [minSize]="20" [maxSize]="60">
+      <div id="mapSearch" class="map"></div>
+    </as-split-area>
     <as-split-area [size]="60">
       <mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
 
@@ -19,7 +24,7 @@
         <ng-container matColumnDef="article">
           <mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
             <div [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
-              <div class="article">{{ element.article }}</div>
+              <div class="article"><p class="mat-body">{{ displayContent(element) }}</p></div>
             </div>
           </mat-cell>
         </ng-container>

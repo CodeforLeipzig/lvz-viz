@@ -88,4 +88,8 @@ export class SearchComponent implements AfterViewInit {
     });
     this.map.addLayer(this.markers);
   }
+
+  displayContent(element: Content): string {
+    return element.article.endsWith('...') ? element.snippet : element.article;
+  }
 }

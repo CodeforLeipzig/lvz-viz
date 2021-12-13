@@ -1,8 +1,8 @@
-<div>
+<div id="wrapper" fxLayout="column" fxLayoutAlign="space-between none">
   <mat-toolbar color="primary" class="mat-elevation-z4">
     {{ appname }}
   </mat-toolbar>
-  <mat-tab-group>
+  <mat-tab-group fxFlex>
     <mat-tab label="Suche">
       <!-- 
         workaround:
@@ -20,4 +20,21 @@
       </ng-template>
     </mat-tab>
   </mat-tab-group>
+  <footer>
+    <mat-toolbar color="primary" class="mat-elevation-z4" fxLayout="row" fxLayoutAlign="center center">
+      <div class="mat-body" fxLayout="row" fxLayoutAlign="center center" fxFlex>
+        <div fxFlex="30">
+          Unser Impressum findet Ihr hier: <a href="https://codefor.de/impressum">Impressum</a>
+          <br>
+          Des Weiteren beziehen wir uns auf das 
+          <a href="http://www.lvz-online.de/nachrichten/service/impressum/servicetexte/leistungsschutzrecht/r-servicetexte-a-199230.html">Leistungsschutzrecht der LVZ</a>.
+        </div>
+        <div fxFlex="30">
+          Entwickler sind <a href="https://github.com/RicardoUsbeck">Ricardo</a>
+          und <a href="https://github.com/spinner0815">Lars</a>
+          <br>
+          Der komplette Code ist auf <a href="https://github.com/CodeforLeipzig/lvz-viz/">GitHub</a>.
+      </div></div>
+    </mat-toolbar>
+  </footer>
 </div>

@@ -3,6 +3,10 @@
   width: 100%;
 }
 
+#split-wrapper {
+  height: 620px;
+}
+
 mat-cell .article {
   padding: 8px 0;
 }

@@ -13,7 +13,12 @@
 
         <ng-container matColumnDef="title">
           <mat-header-cell fxFlex *matHeaderCellDef>Titel</mat-header-cell>
-          <mat-cell fxFlex *matCellDef="let element">{{ element.title }}</mat-cell>
+          <mat-cell fxFlex *matCellDef="let element">
+            <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+              <div fxFlex>{{ element.title }}</div>
+              <mat-icon *ngIf="isLVZPlus(element)" matTooltip="LVZ+" matTooltipPosition="left">info_outline</mat-icon>
+            </div>
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="publication">
@@ -24,7 +29,18 @@
         <ng-container matColumnDef="article">
           <mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
             <div [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
-              <div class="article"><p class="mat-body">{{ displayContent(element) }}</p></div>
+              <div class="article">
+                <p class="mat-body">{{ displayContent(element) }}</p>
+                <div>
+                  <span *ngIf="!isLVZPlus(element)">
+                    ({{ this.author }})
+                    |
+                  </span>
+                  <a href="https://www.lvz.de/Abo/Servicetexte/Impressum">{{element.copyright}}</a>
+                  |
+                  <a href="{{element.url}}" target="_blank">Artikel öffnen</a>
+                </div>
+              </div>
             </div>
           </mat-cell>
         </ng-container>

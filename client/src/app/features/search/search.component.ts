@@ -28,6 +28,7 @@ export class SearchComponent implements AfterViewInit {
 
   expandedElement: any;
   length = 0;
+  author = '';
 
   private map!: L.Map;
   private markers!: L.FeatureGroup;
@@ -90,6 +91,12 @@ export class SearchComponent implements AfterViewInit {
   }
 
   displayContent(element: Content): string {
-    return element.article.endsWith('...') ? element.snippet : element.article;
+    let article = this.isLVZPlus(element) ? element.snippet : element.article;
+    this.author = article.substring(article.lastIndexOf('.') + 2, article.length);
+    return article.substring(0, article.lastIndexOf('.') + 1);
+  }
+
+  isLVZPlus(element: Content): boolean {
+    return element.article.endsWith('...');
   }
 }

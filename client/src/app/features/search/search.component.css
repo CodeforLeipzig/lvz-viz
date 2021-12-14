@@ -7,6 +7,10 @@
   height: 620px;
 }
 
+a {
+  color: #3c8abf;
+}
+
 mat-cell .article {
   padding: 8px 0;
 }

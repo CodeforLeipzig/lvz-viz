@@ -82,7 +82,7 @@ export class StatisticComponent implements OnInit, AfterViewInit {
      */
     L.Icon.Default.imagePath = "assets/leaflet/";
 
-    this.map = L.map('mapStatistic').setView([51.339695, 12.373075], 11);
+    this.map = L.map('map-statistic').setView([51.339695, 12.373075], 11);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

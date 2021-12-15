@@ -1,4 +1,4 @@
-#mapSearch {
+#map-search {
   height: 620px;
   width: 100%;
 }
@@ -7,8 +7,16 @@
   height: 620px;
 }
 
-a {
+#filter-article {
+  text-align: center;
+}
+
+#filter-article, a {
   color: #3c8abf;
+}
+
+as-split-area mat-form-field {
+  margin-left: 24px;
 }
 
 mat-cell .article {

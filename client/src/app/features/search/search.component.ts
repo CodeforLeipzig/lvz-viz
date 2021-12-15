@@ -1,11 +1,11 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-
 import { SplitComponent } from 'angular-split';
+
 import * as L from 'leaflet';
-import { catchError, map, of, startWith, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map, startWith, tap } from 'rxjs';
 
 import { Content } from './content.model';
 import { SearchService } from './search.service';
@@ -24,9 +24,10 @@ import { SearchService } from './search.service';
 })
 export class SearchComponent implements AfterViewInit {
   displayedColumns: string[] = ['title', 'publication'];
-  dataSource = new MatTableDataSource();
+  dataSource = new MatTableDataSource<Content>();
 
   expandedElement: any;
+
   length = 0;
   author = '';
 
@@ -34,28 +35,61 @@ export class SearchComponent implements AfterViewInit {
   private markers!: L.FeatureGroup;
 
   @ViewChild('split') split!: SplitComponent;
+  @ViewChild('input') input!: ElementRef;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private searchService: SearchService) { }
 
   ngAfterViewInit(): void {
     this.initMap();
+    this.initSplit();
+    this.subscribeFilter();
+    this.subscribePaginator();
+  }
 
+  /**
+   * Initialize split view.
+   */
+  private initSplit(): void {
     this.split.dragProgress$.subscribe(() => {
       this.map.invalidateSize();
     });
+  }
 
-    this.paginator.page.pipe(
-      startWith({}),
-      switchMap(() => {
-        return this.searchService.fetch(this.paginator.pageIndex, this.paginator.pageSize, 'datePublished,desc').pipe(
-          catchError(() => of(null))
-        );
-      }),
+  /**
+   * Subscribes to the filter of articles.
+   */
+  private subscribeFilter(): void {
+    fromEvent(this.input.nativeElement, 'keyup')
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        tap(() => {
+          this.paginator.pageIndex = 0;
+          this.loadContent();
+        })
+      )
+      .subscribe();
+  }
+
+  /**
+   * Subscribes to the paginator of the table.
+   */
+  private subscribePaginator(): void {
+    this.paginator.page
+      .pipe(
+        startWith({}),
+        tap(() => this.loadContent())
+      )
+      .subscribe();
+  }
+
+  /**
+   * Loads content from backend with parameters which contains much more information and extract the content of articles.
+   */
+  private loadContent(): void {
+    this.searchService.fetch(this.paginator.pageIndex, this.paginator.pageSize, 'datePublished,desc', this.query()).pipe(
       map(data => {
-        if (data === null) {
-          return [];
-        }
         this.length = data.totalElements;
         return data.content;
       }),
@@ -65,17 +99,35 @@ export class SearchComponent implements AfterViewInit {
     });
   }
 
+  /**
+   * Returns the query from the input field or undefined if the value is empty.
+   * 
+   * @returns string | undefined
+   */
+  query(): string | undefined {
+    const input = (this.input.nativeElement.value as string).trim();
+    return input !== '' ? input : undefined;
+  }
+
+  /**
+   * Initialize map.
+   */
   initMap(): void {
     /** workaround: images not loaded correctly so images are copied from node_modules leaflet folder into assets folder */
     L.Icon.Default.imagePath = "assets/leaflet/";
 
-    this.map = L.map('mapSearch').setView([51.339695, 12.373075], 11);
+    this.map = L.map('map-search').setView([51.339695, 12.373075], 11);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(this.map);
   }
 
+  /**
+   * Integrates content as marker and popup information returned from the server into the initialized map.
+   * 
+   * @param content
+   */
   private addToMap(content: Content[]): void {
     if (this.markers) {
       this.map.removeLayer(this.markers);
@@ -83,19 +135,31 @@ export class SearchComponent implements AfterViewInit {
     this.markers = new L.FeatureGroup();
     content.forEach((c) => {
       if (c.coords) {
-        var marker = L.marker([c.coords.lat, c.coords.lon]).bindPopup('<a href=' + c.url + '>' + c.title + '</a><br>' + c.snippet);
+        var marker = L.marker([c.coords.lat, c.coords.lon]).bindPopup(`<a href="${c.url}">${c.title}</a><br>${c.snippet}`);
         this.markers.addLayer(marker);
       }
     });
     this.map.addLayer(this.markers);
   }
 
+  /**
+   * Returns the snippet if the content is LVZ+ or the full article if the content is not LVZ+ only.
+   * 
+   * @param element 
+   * @returns string
+   */
   displayContent(element: Content): string {
     let article = this.isLVZPlus(element) ? element.snippet : element.article;
     this.author = article.substring(article.lastIndexOf('.') + 2, article.length);
     return article.substring(0, article.lastIndexOf('.') + 1);
   }
 
+  /**
+   * Returns true if the content is LVZ+ and false if the content is not LVZ+ only.
+   * 
+   * @param element 
+   * @returns boolean
+   */
   isLVZPlus(element: Content): boolean {
     return element.article.endsWith('...');
   }

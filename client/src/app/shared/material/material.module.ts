@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -10,6 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     MatPaginatorModule,
     MatIconModule,
+    MatInputModule,
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
@@ -18,6 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   exports: [
     MatPaginatorModule,
     MatIconModule,
+    MatInputModule,
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,

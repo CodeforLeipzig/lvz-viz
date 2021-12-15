@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
-import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { AngularSplitModule } from 'angular-split';
 
 import { MaterialModule } from '../shared/material/material.module';

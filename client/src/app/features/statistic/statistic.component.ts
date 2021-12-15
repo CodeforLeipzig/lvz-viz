@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Options } from '@angular-slider/ngx-slider';
 
-import { LabelType, Options } from '@angular-slider/ngx-slider';
 import { addDays, differenceInDays } from 'date-fns';
+import { forkJoin, map } from 'rxjs';
 /**
  * workaround:
  * Leaflet and leaflet.heat imported here so normally no need to import on other files.
@@ -14,6 +15,8 @@ import { addDays, differenceInDays } from 'date-fns';
 import * as L from 'leaflet';
 import 'leaflet.heat/dist/leaflet-heat.js';
 
+import { Content } from '../search/content.model';
+import { DateTime } from './date-time.model';
 import { StatisticService } from './statistic.service';
 
 @Component({
@@ -24,44 +27,30 @@ import { StatisticService } from './statistic.service';
 export class StatisticComponent implements OnInit, AfterViewInit {
 
   private map!: L.Map;
+  private heat: any;
   dataLoaded = false;
-
-  @ViewChild("chartContainer") chartContainer!: ElementRef;
-  @Input() data!: any[];
-  chart: any;
-  selectedRange = [];
-  selectedData = [];
 
   minValue = 0;
   maxValue = 0;
-  options: Options = {
-    draggableRange: true,
-    stepsArray: [],
-    translate: (value: number, label: LabelType): string => {
-      switch (label) {
-        case LabelType.Low:
-          return new Date(value).toDateString();
-        case LabelType.High:
-          return new Date(value).toDateString();
-        default:
-          return String(value);
-      }
-    }
-  };
+  options!: Options;
 
   constructor(private statisticService: StatisticService) { }
 
   ngOnInit(): void {
-    this.statisticService.minmaxdate().subscribe(dates => {
-      this.minValue = new Date(dates[0].year, dates[0].monthOfYear - 1, dates[0].dayOfMonth).getTime();
-      this.maxValue = new Date(dates[1].year, dates[1].monthOfYear - 1, dates[1].dayOfMonth).getTime();
-      const dateDiff = differenceInDays(this.maxValue, this.minValue);
-      let stepDates = [...Array(dateDiff).keys()].map(x => addDays(this.minValue, x).getTime());
+    const minmaxdate$ = this.statisticService.fetchDates('minmaxdate');
+    const last7days$ = this.statisticService.fetchDates('last7days');
+
+    forkJoin([minmaxdate$, last7days$]).subscribe((dates) => {
+      const minStepValue = this.determineDateValue(dates[0][0]).getTime();
+      const maxStepValue = this.determineDateValue(dates[0][1]).getTime();
+      const minDateValue = this.determineDateValue(dates[1][0]);
+      const maxDateValue = this.determineDateValue(dates[1][1]);
+      this.minValue = minDateValue.getTime();
+      this.maxValue = maxDateValue.getTime();
       this.options = {
-        ...this.options,
-        stepsArray: stepDates.map((date: number) => {
-          return { value: date };
-        }),
+        draggableRange: true,
+        translate: (value: number) => new Date(value).toDateString(),
+        stepsArray: this.generateSliderSteps(minStepValue, maxStepValue).map((date: number) => ({ value: date })),
       };
       /** workaround:
        * The range slider needs steps on building but in this case they are not known before DOM rendering.
@@ -69,6 +58,9 @@ export class StatisticComponent implements OnInit, AfterViewInit {
        * After this the slider can be displayed.
        */
       this.dataLoaded = true;
+      this.statisticService.fetch(minDateValue.toISOString(), maxDateValue.toISOString()).pipe(
+        map(data => data.content),
+      ).subscribe(data => this.addToMap(data));
     });
   }
 
@@ -76,6 +68,9 @@ export class StatisticComponent implements OnInit, AfterViewInit {
     this.initMap();
   }
 
+  /**
+   * Initialize map.
+   */
   initMap(): void {
     /** workaround:
      * Images not loaded correctly so images are copied from node_modules leaflet folder into assets folder.
@@ -88,9 +83,33 @@ export class StatisticComponent implements OnInit, AfterViewInit {
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
 
-    var heat = (L as any).heatLayer([], {
+    this.heat = (L as any).heatLayer([], {
       radius: 25,
       minOpacity: 0.5
     });
+  }
+
+  private addToMap(content: Content[]): void {
+    var latlng: any[] = [];
+    content.forEach((c) => {
+      if (c.coords) {
+        latlng.push([c.coords.lat, c.coords.lon]);
+      }
+    });
+    this.heat.setLatLngs(latlng);
+    // TODO: what does this line do?
+    // currently now functional b/c _size is not defined
+    //if (this.map._size.y === 0) { } else {
+      this.map.addLayer(this.heat);
+    //}
+  };
+
+  private determineDateValue(date: DateTime): Date {
+    return new Date(date.year, date.monthOfYear - 1, date.dayOfMonth);
+  }
+
+  private generateSliderSteps(minValue: number, maxValue: number): number[] {
+    const dateDiff = differenceInDays(maxValue, minValue);
+    return [...Array(dateDiff).keys()].map(x => addDays(minValue, x).getTime());
   }
 }

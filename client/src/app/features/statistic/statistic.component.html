@@ -1,7 +1,35 @@
-<p>
-  Häufigkeit und Orte der im LVZ-Polizeiticker beschriebenen Fälle in Leipzig.
-  <br>
-  Verändern Sie den Slider, um verschiedene Zeitfenster zu sehen.
-</p>
+<div fxLayout="row">
+  <p fxFlex>
+    Häufigkeit und Orte der im LVZ-Polizeiticker beschriebenen Fälle in Leipzig.
+    <br>
+    Verändern Sie den Slider, um verschiedene Zeitfenster zu sehen.
+  </p>
+  <p fxFlex>
+    Die hier abgebildeten Daten entstammen prototypischen Algorithmen, welche Orte aus Texten extrahieren.
+    <br>
+    Das Mapping der Orte auf die Karte erfolgt über die
+    <a href="https://nominatim.openstreetmap.org" target="_blank" rel="noopener noreferrer">Nominatim-API</a> von
+    <a href="https://www.openstreetmap.org" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>.
+  </p>
+</div>
 <div id="map-statistic"></div>
 <ngx-slider *ngIf="dataLoaded" [(value)]="minValue" [(highValue)]="maxValue" [options]="options"></ngx-slider>
+<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+  <button fxFlex="5" mat-raised-button color="primary">
+    <mat-icon>keyboard_double_arrow_left</mat-icon>
+  </button>
+  <button fxFlex="5" mat-raised-button color="primary">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+  <p fxFlex="30" id="button-text">
+    Halten Sie einen der beiden äußeren Buttons gedrückt,
+    <br>
+    damit sich der Slider automatisch im gewünschten Zeitfenster bewegt. 
+  </p>
+  <button fxFlex="5" mat-raised-button color="primary">
+    <mat-icon>keyboard_arrow_right</mat-icon>
+  </button>
+  <button fxFlex="5" mat-raised-button color="primary">
+    <mat-icon>keyboard_double_arrow_right</mat-icon>
+  </button>
+</div>

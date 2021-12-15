@@ -2,3 +2,11 @@
   height: 620px;
   width: 100%;
 }
+
+#button-text {
+  text-align: center;
+}
+
+a {
+  color: #3c8abf;
+}

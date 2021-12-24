@@ -13,23 +13,19 @@
   </p>
 </div>
 <div id="map-statistic"></div>
-<ngx-slider *ngIf="dataLoaded" [(value)]="minValue" [(highValue)]="maxValue" [options]="options"></ngx-slider>
+<ngx-slider *ngIf="dataLoaded" [(value)]="minValue" [(highValue)]="maxValue" [options]="options" (userChangeEnd)="onUserChangeEnd($event)"></ngx-slider>
 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
-  <button fxFlex="5" mat-raised-button color="primary">
-    <mat-icon>keyboard_double_arrow_left</mat-icon>
-  </button>
-  <button fxFlex="5" mat-raised-button color="primary">
+  <button longPress (mouseLongPress)="runBackward($event)" (click)="runBackward($event)" fxFlex="5" mat-raised-button color="primary">
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
   <p fxFlex="30" id="button-text">
-    Halten Sie einen der beiden äußeren Buttons gedrückt,
+    Drücken Sie einen der beiden Buttons um das Zeitfenster zu bewegen.
     <br>
-    damit sich der Slider automatisch im gewünschten Zeitfenster bewegt. 
+    Halten Sie einen der beiden Buttons gedrückt,
+    <br>
+    bewegt sich der Slider automatisch im gewählten Zeitfenster.
   </p>
-  <button fxFlex="5" mat-raised-button color="primary">
+  <button longPress (mouseLongPress)="runForward($event)" (click)="runForward($event)" fxFlex="5" mat-raised-button color="primary">
     <mat-icon>keyboard_arrow_right</mat-icon>
-  </button>
-  <button fxFlex="5" mat-raised-button color="primary">
-    <mat-icon>keyboard_double_arrow_right</mat-icon>
   </button>
 </div>

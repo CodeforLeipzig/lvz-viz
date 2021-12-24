@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { Options } from '@angular-slider/ngx-slider';
+import { ChangeContext, Options } from '@angular-slider/ngx-slider';
 
-import { addDays, differenceInDays } from 'date-fns';
-import { forkJoin, map } from 'rxjs';
+import { addDays, subDays } from 'date-fns';
+import { forkJoin } from 'rxjs';
 /**
  * workaround:
  * Leaflet and leaflet.heat imported here so normally no need to import on other files.
@@ -30,6 +30,8 @@ export class StatisticComponent implements OnInit, AfterViewInit {
   private heat: any;
   dataLoaded = false;
 
+  private minBound = 0;
+  private maxBound = 0;
   minValue = 0;
   maxValue = 0;
   options!: Options;
@@ -37,31 +39,7 @@ export class StatisticComponent implements OnInit, AfterViewInit {
   constructor(private statisticService: StatisticService) { }
 
   ngOnInit(): void {
-    const minmaxdate$ = this.statisticService.fetchDates('minmaxdate');
-    const last7days$ = this.statisticService.fetchDates('last7days');
-
-    forkJoin([minmaxdate$, last7days$]).subscribe((dates) => {
-      const minStepValue = this.determineDateValue(dates[0][0]).getTime();
-      const maxStepValue = this.determineDateValue(dates[0][1]).getTime();
-      const minDateValue = this.determineDateValue(dates[1][0]);
-      const maxDateValue = this.determineDateValue(dates[1][1]);
-      this.minValue = minDateValue.getTime();
-      this.maxValue = maxDateValue.getTime();
-      this.options = {
-        draggableRange: true,
-        translate: (value: number) => new Date(value).toDateString(),
-        stepsArray: this.generateSliderSteps(minStepValue, maxStepValue).map((date: number) => ({ value: date })),
-      };
-      /** workaround:
-       * The range slider needs steps on building but in this case they are not known before DOM rendering.
-       * They need to be loaded first, see above.
-       * After this the slider can be displayed.
-       */
-      this.dataLoaded = true;
-      this.statisticService.fetch(minDateValue.toISOString(), maxDateValue.toISOString()).pipe(
-        map(data => data.content),
-      ).subscribe(data => this.addToMap(data));
-    });
+    this.initSlider();
   }
 
   ngAfterViewInit(): void {
@@ -69,9 +47,39 @@ export class StatisticComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Initialize slider with start and end dates by setting steps, set minVlaue and maxValue (slider values).
+   * 
+   * Gets the min and max dates of articles and set start and end of slider with these values.
+   * Gets the dates from the last 7 days and set slider values.
+   */
+  private initSlider(): void {
+    forkJoin([
+      this.statisticService.fetchDates('minmaxdate'),
+      this.statisticService.fetchDates('last7days')
+    ]).subscribe(([minmaxdate, last7days]: [DateTime[], DateTime[]]) => {
+      this.minBound = this.statisticService.determineDateValue(minmaxdate[0]).getTime();
+      this.maxBound = this.statisticService.determineDateValue(minmaxdate[1]).getTime();
+      this.minValue = this.statisticService.determineDateValue(last7days[0]).getTime();
+      this.maxValue = this.statisticService.determineDateValue(last7days[1]).getTime();
+      this.options = {
+        draggableRange: true,
+        translate: (value: number) => new Date(value).toDateString(),
+        stepsArray: this.statisticService.generateSliderSteps(this.minBound, this.maxBound).map((date: number) => ({ value: date })),
+      };
+      /** workaround:
+       * The range slider needs steps on building but in this case they are not known before DOM rendering.
+       * They need to be loaded first, see above.
+       * After this the slider can be displayed.
+       */
+      this.dataLoaded = true;
+      this.loadContent();
+    });
+  }
+
+  /**
    * Initialize map.
    */
-  initMap(): void {
+  private initMap(): void {
     /** workaround:
      * Images not loaded correctly so images are copied from node_modules leaflet folder into assets folder.
      */
@@ -89,6 +97,18 @@ export class StatisticComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Loads content from backend with specified date values, extracts the content of articles and add these to the map.
+   */
+  private loadContent(): void {
+    this.statisticService.fetch(this.minValue, this.maxValue).subscribe(content => this.addToMap(content));
+  }
+
+  /**
+   * Integrates content as heatpoints returned from the server into the initialized map.
+   * 
+   * @param content
+   */
   private addToMap(content: Content[]): void {
     var latlng: any[] = [];
     content.forEach((c) => {
@@ -97,19 +117,35 @@ export class StatisticComponent implements OnInit, AfterViewInit {
       }
     });
     this.heat.setLatLngs(latlng);
-    // TODO: what does this line do?
-    // currently now functional b/c _size is not defined
-    //if (this.map._size.y === 0) { } else {
+    /**
+     * inpercima:
+     * I don't know what this check does.
+     * Maybe the check can be removed.
+     */
+    if (this.map.getSize().y !== 0) {
       this.map.addLayer(this.heat);
-    //}
+    }
   };
 
-  private determineDateValue(date: DateTime): Date {
-    return new Date(date.year, date.monthOfYear - 1, date.dayOfMonth);
+  onUserChangeEnd(changeContext: ChangeContext): void {
+    this.loadContent();
   }
 
-  private generateSliderSteps(minValue: number, maxValue: number): number[] {
-    const dateDiff = differenceInDays(maxValue, minValue);
-    return [...Array(dateDiff).keys()].map(x => addDays(minValue, x).getTime());
+  runBackward(event: Event): void {
+    if (this.minValue > this.minBound) {
+      this.runAndLoad(true);
+    }
+  }
+
+  runForward($event: Event): void {
+    if (this.maxValue < this.maxBound) {
+      this.runAndLoad(true);
+    }
+  }
+
+  private runAndLoad(isBackward: boolean): void {
+    this.minValue = isBackward ? subDays(this.minValue, 1).getTime() : addDays(this.minValue, 1).getTime();
+    this.maxValue = isBackward ? subDays(this.maxValue, 1).getTime() : addDays(this.maxValue, 1).getTime();
+    this.loadContent();
   }
 }

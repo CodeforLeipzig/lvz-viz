@@ -93,9 +93,9 @@ export class SearchComponent implements AfterViewInit {
         this.length = data.totalElements;
         return data.content;
       }),
-    ).subscribe(data => {
-      this.addToMap(data);
-      this.dataSource = new MatTableDataSource(data);
+    ).subscribe(content => {
+      this.addToMap(content);
+      this.dataSource = new MatTableDataSource(content);
     });
   }
 

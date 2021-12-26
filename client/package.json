@@ -28,6 +28,7 @@
   },
   "description": "Visualization of LVZ police ticker",
   "devDependencies": {
+    "@angular-builders/jest": "^13.0.2",
     "@angular-devkit/build-angular": "13.0.3",
     "@angular-eslint/builder": "13.0.1",
     "@angular-eslint/eslint-plugin": "13.0.1",
@@ -37,7 +38,6 @@
     "@angular/cli": "13.0.3",
     "@angular/compiler-cli": "13.0.2",
     "@cypress/schematic": "1.6.0",
-    "@types/jasmine": "3.10.2",
     "@types/jest": "^27.0.3",
     "@types/leaflet": "1.7.6",
     "@types/leaflet.heat": "0.2.1",
@@ -46,15 +46,9 @@
     "@typescript-eslint/parser": "5.4.0",
     "cypress": "latest",
     "eslint": "8.3.0",
-    "jasmine-core": "3.10.1",
     "jest": "^27.4.5",
     "jest-preset-angular": "^11.0.1",
     "json-server": "0.17.0",
-    "karma": "6.3.9",
-    "karma-chrome-launcher": "3.1.0",
-    "karma-coverage": "2.0.3",
-    "karma-jasmine": "4.0.1",
-    "karma-jasmine-html-reporter": "1.7.0",
     "typescript": "4.4.4"
   },
   "engines": {
@@ -65,7 +59,6 @@
   "private": true,
   "repository": "https://github.com/CodeforLeipzig/lvz-viz",
   "scripts": {
-    "test": "jest --no-cache",
     "build:dev": "ng lint && ng build --configuration=development",
     "serve:dev": "ng serve -o --configuration=development",
     "watch:dev": "ng build --watch --configuration=development",

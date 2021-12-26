@@ -7,6 +7,7 @@
     }
   ],
   "dependencies": {
+    "@angular-slider/ngx-slider": "2.0.3",
     "@angular/animations": "13.0.2",
     "@angular/cdk": "13.0.2",
     "@angular/common": "13.0.2",
@@ -16,7 +17,6 @@
     "@angular/forms": "13.0.2",
     "@angular/material": "13.0.2",
     "@angular/platform-browser": "13.0.2",
-    "@angular-slider/ngx-slider": "2.0.3",
     "@angular/platform-browser-dynamic": "13.0.2",
     "angular-split": "13.0.1",
     "date-fns": "2.27.0",
@@ -38,6 +38,7 @@
     "@angular/compiler-cli": "13.0.2",
     "@cypress/schematic": "1.6.0",
     "@types/jasmine": "3.10.2",
+    "@types/jest": "^27.0.3",
     "@types/leaflet": "1.7.6",
     "@types/leaflet.heat": "0.2.1",
     "@types/node": "16.11.10",
@@ -46,6 +47,8 @@
     "cypress": "latest",
     "eslint": "8.3.0",
     "jasmine-core": "3.10.1",
+    "jest": "^27.4.5",
+    "jest-preset-angular": "^11.0.1",
     "json-server": "0.17.0",
     "karma": "6.3.9",
     "karma-chrome-launcher": "3.1.0",
@@ -62,6 +65,7 @@
   "private": true,
   "repository": "https://github.com/CodeforLeipzig/lvz-viz",
   "scripts": {
+    "test": "jest --no-cache",
     "build:dev": "ng lint && ng build --configuration=development",
     "serve:dev": "ng serve -o --configuration=development",
     "watch:dev": "ng build --watch --configuration=development",

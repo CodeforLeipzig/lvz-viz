@@ -1,16 +1,22 @@
 import { TestBed } from '@angular/core/testing';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
+import { SearchComponent } from './features/search/search.component';
+import { StatisticComponent } from './features/statistic/statistic.component';
+import { MaterialModule } from './shared/material/material.module';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        MatToolbarModule,
+        BrowserAnimationsModule,
+        MaterialModule,
       ],
       declarations: [
         AppComponent,
+        SearchComponent,
+        StatisticComponent,
       ],
     }).compileComponents();
   });

@@ -3,7 +3,7 @@
 [![dependencies Status](https://status.david-dm.org/gh/inpercima/lvz-viz.svg)](https://david-dm.org/inpercima/lvz-viz)
 [![devDependencies Status](https://status.david-dm.org/gh/inpercima/lvz-viz.svg?type=dev)](https://david-dm.org/inpercima/lvz-viz?type=dev)
 
-Visualization of LVZ police ticker
+Visualization of LVZ police ticker.
 
 This project was generated with [swaaplate](https://github.com/inpercima/swaaplate) version 2.3.2.
 
@@ -86,6 +86,15 @@ npm run build:prod
 ```bash
 # test
 ng test
+
+# test with coverage (to be found in ./coverage)
+ng test -- --coverage
+
+# watch mode
+ng test -- --watch
+
+# watch mode with specific file
+ng test -- --watch <filename>
 
 # e2e
 ng e2e

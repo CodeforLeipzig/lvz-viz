@@ -25,10 +25,23 @@ export class StatisticService {
     );
   }
 
+  /**
+   * Returns a date created from a DateTime object.
+   * 
+   * @param date 
+   * @returns Date
+   */
   determineDateValue(date: DateTime): Date {
     return new Date(date.year, date.monthOfYear - 1, date.dayOfMonth);
   }
 
+  /**
+   * Returns the steps for the slider from dates as number as an array of number.
+   * 
+   * @param minValue
+   * @param maxValue
+   * @returns number[]
+   */
   generateSliderSteps(minValue: number, maxValue: number): number[] {
     const dateDiff = differenceInDays(maxValue, minValue) + 1;
     return [...Array(dateDiff).keys()].map(x => addDays(minValue, x).getTime());

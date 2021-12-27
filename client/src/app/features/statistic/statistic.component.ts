@@ -91,6 +91,12 @@ export class StatisticComponent implements OnInit, AfterViewInit {
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
 
+    /**
+     * workaround:
+     * cast L to any to avoid following error.
+     * 
+     * error TS2339: Property 'heatLayer' does not exist on type 'typeof import("/home/marcel/dev/workspace/github/lvz-viz/client/node_modules/@types/leaflet/index")'.
+     */
     this.heat = (L as any).heatLayer([], {
       radius: 25,
       minOpacity: 0.5

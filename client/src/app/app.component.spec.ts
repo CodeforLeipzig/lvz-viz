@@ -27,7 +27,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as appname 'LVZ Polizeiticker'`, () => {
+  it('should have as appname "LVZ Polizeiticker"', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app.appname).toEqual('LVZ Polizeiticker');

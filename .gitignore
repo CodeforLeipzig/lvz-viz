@@ -1,6 +1,16 @@
-.vscode
+# begin project specific
+
+environment.dev.ts
+environment.mock.ts
+environment.prod.ts
+
+# ignore all in '.vscode' b/c some vsc config files contain user specific content
+.vscode/*
+
 data/
 .angular
+
+# end project specific
 
 # Created by https://www.toptal.com/developers/gitignore/api/node,java,gradle,eclipse,intellij+all,angular
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,java,gradle,eclipse,intellij+all,angular
@@ -95,7 +105,7 @@ local.properties
 
 # Uncomment this line if you wish to ignore the project description file.
 # Typically, this file would be tracked if it contains build/dependency configurations:
-.project
+#.project
 
 ### Eclipse Patch ###
 # Spring Boot Tooling

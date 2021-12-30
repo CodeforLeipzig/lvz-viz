@@ -19,3 +19,7 @@ footer mat-toolbar div div {
 footer a {
   color: white;
 }
+
+.footer-lt-sm {
+  height: 120px;
+}

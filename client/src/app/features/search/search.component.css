@@ -3,8 +3,16 @@
   width: 100%;
 }
 
+.map-search-lt-md {
+  height: 310px !important;
+}
+
 #split-wrapper {
   height: 620px;
+}
+
+.split-wrapper-lt-md {
+  height: 800px !important;
 }
 
 #filter-article {

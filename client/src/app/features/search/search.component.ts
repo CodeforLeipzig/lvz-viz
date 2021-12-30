@@ -1,11 +1,12 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { SplitComponent } from 'angular-split';
 
 import * as L from 'leaflet';
-import { debounceTime, distinctUntilChanged, fromEvent, map, startWith, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map, startWith, Subject, takeUntil, tap } from 'rxjs';
 
 import { Content } from './content.model';
 import { SearchService } from './search.service';
@@ -22,9 +23,12 @@ import { SearchService } from './search.service';
     ]),
   ],
 })
-export class SearchComponent implements AfterViewInit {
+export class SearchComponent implements AfterViewInit, OnDestroy {
   displayedColumns: string[] = ['title', 'publication'];
   dataSource = new MatTableDataSource<Content>();
+
+  destroyed = new Subject<void>();
+  smallSize = false;
 
   expandedElement: any;
 
@@ -38,13 +42,29 @@ export class SearchComponent implements AfterViewInit {
   @ViewChild('input') input!: ElementRef;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private searchService: SearchService) { }
+  constructor(private breakpointObserver: BreakpointObserver, private searchService: SearchService) {
+    this.breakpointObserver
+      .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(result => {
+        for (const query of Object.keys(result.breakpoints)) {
+          if (result.breakpoints[query]) {
+            this.smallSize = (query === Breakpoints.XSmall || query === Breakpoints.Small) ? true : false;
+          }
+        }
+      });
+  }
 
   ngAfterViewInit(): void {
     this.initMap();
     this.initSplit();
     this.subscribeFilter();
     this.subscribePaginator();
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   /**

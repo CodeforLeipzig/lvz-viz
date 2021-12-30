@@ -3,10 +3,10 @@
   <br>
   Sie können auch über die Suche nach speziellen Orten und Begriffen suchen.
 </p>
-<div id="split-wrapper">
-  <as-split #split direction="horizontal">
-    <as-split-area [size]="40" [minSize]="20" [maxSize]="60">
-      <div id="map-search" class="map"></div>
+<div id="split-wrapper" ngClass.lt-md="split-wrapper-lt-md">
+  <as-split #split [disabled]="smallSize ? true : false" [direction]="smallSize ? 'vertical' : 'horizontal'">
+    <as-split-area [size]="40" [minSize]="smallSize ? null : 20" [maxSize]="smallSize ? null : 60">
+      <div id="map-search" ngClass.lt-md="map-search-lt-md"></div>
     </as-split-area>
     <as-split-area [size]="60">
       <div fxLayout="row" fxLayoutAlign="space-evenly center">
@@ -30,8 +30,8 @@
         </ng-container>
 
         <ng-container matColumnDef="publication">
-          <mat-header-cell fxFlex="15" *matHeaderCellDef>Veröffentlichung</mat-header-cell>
-          <mat-cell fxFlex="15" *matCellDef="let element">{{ element.datePublished | date: 'dd.MM.yyyy HH:mm' }} Uhr</mat-cell>
+          <mat-header-cell fxFlex="15" fxFlex.xs="22" *matHeaderCellDef>Veröffentlichung</mat-header-cell>
+          <mat-cell fxFlex="15" fxFlex.xs="22" *matCellDef="let element">{{ element.datePublished | date: 'dd.MM.yyyy HH:mm' }} Uhr</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="article">

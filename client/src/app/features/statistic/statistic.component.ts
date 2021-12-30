@@ -145,7 +145,7 @@ export class StatisticComponent implements OnInit, AfterViewInit {
 
   runForward($event: Event): void {
     if (this.maxValue < this.maxBound) {
-      this.runAndLoad(true);
+      this.runAndLoad(false);
     }
   }
 

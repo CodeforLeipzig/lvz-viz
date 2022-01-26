@@ -15,7 +15,7 @@
 <div id="map-statistic"></div>
 <ngx-slider *ngIf="dataLoaded" [(value)]="minValue" [(highValue)]="maxValue" [options]="options" (userChangeEnd)="onUserChangeEnd($event)"></ngx-slider>
 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
-  <button longPress (mouseLongPress)="runBackward($event)" (click)="runBackward($event)" fxFlex="5" mat-raised-button color="primary">
+  <button lvzvizLongPress (mouseLongPress)="runBackward($event)" (click)="runBackward($event)" fxFlex="5" mat-raised-button color="primary">
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
   <p fxFlex="30" id="button-text">
@@ -25,7 +25,7 @@
     <br>
     bewegt sich der Slider automatisch im gewählten Zeitfenster.
   </p>
-  <button longPress (mouseLongPress)="runForward($event)" (click)="runForward($event)" fxFlex="5" mat-raised-button color="primary">
+  <button lvzvizLongPress (mouseLongPress)="runForward($event)" (click)="runForward($event)" fxFlex="5" mat-raised-button color="primary">
     <mat-icon>keyboard_arrow_right</mat-icon>
   </button>
 </div>

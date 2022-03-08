@@ -1,8 +1,5 @@
 # LVZ Polizeiticker
 
-[![dependencies Status](https://status.david-dm.org/gh/inpercima/lvz-viz.svg)](https://david-dm.org/inpercima/lvz-viz)
-[![devDependencies Status](https://status.david-dm.org/gh/inpercima/lvz-viz.svg?type=dev)](https://david-dm.org/inpercima/lvz-viz?type=dev)
-
 Visualization of LVZ police ticker.
 
 This project was generated with [swaaplate](https://github.com/inpercima/swaaplate) version 2.3.2.

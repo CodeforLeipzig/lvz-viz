@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class LvzPoliceTickerCrawlerTest {
@@ -12,6 +13,7 @@ class LvzPoliceTickerCrawlerTest {
     private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler(Optional.empty());
 
     @Test
+    @Disabled("no more pages to load")
     void testExecuteForPageZeroAndOne() throws InterruptedException, ExecutionException {
         final var future = crawler.execute(0);
         assertThat(future).isNotNull();
@@ -24,6 +26,7 @@ class LvzPoliceTickerCrawlerTest {
     }
 
     @Test
+    @Disabled("no more pages to load")
     void testExecuteForPageMaxInteger() throws InterruptedException, ExecutionException {
         final var result = crawler.execute(Integer.MAX_VALUE).get();
         assertThat(result).isNotNull();

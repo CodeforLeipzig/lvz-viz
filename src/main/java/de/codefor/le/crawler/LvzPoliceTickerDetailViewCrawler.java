@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,7 +20,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
@@ -50,7 +50,9 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static final String LOG_ELEMENT_NOT_FOUND = "Element '{}' not found for article.";
 
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+    private static final String ARTICLE_ALSO_READ = "Lesen Sie auch";
+
+    private static final String ARTICLE_READ_MORE = "Mehr aus dem Polizeiticker";
 
     @Async
     public Future<PoliceTicker> execute(final String url) {
@@ -108,7 +110,7 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static void extractTitle(final Document doc, final PoliceTicker dm) {
         final var title = "title";
-        final var cssQuery = ".pdb-article-teaser-breadcrumb-headline-title";
+        final var cssQuery = "div[class*=ArticleHeadstyled__ArticleHeadHeadlineContainer] > h2[class*=Headlinestyled__Headline]";
         final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, title, cssQuery);
@@ -121,7 +123,7 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static void extractCopyright(final Document doc, final PoliceTicker dm) {
         final var copyright = "copyright";
-        final var cssQuery = "li:contains(©)";
+        final var cssQuery = "footer p[class*=Copyrightstyled__Copyright]";
         final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, copyright, cssQuery);
@@ -140,15 +142,11 @@ public class LvzPoliceTickerDetailViewCrawler {
      */
     private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
         final var publishingDate = "datePublished";
-        final var cssQuery = ".pdb-article > script[type=application/ld+json]";
+        final var cssQuery = "div[class*=ArticleMetastyled__ArticleMeta] > div[class*=Stackstyled__Stack] > p + time";
         final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);
-            try {
-                dm.setDatePublished(extractDate(JSON_MAPPER.readTree(elem.data()).path(publishingDate).asText()));
-            } catch (IOException e) {
-                logger.error(e.toString(), e);
-            }
+            dm.setDatePublished(extractDate(elem.attr("datetime")));
         }
         if (dm.getDatePublished() == null) {
             logger.warn(LOG_ELEMENT_NOT_FOUND, publishingDate);
@@ -181,11 +179,8 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static void extractArticle(final Document doc, final PoliceTicker dm) {
         final var content = "articlecontent";
-        var cssQuery = ".pdb-article-body > .pdb-richtext-field > p";
-        if (!extractArticle(doc, dm, cssQuery)) {
-            cssQuery = ".pdb-article-body > .pdb-article-body-paidcontentintro > .pdb-richtext-field > p";
-            extractArticle(doc, dm, cssQuery);
-        }
+        var cssQuery = "div#article > nav + header + div p";
+        extractArticle(doc, dm, cssQuery);
         if (Strings.isNullOrEmpty(dm.getArticle())) {
             logger.warn(LOG_ELEMENT_NOT_FOUND, content);
         } else {
@@ -205,7 +200,7 @@ public class LvzPoliceTickerDetailViewCrawler {
     private static String extractArticle(final Elements elements) {
         final var article = new StringBuilder();
         for (final var e : elements) {
-            if (e.hasText()) {
+            if (e.hasText() && !includesReadMore(e.text())) {
                 if (article.length() > 0) {
                     article.append(" ");
                 }
@@ -215,9 +210,13 @@ public class LvzPoliceTickerDetailViewCrawler {
         return article.toString();
     }
 
+    private static boolean includesReadMore(final String text) {
+        return Stream.of(ARTICLE_ALSO_READ, ARTICLE_READ_MORE).anyMatch(text::startsWith);
+    }
+
     private static void extractTeaser(final Document doc, final PoliceTicker dm) {
         final var teaser = "teaser";
-        final var cssQuery = ".pdb-article-teaser-intro > .pdb-richtext-field > p";
+        final var cssQuery = "div[class*=ArticleHeadstyled__ArticleTeaserContainer] > p";
         final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, teaser, cssQuery);

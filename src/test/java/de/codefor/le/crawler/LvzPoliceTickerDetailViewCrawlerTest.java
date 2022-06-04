@@ -22,17 +22,16 @@ import de.codefor.le.model.PoliceTicker;
 
 class LvzPoliceTickerDetailViewCrawlerTest {
 
-    private static final String BASE_URL = LvzPoliceTickerCrawler.LVZ_POLICE_TICKER_BASE_URL;
+    private static final String BASE_URL = LvzPoliceTickerCrawler.LVZ_BASE_URL + "/lokales/leipzig";
 
-    private static final Date PUBLISHING_DATE = getDate(LocalDateTime.of(2015, 10, 11, 15, 13));
+    private static final Date PUBLISHING_DATE = getDate(LocalDateTime.of(2022, 6, 12, 11, 13, 7));
 
-    private static final String ARTICLE = "Fast ein halbes Jahr nach einem tödlichen Kranunfall in der Leipziger Innenstadt "
-            + "ist die Verantwortung noch immer unklar. Ein technisches Gutachten liege inzwischen vor, "
-            + "sagte ein Sprecher der Staatsanwaltschaft in Leipzig. Es sei aber noch unklar, "
-            + "ob für das Unglück jemand strafrechtlich verantwortlich gemacht werden könne. "
-            + "Noch immer werde das Ermittlungsverfahren gegen unbekannt geführt.";
+    private static final String ARTICLE = "Leipzig. Eine historische Flüssigbrandbombe hat am Samstag im Leipziger Südwesten einen Polizeieinsatz ausgelöst."
+            + " Ein Passant habe den metallischen Gegenstand gegen 16 Uhr in der Nähe der Brückenstraße und des Lauerschen Wegs entdeckt,"
+            + " teilte die Polizei am Sonntag mit. Demnach sei anschließend der Kampfmittelbeseitigungsdienst angerückt"
+            + " und habe den Fund bestätigt: Der 15 Kilogramm schwere Sprengkörper stellte sich als eine britische Kriegsbombe heraus.";
 
-    private static final String COPYRIGHT = "© Leipziger Verlags- und Druckereigesellschaft mbH & Co. KG";
+    private static final String COPYRIGHT = "© Verlagsgesellschaft Madsack GmbH & Co. KG";
 
     private final LvzPoliceTickerDetailViewCrawler crawler = new LvzPoliceTickerDetailViewCrawler();
 
@@ -43,12 +42,10 @@ class LvzPoliceTickerDetailViewCrawlerTest {
     @Test
     void extractArticles() throws InterruptedException, ExecutionException {
         final List<String> urls = new ArrayList<>();
-        urls.add(BASE_URL + "/Ermittlungen-nach-toedlichem-Kranunfall-in-Leipzig-City-dauern-an");
-        urls.add(BASE_URL + "/Betrunkene-rauscht-im-Leipziger-Zentrum-ins-Gleisbett");
-        urls.add(BASE_URL + "/Taeter-nach-Boellerwurf-in-Asylbewerberwohnung-gefasst");
-        urls.add(BASE_URL + "/Schwerer-Unfall-Strassenbahn-erfasst-Radfahrerin-in-Leipzig");
-        urls.add("http://www.lvz.de/Specials/Themenspecials/Legida-und-Proteste"
-                + "/Pegida/Nach-Pegida-Auseinandersetzung-auch-am-Leipziger-Hauptbahnhof");
+        urls.add(BASE_URL + "/leipzig-passant-findet-brandbombe-bei-der-weissen-elster-IUMQNWJHYTVQ25B22EBFOGDHFE.html");
+        urls.add(BASE_URL + "/sie-trugen-keine-maske-junge-frau-greift-personen-im-leipziger-oepnv-an-SIJPHYDMBAXAGKPZN6M2GTNG4Y.html");
+        urls.add(BASE_URL + "/leipziger-hauptbahnhof-bundespolizei-zu-pfingsten-im-dauereinsatz-YCHTE7EJJ6FNRYP4GHRQK3LDN4.html ");
+        urls.add(BASE_URL + "/ueberfall-in-leipzig-maenner-mit-ffp2-masken-rauben-34-jaehrigen-aus-75IBPAYKCFB5P5JOHSUUIF7ZWI.html");
 
         final List<PoliceTicker> results = new ArrayList<>(urls.size());
         for (var url : urls) {
@@ -64,7 +61,7 @@ class LvzPoliceTickerDetailViewCrawlerTest {
                     assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
                 });
 
-        assertThat(results).filteredOn(ticker -> ticker.getArticle().contains("Identitätsfeststellung")).hasSize(1);
+        assertThat(results).filteredOn(ticker -> ticker.getArticle().contains("FFP2-Masken")).hasSize(1);
 
         final var softly = new SoftAssertions();
         for (var ticker : results) {
@@ -77,27 +74,30 @@ class LvzPoliceTickerDetailViewCrawlerTest {
 
     @Test
     void extractArticleWithPaidContent() throws InterruptedException, ExecutionException {
-        final var result = crawler.execute(BASE_URL + "/Mordversuch-in-Markranstaedt-Ich-stech-dich-ab-das-ueberlebst-du-nicht").get();
-        assertThat(result.getArticle()).isEqualTo("Sie saßen auf dem Sofa und hörten Musik, dann zückte einer von ihnen ganz plötzlich ein Messer:"
-                + " Nach einer vollkommen unerklärlichen Bluttat in Markra...");
+        final var result = crawler.execute(
+                BASE_URL + "/mordversuch-in-markranstaedt-ich-stech-dich-ab-das-ueberlebst-du-nicht-4LYDGCIHCT6YSUNL7WEGOCNZCU.html").get();
+        assertThat(result.getArticle()).isNull();
+        assertThat(result.getSnippet()).isEqualTo(
+                "Während eines gemütlichen Abends auf dem Sofa soll ein Mann in Markranstädt plötzlich auf seinen "
+                        + "Bekannten eingestochen haben, um ihn zu töten. Der rätselhafte Fall kommt nun vor Gericht.");
     }
 
     @Disabled("no active sites with speed controls available")
     @ParameterizedTest
     @CsvSource({
-        "/Blitzer-heute-in-Leipzig-Wo-wird-am-Montag-18.-Oktober-2021-geblitzt",
-        "/Blitzer-in-Leipzig-Wo-wird-heute-geblitzt-1.-Maerz-2021",
-        "/Blitzer-in-Leipzig-Wo-wird-heute-am-12.-Mai-2021-geblitzt"
+            "/Blitzer-heute-in-Leipzig-Wo-wird-am-Montag-18.-Oktober-2021-geblitzt",
+            "/Blitzer-in-Leipzig-Wo-wird-heute-geblitzt-1.-Maerz-2021",
+            "/Blitzer-in-Leipzig-Wo-wird-heute-am-12.-Mai-2021-geblitzt"
     })
     void extractArticlesWithSpeedControls(final String path) throws ExecutionException, InterruptedException {
         assertThat(crawler.execute(BASE_URL + path).get())
-            .satisfies(ticker -> assertThat(ticker.getTitle()).matches("Hier wird am \\w+ in Leipzig geblitzt"));
+                .satisfies(ticker -> assertThat(ticker.getTitle()).matches("Hier wird am \\w+ in Leipzig geblitzt"));
     }
 
     @ParameterizedTest
     @CsvSource({
-        "/Motorradfahrer-bei-Unfall-in-Leipzig-schwer-verletzt, 30.03.2016 10:35:36",
-        "/Krawalle-am-Leipziger-Amtsgericht-191-Verfahren-eingestellt, 07.05.2016 10:00:00"
+            "/unfall-im-leipziger-norden-motorrad-von-transporter-erfasst-fahrer-schwer-verletzt-DMCSVDGWNJ3EMPYYQZHGAW42W4.html, 25.05.2022 08:23:25",
+            "/leipzig-passant-findet-brandbombe-bei-der-weissen-elster-IUMQNWJHYTVQ25B22EBFOGDHFE.html, 12.06.2022 11:13:07"
     })
     void extractPublishedDate(final String path,
             @JavaTimeConversionPattern("dd.MM.yyyy HH:mm:ss") final LocalDateTime published)
@@ -116,7 +116,7 @@ class LvzPoliceTickerDetailViewCrawlerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "2015-10-11T15:13:00", "2015-10-11T15:13:00Z", "2015-10-11T15:13:00+02:00" })
+    @ValueSource(strings = { "2022-06-12T11:13:07", "2022-06-12T11:13:07Z", "2022-06-12T11:13:07+02:00" })
     void extractDate(final String date) {
         assertThat(LvzPoliceTickerDetailViewCrawler.extractDate(date)).isEqualTo(PUBLISHING_DATE);
     }

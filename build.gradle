@@ -44,7 +44,7 @@ repositories {
 dependencies {
   implementation "io.github.bonigarcia:webdrivermanager:5.2.0",
                  "com.google.guava:guava:31.1-jre",
-                 "org.jsoup:jsoup:1.15.1",
+                 "org.jsoup:jsoup:1.15.2",
                  "org.seleniumhq.selenium:selenium-java:4.2.2"
 
   implementation("edu.stanford.nlp:stanford-corenlp:3.9.2") {

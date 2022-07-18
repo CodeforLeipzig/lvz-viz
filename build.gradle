@@ -45,7 +45,7 @@ dependencies {
   implementation "io.github.bonigarcia:webdrivermanager:5.2.1",
                  "com.google.guava:guava:31.1-jre",
                  "org.jsoup:jsoup:1.15.2",
-                 "org.seleniumhq.selenium:selenium-java:4.2.2"
+                 "org.seleniumhq.selenium:selenium-java:4.3.0"
 
   implementation("edu.stanford.nlp:stanford-corenlp:3.9.2") {
     // because https://app.snyk.io/vuln/SNYK-JAVA-COMGOOGLEPROTOBUF-173761

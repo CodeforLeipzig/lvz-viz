@@ -178,13 +178,13 @@ public class LvzPoliceTickerDetailViewCrawler {
     }
 
     private static void extractArticle(final Document doc, final PoliceTicker dm) {
-        final var content = "articlecontent";
+        final var article = "article";
         var cssQuery = "article#article > nav + header + div p";
         extractArticle(doc, dm, cssQuery);
         if (Strings.isNullOrEmpty(dm.getArticle())) {
-            logger.warn(LOG_ELEMENT_NOT_FOUND, content);
+            logger.warn(LOG_ELEMENT_NOT_FOUND, article);
         } else {
-            logger.debug(LOG_ELEMENT_FOUND, content, cssQuery);
+            logger.debug(LOG_ELEMENT_FOUND, article, cssQuery);
         }
     }
 

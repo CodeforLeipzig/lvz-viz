@@ -40,7 +40,7 @@
               <div class="article">
                 <p class="mat-body">{{ displayContent(element) }}</p>
                 <div>
-                  <span *ngIf="!isLVZPlus(element)">
+                  <span *ngIf="element.article">
                     ({{ this.author }})
                     |
                   </span>

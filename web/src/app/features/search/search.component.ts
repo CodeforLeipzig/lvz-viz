@@ -163,24 +163,14 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Returns the snippet if the content is LVZ+ or the full article if the content is not LVZ+ only.
+   * Returns the snippet if the content is LVZ+ or the full article if the content is not LVZ+.
    * 
    * @param element 
    * @returns string
    */
   displayContent(element: Content): string {
-    let article = this.isLVZPlus(element) ? element.snippet : element.article;
+    let article = element.article ? element.article : element.snippet;
     this.author = article.substring(article.lastIndexOf('.') + 2, article.length);
     return article.substring(0, article.lastIndexOf('.') + 1);
-  }
-
-  /**
-   * Returns true if the content is LVZ+ and false if the content is not LVZ+ only.
-   * 
-   * @param element 
-   * @returns boolean
-   */
-  isLVZPlus(element: Content): boolean {
-    return element.article.endsWith('...');
   }
 }

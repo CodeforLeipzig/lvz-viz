@@ -2,19 +2,17 @@
 
 Visualization of LVZ police ticker.
 
-This project was generated with [swaaplate](https://github.com/inpercima/swaaplate) version 2.3.2.
-
 ## Prerequisites
 
 ### Angular CLI
 
-* `angular-cli 14.0.6` or higher
+* `angular-cli 14.1.0` or higher
 
 ### Node, npm or yarn
 
 * `node 16.16.0` or higher in combination with
-  * `npm 8.12.2` or higher or
-  * `yarn 1.22.19` or higher, used in this repository
+  * `npm 8.12.2` or higher, used in this repository, or
+  * `yarn 1.22.19` or higher
 
 ## Getting started
 
@@ -27,11 +25,10 @@ cd lvz-viz
 npm install
 ```
 
-Create environment files for `devMode`, `mockMode` and `prodMode`.
+Create environment files for `devMode` and `prodMode`.
 
 ```bash
 cp src/environments/environment.ts src/environments/environment.dev.ts
-cp src/environments/environment.ts src/environments/environment.mock.ts
 cp src/environments/environment.ts src/environments/environment.prod.ts
 ```
 
@@ -42,33 +39,19 @@ cp src/environments/environment.ts src/environments/environment.prod.ts
 ### Recommendation
 
 It is recommanded to use a server to get full access of all angular.
-You can do this for example with `npm run serve:mock`.
 For the other options your app should run on a server which you like.
 
 ### Run in devMode
 
-If you want to work with mock data, start the mock in a separate terminal, reachable on [http://localhost:3000/](http://localhost:3000/).
-
-```bash
-# mock, separate terminal
-npm run run:mock
-```
-
 ```bash
 # build, reachable on http://localhost/app/path/to/dist/
 npm run build:dev
-# with mock
-npm run build:mock
 
 # build and starts a server, rebuild after changes, reachable on http://localhost:4200/
 npm run serve:dev
-# with mock
-npm run serve:mock
 
 # build, rebuild after changes, reachable on http://localhost/app/path/to/dist/
 npm run watch:dev
-# with mock
-npm run watch:mock
 ```
 
 ### Package
@@ -84,15 +67,6 @@ npm run build:prod
 # test
 ng test
 
-# test with coverage (to be found in ./coverage)
-ng test -- --coverage
-
-# watch mode
-ng test -- --watch
-
-# watch mode with specific file
-ng test -- --watch <filename>
-
 # e2e
 ng e2e
 ```
@@ -103,7 +77,7 @@ ng e2e
 
 All options have to been set in the environment files but some of them do not need to be changed.
 All defaults refer to the environment file (`environment.ts`), they are prepared in devMode (`environment.dev.ts`).
-Change for prodMode the option `production` to `true` and for mockMode the option `api` to `http://localhost:3000/`.
+Change for prodMode the option `production` to `true`.
 
 ### Table of contents
 

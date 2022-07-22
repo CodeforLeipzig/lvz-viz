@@ -7,7 +7,7 @@
     "modules": {
       "enabled": true,
       "features": {
-        "defaultRoute": "dashboard",
+        "defaultRoute": "search",
         "name": "features"
       },
       "notFound": {
@@ -31,13 +31,13 @@
   },
   "general": {
     "author": "Marcel Jänicke",
-    "description": "Visualization of LVZ police ticker",
+    "description": "Visualization of LVZ police ticker.",
     "modRewriteIndex": false,
     "name": "lvz-viz",
     "title": "LVZ Polizeiticker",
     "useDocker": false,
     "useMITLicense": false,
-    "useMock": true,
+    "useMock": false,
     "useSecurity": false
   },
   "server": {

@@ -1,7 +1,6 @@
 # begin project specific
 
 environment.dev.ts
-environment.mock.ts
 environment.prod.ts
 
 # ignore all in '.vscode' b/c some vsc config files contain user specific content

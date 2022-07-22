@@ -3,17 +3,15 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   },
   "newProjectRoot": "projects",
   "projects": {
     "lvz-viz": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:application": {
-          "strict": true
-        }
-      },
+      "schematics": {},
       "root": "",
       "sourceRoot": "src",
       "prefix": "lvzviz",
@@ -28,7 +26,6 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/robots.txt",
               "src/assets"
             ],
             "styles": [
@@ -89,26 +86,6 @@
                   "with": "src/environments/environment.dev.ts"
                 }
               ]
-            },
-            "mock": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.mock.ts"
-                }
-              ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ]
             }
           },
           "defaultConfiguration": "production"
@@ -121,9 +98,6 @@
             },
             "development": {
               "browserTarget": "lvz-viz:build:development"
-            },
-            "mock": {
-              "browserTarget": "lvz-viz:build:mock"
             }
           },
           "defaultConfiguration": "development"
@@ -135,15 +109,14 @@
           }
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
-              "src/robots.txt",
               "src/assets"
             ],
             "styles": [
@@ -194,6 +167,5 @@
         }
       }
     }
-  },
-  "defaultProject": "lvz-viz"
+  }
 }

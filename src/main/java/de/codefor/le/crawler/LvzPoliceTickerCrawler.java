@@ -27,10 +27,6 @@ import de.codefor.le.utilities.Utils;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.RequiredArgsConstructor;
 
-/**
- * @author spinner0815
- * @author sepe81
- */
 @Component
 @RequiredArgsConstructor
 public class LvzPoliceTickerCrawler {

@@ -37,9 +37,6 @@ import de.codefor.le.utilities.Utils;
  * <li>copyright</li>
  * <li>date published</li>
  * </ul>
- *
- * @author sepe81
- * @author spinner0815
  */
 @Component
 public class LvzPoliceTickerDetailViewCrawler {

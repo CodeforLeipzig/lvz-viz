@@ -60,7 +60,9 @@ public class LvzPoliceTickerCrawler {
             return new AsyncResult<>(crawlNewsFromPage(url));
         } finally {
             watch.stop();
-            driver.quit();
+            if (driver != null) {
+                driver.quit();
+            }
             logger.debug("Finished crawling page {} in {} ms.", page, watch.elapsed(TimeUnit.MILLISECONDS));
         }
     }

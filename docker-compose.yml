@@ -18,6 +18,14 @@ services:
     ports:
       - 8080:8080
     restart: unless-stopped
+  chrome:
+    image: selenium/standalone-chrome:4.3.0-20220706
+    mem_limit: 2g
+    networks:
+      - esnet
+    ports:
+      - 4444:4444
+    shm_size: 2gb
   elasticsearch:
     environment:
       - cluster.name=policeticker

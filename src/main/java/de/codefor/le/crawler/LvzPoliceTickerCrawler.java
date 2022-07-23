@@ -49,6 +49,9 @@ public class LvzPoliceTickerCrawler {
     /** hint for crawling the next site */
     private boolean crawlMore = true;
 
+    @Value("${spring.profiles.active:}")
+    private String activeProfile;
+
     private WebDriver driver;
 
     @Async
@@ -114,7 +117,12 @@ public class LvzPoliceTickerCrawler {
 
     private void initWebDriver() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver(new ChromeOptions().setHeadless(true));
+        driver = "dev".equals(activeProfile) || "prod".equals(activeProfile) ?
+                WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub").create() :
+                new ChromeDriver(new ChromeOptions().setHeadless(true));
+        if (driver == null) {
+            throw new IllegalStateException("initWebDriver for crawling failed");
+        }
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 

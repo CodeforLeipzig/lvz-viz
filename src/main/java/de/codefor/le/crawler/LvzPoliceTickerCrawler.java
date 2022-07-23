@@ -116,7 +116,7 @@ public class LvzPoliceTickerCrawler {
 
     private void initWebDriver() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver(new ChromeOptions().addArguments("--headless"));
+        driver = new ChromeDriver(new ChromeOptions().setHeadless(true));
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 

@@ -1,5 +1,8 @@
 version: '2.1'
 services:
+  webapp:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
   elasticsearch:
     volumes:
       - esdata-prod:/usr/share/elasticsearch/data

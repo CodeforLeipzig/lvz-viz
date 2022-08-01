@@ -1,0 +1,67 @@
+version: '2.1'
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    healthcheck:
+      test: wget --spider --quiet --tries=1 http://localhost:8080/actuator/info || exit 1
+    logging:
+      driver: "local"
+    mem_limit: 1000m
+    networks:
+      - esnet
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+  chrome:
+    image: selenium/standalone-chrome:4.3.0-20220726
+    mem_limit: 2g
+    networks:
+      - esnet
+    ports:
+      - 4444:4444
+    shm_size: 2gb
+  elasticsearch:
+    environment:
+      - cluster.name=policeticker
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - node.name=policeticker-1
+      - network.host=0.0.0.0
+      - discovery.type=single-node
+      - discovery.zen.minimum_master_nodes=1
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.ml.enabled=false
+      - xpack.graph.enabled=false
+      - xpack.watcher.enabled=false
+    healthcheck:
+      test: wget --spider --quiet --tries=1 http://localhost:9200 || exit 1
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.20
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+    mem_limit: 2g
+    networks:
+      - esnet
+    ports:
+      - 9200:9200
+    restart: unless-stopped
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata-dev:/usr/share/elasticsearch/data
+networks:
+  esnet:
+volumes:
+  esdata-dev:
+    driver: local

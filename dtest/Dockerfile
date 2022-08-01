@@ -1,0 +1,26 @@
+FROM eclipse-temurin:17-jdk-alpine
+
+LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>" \
+      org.opencontainers.image.authors="Sebastian Peters <Sebastian.Peters@gmail.com>" \
+      org.opencontainers.image.source="https://github.com/CodeforLeipzig/lvz-viz" \
+      org.opencontainers.image.vendor="Open Knowledge Foundation Deutschland e.V."
+
+# see https://github.com/adoptium/containers/blob/main/17/jdk/alpine/Dockerfile.releases.full#L22
+ENV LANG='de_DE.UTF-8' LANGUAGE='de_DE:de' LC_ALL='de_DE.UTF-8'
+
+RUN echo "Europe/Berlin" > /etc/timezone
+
+ENV USER lvz-viz
+
+RUN addgroup ${USER} \
+  && adduser -D -G ${USER} -S ${USER}
+
+USER ${USER}
+WORKDIR /home/${USER}
+
+COPY --chown=${USER} dewac_175m_600.crf.ser.gz .
+COPY --chown=${USER} app.jar .
+
+EXPOSE 8080
+
+ENTRYPOINT ["java","-XshowSettings:vm","-XX:MaxRAMPercentage=95","-jar","./app.jar"]

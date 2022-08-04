@@ -42,7 +42,7 @@ repositories {
   mavenCentral()
 }
 dependencies {
-  implementation "io.github.bonigarcia:webdrivermanager:5.2.2",
+  implementation "io.github.bonigarcia:webdrivermanager:5.2.3",
                  "com.google.guava:guava:31.1-jre",
                  "org.jsoup:jsoup:1.15.2",
                  "org.seleniumhq.selenium:selenium-api:4.3.0",

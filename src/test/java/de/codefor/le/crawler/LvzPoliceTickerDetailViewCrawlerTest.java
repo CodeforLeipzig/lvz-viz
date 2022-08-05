@@ -73,13 +73,23 @@ class LvzPoliceTickerDetailViewCrawlerTest {
     }
 
     @Test
-    void extractArticleWithPaidContent() throws InterruptedException, ExecutionException {
+    void extractArticleWithPaidContentFromLeipzig() throws InterruptedException, ExecutionException {
         final var result = crawler.execute(
                 BASE_URL + "/mordversuch-in-markranstaedt-ich-stech-dich-ab-das-ueberlebst-du-nicht-4LYDGCIHCT6YSUNL7WEGOCNZCU.html").get();
         assertThat(result.getArticle()).isNull();
         assertThat(result.getSnippet()).isEqualTo(
                 "Während eines gemütlichen Abends auf dem Sofa soll ein Mann in Markranstädt plötzlich auf seinen "
                         + "Bekannten eingestochen haben, um ihn zu töten. Der rätselhafte Fall kommt nun vor Gericht.");
+    }
+
+    @Test
+    void extractArticleWithPaidContentFromNordsachsen() throws InterruptedException, ExecutionException {
+        final var result = crawler.execute(LvzPoliceTickerCrawler.LVZ_BASE_URL
+                + "/lokales/nordsachsen/delitzsch/lok-faengt-zwischen-delitzsch-und-halle-feuer-7IQFKT3TBZPER6364QHNAEDMR4.html").get();
+        assertThat(result.getArticle()).isNull();
+        assertThat(result.getSnippet()).isEqualTo(
+                "Eine Lokomotive ist auf der Bahnstrecke zwischen Delitzsch und Halle/Saale in Brand geraten. "
+                        + "Der Bahnverkehr scheint bisher nicht beeinflusst.");
     }
 
     @Disabled("no active sites with speed controls available")

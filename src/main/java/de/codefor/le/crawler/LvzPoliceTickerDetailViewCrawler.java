@@ -179,7 +179,11 @@ public class LvzPoliceTickerDetailViewCrawler {
         var cssQuery = "article#article > nav + header + div p";
         extractArticle(doc, dm, cssQuery);
         if (Strings.isNullOrEmpty(dm.getArticle())) {
-            logger.warn(LOG_ELEMENT_NOT_FOUND, article);
+            if (doc.selectFirst("title#paid-icon") != null) {
+                logger.info(LOG_ELEMENT_NOT_FOUND + " Detected paid content.", article);
+            } else {
+                logger.warn(LOG_ELEMENT_NOT_FOUND, article);
+            }
         } else {
             logger.debug(LOG_ELEMENT_FOUND, article, cssQuery);
         }

@@ -1,5 +1,7 @@
 package de.codefor.le.crawler;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -13,6 +15,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,15 +95,20 @@ public class LvzPoliceTickerCrawler {
     }
 
     private String initLoad(final String url) {
-        initWebDriver();
+        try {
+            initWebDriver();
+        } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         driver.get(url);
 
-        // accept cookies first, it's an iframe
-        driver.switchTo().frame(driver.findElement(By.cssSelector("iframe[id*=sp_message_iframe]")));
-        driver.findElement(By.cssSelector("button[title=\"Alle akzeptieren\"]")).click();
+        // // accept cookies first, it's an iframe
+        // driver.switchTo().frame(driver.findElement(By.cssSelector("iframe[id*=sp_message_iframe]")));
+        // driver.findElement(By.cssSelector("button[title=\"Alle akzeptieren\"]")).click();
 
-        // switch back to main page after accept cookies and load more articles
-        driver.switchTo().parentFrame();
+        // // switch back to main page after accept cookies and load more articles
+        // driver.switchTo().parentFrame();
         loadMoreArticles();
 
         return driver.findElement(By.id("fusion-app")).getAttribute("innerHTML");
@@ -115,11 +123,13 @@ public class LvzPoliceTickerCrawler {
         }
     }
 
-    private void initWebDriver() {
+    private void initWebDriver() throws MalformedURLException {
         WebDriverManager.chromedriver().setup();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless", "--no-sandbox");
         driver = "dev".equals(activeProfile) || "prod".equals(activeProfile) ?
-                WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub").create() :
-                new ChromeDriver(new ChromeOptions().setHeadless(true));
+                new RemoteWebDriver(URI.create("http://chrome:4444/wd/hub").toURL(), options) :
+                new ChromeDriver(options);
         if (driver == null) {
             throw new IllegalStateException("initWebDriver for crawling failed");
         }

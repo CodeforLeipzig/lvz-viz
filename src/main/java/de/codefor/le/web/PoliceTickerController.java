@@ -21,6 +21,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value = "/api")
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(origins = "http://lvzviz.inpercima.net", maxAge = 3600)
 public class PoliceTickerController {
 
     private static final Logger logger = LoggerFactory.getLogger(PoliceTickerController.class);

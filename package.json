@@ -5,7 +5,7 @@
   "license": "GPL",
   "name": "lvz-viz",
   "private": true,
-  "version": "2.1.0",
+  "version": "2.2.0",
   "dependencies": {
     "grunt": "^1.5.3",
     "grunt-contrib-clean": "^2.0.1",

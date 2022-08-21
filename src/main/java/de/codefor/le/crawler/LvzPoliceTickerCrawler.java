@@ -1,5 +1,6 @@
 package de.codefor.le.crawler;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -123,7 +124,7 @@ public class LvzPoliceTickerCrawler {
         if (driver == null) {
             throw new IllegalStateException("initWebDriver for crawling failed");
         }
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
 
     private Collection<String> extractNewArticleLinks(final Elements links) {

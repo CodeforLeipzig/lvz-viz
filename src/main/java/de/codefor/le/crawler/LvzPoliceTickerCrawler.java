@@ -132,11 +132,7 @@ public class LvzPoliceTickerCrawler {
         for (final var link : links) {
             final String detailLink = LVZ_BASE_URL + link.attr("href");
             logger.debug("article url: {}", detailLink);
-            if (!detailLink.startsWith(LVZ_BASE_URL)) {
-                logger.debug("article not from policeticker - skip it");
-                continue;
-            } else if (detailLink.matches("(.*)Blitzer(.*)-in-Leipzig(.*)")) {
-                logger.debug("recurring speed control article - skip it");
+            if (shouldSkipUrl(detailLink)) {
                 continue;
             }
             policeTickerRepository.ifPresentOrElse(repo -> {
@@ -149,6 +145,17 @@ public class LvzPoliceTickerCrawler {
             }, () -> result.add(detailLink));
         }
         return result;
+    }
+
+    private static boolean shouldSkipUrl(final String detailLink) {
+        if (!detailLink.startsWith(LVZ_BASE_URL)) {
+            logger.debug("article not from policeticker - skip it");
+            return true;
+        } else if (detailLink.matches("(.*)Blitzer(.*)-in-Leipzig(.*)")) {
+            logger.debug("recurring speed control article - skip it");
+            return true;
+        }
+        return false;
     }
 
     public void resetCrawler() {

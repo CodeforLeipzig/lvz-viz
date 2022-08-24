@@ -44,7 +44,7 @@ repositories {
 dependencies {
   implementation "io.github.bonigarcia:webdrivermanager:5.3.0",
                  "com.google.guava:guava:31.1-jre",
-                 "org.jsoup:jsoup:1.15.2",
+                 "org.jsoup:jsoup:1.15.3",
                  "org.seleniumhq.selenium:selenium-api:4.4.0",
                  "org.seleniumhq.selenium:selenium-chrome-driver:4.4.0",
                  "org.seleniumhq.selenium:selenium-remote-driver:4.4.0",

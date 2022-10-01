@@ -16,7 +16,6 @@ module.exports = function(grunt) {
     src_dir_js: '<%= src_dir %>/js',
     src_app_js: '<%= src_dir_js %>/app.js',
     src_files_js: '<%= src_dir_js %>/**/*.js',
-    src_files_html: '<%= src_dir %>/**/*.html',
 
     jshint: {
       options: {
@@ -68,15 +67,6 @@ module.exports = function(grunt) {
         dest: '<%= build_app_min_js %>'
       }
     },
-    htmlangular: {
-      files: {
-        src: [ '<%= src_dir %>/**/*.html' ]
-      },
-      options: {
-        reportpath: '<%= build_dir %>/html-angular-validate-report.json',
-        reportCheckstylePath: null
-      }
-    },
     clean: {
       js: [ '<%= build_dir_js %>/*.js', '!<%= build_app_min_js %>' ]
     },
@@ -84,10 +74,6 @@ module.exports = function(grunt) {
       scripts: {
         files: [ '<%= gruntfile_js %>', '<%= src_files_js %>' ],
         tasks: [ 'default' ]
-      },
-      html: {
-        files: [ '<%= gruntfile_js %>', '<%= src_files_html %>' ],
-        tasks: [ 'htmlangular' ]
       }
     }
   });

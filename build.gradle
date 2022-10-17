@@ -1,7 +1,7 @@
 plugins {
   id 'com.adarshr.test-logger' version '3.2.0'
   id 'com.avast.gradle.docker-compose' version '0.16.9'
-  id 'com.github.ben-manes.versions' version '0.42.0'
+  id 'com.github.ben-manes.versions' version '0.43.0'
   id 'com.gorylenko.gradle-git-properties' version '2.4.1'
   id 'eclipse-wtp'
   id 'idea'

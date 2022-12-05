@@ -47,7 +47,7 @@ dependencies {
                  "org.jsoup:jsoup:1.15.3",
                  "org.seleniumhq.selenium:selenium-api:4.5.3",
                  "org.seleniumhq.selenium:selenium-chrome-driver:4.5.3",
-                 "org.seleniumhq.selenium:selenium-remote-driver:4.5.3",
+                 "org.seleniumhq.selenium:selenium-remote-driver:4.7.0",
 
   implementation("edu.stanford.nlp:stanford-corenlp:3.9.2") {
     // because https://app.snyk.io/vuln/SNYK-JAVA-COMGOOGLEPROTOBUF-173761

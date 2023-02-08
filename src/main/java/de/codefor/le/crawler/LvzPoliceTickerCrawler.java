@@ -135,7 +135,7 @@ public class LvzPoliceTickerCrawler {
         WebDriverManager.chromedriver().setup();
         driver = "dev".equals(activeProfile) || "prod".equals(activeProfile) ?
                 WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub").create() :
-                new ChromeDriver(new ChromeOptions().setHeadless(true));
+                new ChromeDriver(new ChromeOptions().addArguments("--headless"));
         if (driver == null) {
             throw new IllegalStateException("initWebDriver for crawling failed");
         }

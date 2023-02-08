@@ -31,8 +31,6 @@ class LvzPoliceTickerDetailViewCrawlerTest {
             + " teilte die Polizei am Sonntag mit. Demnach sei anschließend der Kampfmittelbeseitigungsdienst angerückt"
             + " und habe den Fund bestätigt: Der 15 Kilogramm schwere Sprengkörper stellte sich als eine britische Kriegsbombe heraus.";
 
-    private static final String COPYRIGHT = "© Verlagsgesellschaft Madsack GmbH & Co. KG";
-
     private final LvzPoliceTickerDetailViewCrawler crawler = new LvzPoliceTickerDetailViewCrawler();
 
     private static Date getDate(LocalDateTime localDate) {
@@ -58,7 +56,7 @@ class LvzPoliceTickerDetailViewCrawlerTest {
         assertThat(results).filteredOn(ticker -> ticker.getArticle().startsWith(ARTICLE)).hasSize(1).first()
                 .satisfies(ticker -> {
                     assertThat(ticker.getDatePublished()).isEqualTo(PUBLISHING_DATE);
-                    assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
+                    assertThat(ticker.getCopyright()).isEqualTo("© Quelle: dpa");
                 });
 
         assertThat(results).filteredOn(ticker -> ticker.getArticle().contains("FFP2-Masken")).hasSize(1);
@@ -67,7 +65,6 @@ class LvzPoliceTickerDetailViewCrawlerTest {
         for (var ticker : results) {
             softly.assertThat(ticker.getDatePublished()).isNotNull();
             softly.assertThat(ticker.getArticle()).isNotEmpty();
-            softly.assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
         }
         softly.assertAll();
     }
@@ -106,15 +103,15 @@ class LvzPoliceTickerDetailViewCrawlerTest {
 
     @ParameterizedTest
     @CsvSource({
-            "/unfall-im-leipziger-norden-motorrad-von-transporter-erfasst-fahrer-schwer-verletzt-DMCSVDGWNJ3EMPYYQZHGAW42W4.html, 25.05.2022 08:23:25",
-            "/leipzig-passant-findet-brandbombe-bei-der-weissen-elster-IUMQNWJHYTVQ25B22EBFOGDHFE.html, 12.06.2022 11:13:07"
+            "/unfall-im-leipziger-norden-motorrad-von-transporter-erfasst-fahrer-schwer-verletzt-DMCSVDGWNJ3EMPYYQZHGAW42W4.html, 25.05.2022 08:23:25, © Quelle: Einsatzfahrten Leipzig",
+            "/leipzig-passant-findet-brandbombe-bei-der-weissen-elster-IUMQNWJHYTVQ25B22EBFOGDHFE.html, 12.06.2022 11:13:07, © Quelle: dpa"
     })
     void extractPublishedDate(final String path,
-            @JavaTimeConversionPattern("dd.MM.yyyy HH:mm:ss") final LocalDateTime published)
+            @JavaTimeConversionPattern("dd.MM.yyyy HH:mm:ss") final LocalDateTime published, final String copyright)
             throws InterruptedException, ExecutionException {
         assertThat(crawler.execute(BASE_URL + path).get()).isNotNull().satisfies(ticker -> {
             assertThat(ticker.getDatePublished()).isEqualTo(getDate(published));
-            assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
+            assertThat(ticker.getCopyright()).isEqualTo(copyright);
         });
     }
 

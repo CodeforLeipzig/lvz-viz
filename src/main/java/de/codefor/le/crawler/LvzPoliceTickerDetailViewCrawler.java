@@ -120,7 +120,7 @@ public class LvzPoliceTickerDetailViewCrawler {
 
     private static void extractCopyright(final Document doc, final PoliceTicker dm) {
         final var copyright = "copyright";
-        final var cssQuery = "footer p[class*=Copyrightstyled__Copyright]";
+        final var cssQuery = "header p[class*=Copyrightstyled__Copyright]";
         final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, copyright, cssQuery);
@@ -139,7 +139,7 @@ public class LvzPoliceTickerDetailViewCrawler {
      */
     private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
         final var publishingDate = "datePublished";
-        final var cssQuery = "div[class*=ArticleMetastyled__ArticleMeta] > div[class*=Stackstyled__Stack] > p + time";
+        final var cssQuery = "div[class*=ArticleMetastyled__ArticleMeta] > div[class*=Stackstyled__Stack] > time";
         final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, publishingDate, cssQuery);

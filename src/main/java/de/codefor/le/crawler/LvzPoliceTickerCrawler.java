@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
@@ -102,17 +103,31 @@ public class LvzPoliceTickerCrawler {
 
         // switch back to main page after accept cookies and load more articles
         driver.switchTo().parentFrame();
-        loadMoreArticles();
+
+        // workaround: click only ten times and avoid "endless" loading
+        for (int i = 0; i < 10; i++) {
+            loadMoreArticles();
+        }
 
         return driver.findElement(By.id("fusion-app")).getAttribute("innerHTML");
     }
 
     private void loadMoreArticles() {
-        final WebElement element = driver.findElement(By.cssSelector("div[class*=LoadMorestyled__Button] button"));
+        final var elements = driver.findElements(By.cssSelector("div[class*=LoadMorestyled__Button] button"));
+        if (elements.size() != 1) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("available buttons: {}",
+                        elements.stream().map(e -> e.getAttribute("class")).collect(Collectors.joining(", ")));
+            }
+            logger.warn("unexpected number of buttons: {}", elements.size());
+            return;
+        }
+        final WebElement element = elements.get(0);
         if ("Mehr anzeigen".equals(element.getText())) {
-            logger.debug("load 10 more articles");
+            if (logger.isDebugEnabled()) {
+                logger.debug("load more articles via button {}", element.getAttribute("class"));
+            }
             element.click();
-            loadMoreArticles();
         }
     }
 

@@ -1,0 +1,64 @@
+{
+  "author": "",
+  "contributors": [
+    {
+      "name": "Marcel Jänicke",
+      "email": "inpercima@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "@angular/animations": "15.1.4",
+    "@angular/cdk": "15.1.4",
+    "@angular/common": "15.1.4",
+    "@angular/compiler": "15.1.4",
+    "@angular/core": "15.1.4",
+    "@angular/forms": "15.1.4",
+    "@angular/material": "15.1.4",
+    "@angular/platform-browser": "15.1.4",
+    "@angular/platform-browser-dynamic": "15.1.4",
+    "@angular/router": "15.1.4",
+    "material-icons": "1.13.1",
+    "rxjs": "7.8.0",
+    "tslib": "2.5.0",
+    "zone.js": "0.12.0"
+  },
+  "description": "Visualization of LVZ police ticker.",
+  "devDependencies": {
+    "@angular-devkit/build-angular": "15.1.5",
+    "@angular-eslint/builder": "15.2.1",
+    "@angular-eslint/eslint-plugin": "15.2.1",
+    "@angular-eslint/eslint-plugin-template": "15.2.1",
+    "@angular-eslint/schematics": "15.2.1",
+    "@angular-eslint/template-parser": "15.2.1",
+    "@angular/cli": "15.1.5",
+    "@angular/compiler-cli": "15.1.4",
+    "@cypress/schematic": "2.5.0",
+    "@types/jasmine": "4.3.1",
+    "@typescript-eslint/eslint-plugin": "5.51.0",
+    "@typescript-eslint/parser": "5.51.0",
+    "cypress": "latest",
+    "eslint": "8.34.0",
+    "jasmine-core": "4.5.0",
+    "karma": "6.4.1",
+    "karma-chrome-launcher": "3.1.1",
+    "karma-coverage": "2.2.0",
+    "karma-jasmine": "5.1.0",
+    "karma-jasmine-html-reporter": "2.0.0",
+    "typescript": "4.9.5"
+  },
+  "engines": {
+    "node": ">=18.10.0"
+  },
+  "homepage": "https://lvz-viz.leipzig.codefor.de",
+  "license": "MIT",
+  "name": "lvz-viz",
+  "private": true,
+  "repository": "https://github.com/CodeforLeipzig/lvz-viz",
+  "scripts": {
+    "build:dev": "ng lint && ng build --configuration=development",
+    "serve:dev": "ng serve -o --configuration=development",
+    "watch:dev": "ng build --watch --configuration=development",
+    "build:prod": "ng lint && ng build"
+  },
+  "version": "2.1.0-SNAPSHOT"
+}

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { FeaturesRoutingModule } from './features-routing.module';
 import { SearchComponent } from './search/search.component';
 
 @NgModule({
@@ -10,7 +9,6 @@ import { SearchComponent } from './search/search.component';
   ],
   imports: [
     CommonModule,
-    FeaturesRoutingModule
   ]
 })
 export class FeaturesModule { }

@@ -85,7 +85,6 @@ Change for `production mode` the option `production` to `true`.
 
 * [api](#api)
 * [appname](#appname)
-* [defaultRoute](#defaultroute)
 * [production](#production)
 * [theme](#theme)
 
@@ -101,13 +100,6 @@ Defines the URL to the backend.
 Applicationwide title of the app, displayed in title and toolbar.
 
 * default: `LVZ Polizeiticker`
-* type: `string`
-
-### `defaultRoute`
-
-The default route and the route to be redirected after a login if no route is stored or if a route does not exist.
-
-* default: `search`
 * type: `string`
 
 ### `production`

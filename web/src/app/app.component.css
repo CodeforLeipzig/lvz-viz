@@ -4,6 +4,24 @@ body {
   overflow-y: scroll;
 }
 
-.mat-card {
-  margin-top: 20px;
+div.mat-app-background {
+  min-height: 100vh;
+}
+
+mat-tab-body {
+  padding: 10px;
+}
+
+footer a {
+  color: white;
+}
+
+footer mat-toolbar {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+footer mat-toolbar div {
+  text-align: center;
 }

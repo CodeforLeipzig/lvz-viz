@@ -53,7 +53,7 @@
     "node": ">=18.10.0"
   },
   "homepage": "https://lvz-viz.leipzig.codefor.de",
-  "license": "MIT",
+  "license": "GPL",
   "name": "lvz-viz",
   "private": true,
   "repository": "https://github.com/CodeforLeipzig/lvz-viz",

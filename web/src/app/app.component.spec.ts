@@ -1,22 +1,20 @@
 import { TestBed } from '@angular/core/testing';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { AppRoutingPipe } from './app-routing.pipe';
+import { SearchComponent } from './features/search/search.component';
+import { MaterialModule } from './shared/material/material.module';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        MatTabsModule,
-        MatToolbarModule,
-        RouterTestingModule
+        BrowserAnimationsModule,
+        MaterialModule,
       ],
       declarations: [
         AppComponent,
-        AppRoutingPipe
+        SearchComponent,
       ],
     }).compileComponents();
   });
@@ -27,7 +25,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as appname 'LVZ Polizeiticker'`, () => {
+  it('should have as appname "LVZ Polizeiticker"', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app.appname).toEqual('LVZ Polizeiticker');

@@ -1,1 +1,65 @@
-<p>search works!</p>
+<p>
+  Auf der Karte werden die Orte dargestellt, welche aus den LVZ-Polizeiticker-Artikeln erkannt wurden.
+  <br />
+  Sie können auch über die Suche nach speziellen Orten und Begriffen suchen.
+</p>
+<div id="split-wrapper">
+  <as-split #split [disabled]="smallSize ? true : false" [direction]="smallSize ? 'vertical' : 'horizontal'">
+    <as-split-area [size]="40" [minSize]="smallSize ? null : 20" [maxSize]="smallSize ? null : 60">
+      <div id="map-search"></div>
+    </as-split-area>
+    <as-split-area [size]="60">
+        <div class="flex justify-between items-center ml-2.5">
+          <mat-form-field class="w-1/2">
+            <input matInput placeholder="Suchphrase eingeben" #input>
+          </mat-form-field>
+          <div id="filter-article">
+            {{ length }} Artikel <span *ngIf="length > 0 && query()"> für Filter mit '{{ query() }}'</span>
+          </div>
+        </div>
+
+        <mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8 ml-2.5">
+          <ng-container matColumnDef="title">
+            <mat-header-cell *matHeaderCellDef>Titel</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <div>{{ element.title }}</div>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="publication">
+            <mat-header-cell *matHeaderCellDef>Veröffentlichung</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{ element.datePublished | date: 'dd.MM.yyyy HH:mm' }} Uhr</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="article">
+            <mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+              <div [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+                <div class="article">
+                  <p class="mat-body">{{ displayContent(element) }}</p>
+                  <div>
+                    <span *ngIf="element.article">
+                      ({{ this.author }})
+                      |
+                    </span>
+                    <a href="https://www.lvz.de/Abo/Servicetexte/Impressum">{{element.copyright}}</a>
+                    |
+                    <a href="{{element.url}}" target="_blank">Artikel öffnen</a>
+                  </div>
+                </div>
+              </div>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let element; columns: displayedColumns;"
+            class="element-row"
+            [class.article-expanded-row]="element === expandedElement"
+            (click)="expandedElement = element === expandedElement ? null : element">
+          </mat-row>
+          <mat-row *matRowDef="let row; columns: ['article']" class="article-row"></mat-row>
+        </mat-table>
+
+        <mat-paginator class="ml-2.5" [length]="length" [pageSizeOptions]="[5]" aria-label="Select page of articles"></mat-paginator>
+    </as-split-area>
+  </as-split>
+</div>

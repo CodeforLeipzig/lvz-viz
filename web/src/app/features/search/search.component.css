@@ -1,0 +1,12 @@
+#map-search {
+  height: 620px;
+  width: 100%;
+}
+
+#split-wrapper {
+  height: 620px;
+}
+
+#filter-article, a {
+  color: #3c8abf;
+}

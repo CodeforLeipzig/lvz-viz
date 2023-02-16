@@ -5,3 +5,18 @@
 
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .map-search-lt-md {
+    height: 310px !important;
+  }
+
+  .split-wrapper-lt-md {
+    height: 800px !important;
+  }
+
+  .footer-lt-md {
+    height: 120px !important;
+    flex-direction: column !important;
+  }
+}

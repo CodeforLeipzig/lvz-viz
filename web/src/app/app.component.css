@@ -21,7 +21,3 @@ footer mat-toolbar {
   font-size: 14px;
   line-height: 20px;
 }
-
-footer mat-toolbar div {
-  text-align: center;
-}

@@ -3,13 +3,13 @@
   <br />
   Sie können auch über die Suche nach speziellen Orten und Begriffen suchen.
 </p>
-<div id="split-wrapper">
+<div id="split-wrapper" class="lt-md:split-wrapper-lt-md">
   <as-split #split [disabled]="smallSize ? true : false" [direction]="smallSize ? 'vertical' : 'horizontal'">
     <as-split-area [size]="40" [minSize]="smallSize ? null : 20" [maxSize]="smallSize ? null : 60">
-      <div id="map-search"></div>
+      <div id="map-search" class="lt-md:map-search-lt-md"></div>
     </as-split-area>
     <as-split-area [size]="60">
-        <div class="flex justify-between items-center ml-2.5">
+        <div class="flex justify-between items-center ml-2.5 lt-md:ml-0 lt-md:mt-2.5">
           <mat-form-field class="w-1/2">
             <input matInput placeholder="Suchphrase eingeben" #input>
           </mat-form-field>
@@ -18,7 +18,7 @@
           </div>
         </div>
 
-        <mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8 ml-2.5">
+        <mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8 ml-2.5 lt-md:ml-0">
           <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef>Titel</mat-header-cell>
             <mat-cell *matCellDef="let element">
@@ -59,7 +59,7 @@
           <mat-row *matRowDef="let row; columns: ['article']" class="article-row"></mat-row>
         </mat-table>
 
-        <mat-paginator class="ml-2.5" [length]="length" [pageSizeOptions]="[5]" aria-label="Select page of articles"></mat-paginator>
+        <mat-paginator class="ml-2.5 lt-md:ml-0" [length]="length" [pageSizeOptions]="[5]" aria-label="Select page of articles"></mat-paginator>
     </as-split-area>
   </as-split>
 </div>

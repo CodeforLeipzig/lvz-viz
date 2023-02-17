@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { SplitComponent } from 'angular-split';
@@ -23,7 +23,7 @@ import { SearchService } from './search.service';
     ]),
   ],
 })
-export class SearchComponent implements AfterViewInit, OnDestroy {
+export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
   displayedColumns: string[] = ['title', 'publication'];
   dataSource = new MatTableDataSource<Content>();
 
@@ -53,6 +53,15 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
           }
         }
       });
+  }
+
+  ngOnInit(): void {
+    /** 
+     * workaround:
+     * Images not loaded correctly: marker-shadow.png 404.
+     * So images are copied from node_modules leaflet folder into assets folder.
+     */
+    L.Icon.Default.imagePath = "assets/leaflet/";
   }
 
   ngAfterViewInit(): void {

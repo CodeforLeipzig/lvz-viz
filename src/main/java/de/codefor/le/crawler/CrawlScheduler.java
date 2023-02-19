@@ -43,22 +43,17 @@ public class CrawlScheduler {
     @Scheduled(fixedDelay = 1_800_000, initialDelayString = "${app.initialDelay}")
     public void crawl() throws ExecutionException, InterruptedException {
         logger.info("Start crawling police ticker.");
-        int page = 1;
-        while (crawler.isMoreToCrawl()) {
-            final var detailPageUrls = crawler.execute(page++).get();
-            if (detailPageUrls.iterator().hasNext()) {
-                final var details = crawlDetailPages(detailPageUrls);
-                if (ner != null) {
-                    addCoordsToPoliceTickerInformation(details);
-                }
-                if (details.iterator().hasNext()) {
-                    policeTickerRepository.saveAll(details);
-                }
+        final var detailPageUrls = crawler.execute().get();
+        if (detailPageUrls.iterator().hasNext()) {
+            final var details = crawlDetailPages(detailPageUrls);
+            if (ner != null) {
+                addCoordsToPoliceTickerInformation(details);
+            }
+            if (details.iterator().hasNext()) {
+                policeTickerRepository.saveAll(details);
             }
         }
         logger.info("Finished crawling police ticker.");
-        // else the crawler will not start again after the delay
-        crawler.resetCrawler();
     }
 
     private Iterable<PoliceTicker> crawlDetailPages(final Iterable<String> detailPageUrls) throws InterruptedException, ExecutionException {

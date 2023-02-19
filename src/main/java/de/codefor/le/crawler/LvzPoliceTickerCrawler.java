@@ -45,19 +45,13 @@ public class LvzPoliceTickerCrawler {
 
     private final Optional<PoliceTickerRepository> policeTickerRepository;
 
-    @Value("${app.crawlAllMainPages}")
-    private boolean crawlAllMainPages;
-
-    /** hint for crawling the next site */
-    private boolean crawlMore = true;
-
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 
     private WebDriver driver;
 
     @Async
-    public Future<Iterable<String>> execute(final int page) {
+    public Future<Iterable<String>> execute() {
         final var watch = Stopwatch.createStarted();
         final var url = LVZ_POLICE_TICKER_BASE_URL;
         logger.debug("Start crawling {}.", url);
@@ -68,7 +62,7 @@ public class LvzPoliceTickerCrawler {
             if (driver != null) {
                 driver.quit();
             }
-            logger.debug("Finished crawling page {} in {} ms.", page, watch.elapsed(TimeUnit.MILLISECONDS));
+            logger.debug("Finished crawling in {} ms.", watch.elapsed(TimeUnit.MILLISECONDS));
         }
     }
 
@@ -81,14 +75,11 @@ public class LvzPoliceTickerCrawler {
         final var links = doc.select("a[class*=ContentTeaserstyled__Link]");
         final var result = extractNewArticleLinks(links);
         if (links.isEmpty()) {
-            logger.debug("No links found on current page. This should be the last available page.");
-            this.crawlMore = false;
+            logger.warn("No links found.");
         } else if (result.isEmpty()) {
-            logger.debug("No new articles found on current page. {}",
-                    crawlAllMainPages ? "Nevertheless, continue crawling on next page." : "Stop crawling for now.");
-            this.crawlMore = crawlAllMainPages;
+            logger.info("No new articles found.");
         } else {
-            logger.info("{} new articles found on current page.", result.size());
+            logger.info("{} new articles found.", result.size());
         }
         return result;
     }
@@ -171,14 +162,6 @@ public class LvzPoliceTickerCrawler {
             return true;
         }
         return false;
-    }
-
-    public void resetCrawler() {
-        this.crawlMore = true;
-    }
-
-    public boolean isMoreToCrawl() {
-        return crawlMore;
     }
 
 }

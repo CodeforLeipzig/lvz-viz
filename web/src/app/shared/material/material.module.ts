@@ -9,16 +9,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
-  imports: [
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatPaginatorModule,
-    MatTableModule,
-    MatTabsModule,
-    MatToolbarModule,
-  ],
   exports: [
     MatButtonModule,
     MatFormFieldModule,

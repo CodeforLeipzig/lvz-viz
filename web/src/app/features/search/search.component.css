@@ -10,3 +10,12 @@
 #filter-article, a {
   color: #3c8abf;
 }
+
+.article-detail-row {
+  height: 0 !important;
+}
+
+.article-element-row td {
+  border-bottom-width: 0;
+  cursor: pointer;
+}

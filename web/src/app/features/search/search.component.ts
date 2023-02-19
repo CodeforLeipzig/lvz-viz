@@ -6,7 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SplitComponent } from 'angular-split';
 
 import * as L from 'leaflet';
-import { debounceTime, distinctUntilChanged, fromEvent, map, startWith, Subject, takeUntil, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map, merge, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { Content } from './content.model';
 import { SearchService } from './search.service';
@@ -46,29 +46,28 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
     this.breakpointObserver
       .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
       .pipe(takeUntil(this.destroyed))
-      .subscribe(result => {
+      .subscribe((result) => {
         for (const query of Object.keys(result.breakpoints)) {
           if (result.breakpoints[query]) {
-            this.smallSize = (query === Breakpoints.XSmall || query === Breakpoints.Small) ? true : false;
+            this.smallSize = query === Breakpoints.XSmall || query === Breakpoints.Small ? true : false;
           }
         }
       });
   }
 
   ngOnInit(): void {
-    /** 
+    /**
      * workaround:
      * Images not loaded correctly: marker-shadow.png 404.
      * So images are copied from node_modules leaflet folder into assets folder.
      */
-    L.Icon.Default.imagePath = "assets/leaflet/";
+    L.Icon.Default.imagePath = 'assets/leaflet/';
   }
 
   ngAfterViewInit(): void {
     this.initMap();
     this.initSplit();
-    this.subscribeFilter();
-    this.subscribePaginator();
+    this.loadContent();
   }
 
   ngOnDestroy() {
@@ -86,51 +85,39 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   /**
-   * Subscribes to the filter of articles.
-   */
-  private subscribeFilter(): void {
-    fromEvent(this.input.nativeElement, 'keyup')
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        tap(() => {
-          this.paginator.pageIndex = 0;
-          this.loadContent();
-        })
-      )
-      .subscribe();
-  }
-
-  /**
-   * Subscribes to the paginator of the table.
-   */
-  private subscribePaginator(): void {
-    this.paginator.page
-      .pipe(
-        startWith({}),
-        tap(() => this.loadContent())
-      )
-      .subscribe();
-  }
-
-  /**
    * Loads content from backend with parameters which contains much more information and extract the content of articles.
    */
   private loadContent(): void {
-    this.searchService.fetch(this.paginator.pageIndex, this.paginator.pageSize, 'datePublished,desc', this.query()).pipe(
-      map(data => {
-        this.length = data.totalElements;
-        return data.content;
-      }),
-    ).subscribe(content => {
-      this.addToMap(content);
-      this.dataSource = new MatTableDataSource(content);
-    });
+    const filter = fromEvent(this.input.nativeElement, 'keyup').pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      tap(() => this.paginator.firstPage())
+    );
+
+    merge(filter, this.paginator.page)
+      .pipe(
+        takeUntil(this.destroyed),
+        startWith({}),
+        switchMap(() => {
+          return this.searchService
+            .fetch(this.paginator.pageIndex, this.paginator.pageSize, 'datePublished,desc', this.input.nativeElement.value)
+            .pipe(
+              map((data) => {
+                this.length = data.totalElements;
+                return data.content;
+              })
+            );
+        })
+      )
+      .subscribe((content) => {
+        this.addToMap(content);
+        this.dataSource = new MatTableDataSource(content);
+      });
   }
 
   /**
    * Returns the query from the input field or undefined if the value is empty.
-   * 
+   *
    * @returns string | undefined
    */
   query(): string | undefined {
@@ -151,7 +138,7 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
 
   /**
    * Integrates content as marker and popup information returned from the server into the initialized map.
-   * 
+   *
    * @param content
    */
   private addToMap(content: Content[]): void {
@@ -170,8 +157,8 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
 
   /**
    * Returns the snippet if the content is LVZ+ or the full article if the content is not LVZ+.
-   * 
-   * @param element 
+   *
+   * @param element
    * @returns string
    */
   displayContent(element: Content): string {

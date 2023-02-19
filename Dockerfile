@@ -6,7 +6,7 @@ USER ${USER}
 WORKDIR /home/${USER}
 
 COPY --chown=${USER} package*.json ./
-RUN npm install --only=production
+RUN npm install --omit=dev
 
 COPY --chown=${USER} Gruntfile.js ./
 COPY --chown=${USER} src/main/resources/public/js ./src/main/resources/public/js

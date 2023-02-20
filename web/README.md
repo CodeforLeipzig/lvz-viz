@@ -45,6 +45,14 @@ For the other options your app should run on a server which you like.
 
 ### Run in development mode
 
+If you want to work with mock data, start the mock server in a separate terminal, reachable on [http://localhost:3000/](http://localhost:3000/).
+
+Comment out the provider in `FeaturesModule` to use the mock service.
+
+```bash
+npm run serve:mock
+```
+
 ```bash
 # build, reachable on http://localhost/app/path/to/dist/
 npm run build:dev
@@ -91,8 +99,9 @@ Change for `production mode` the option `production` to `true`.
 ### `api`
 
 Defines the URL to the backend.
+If you want to work with mock data, use [http://localhost:3000/](http://localhost:3000/).
 
-* default: `./`
+* default: `./api/`
 * type: `string`
 
 ### `appname`

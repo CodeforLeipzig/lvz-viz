@@ -46,6 +46,7 @@
     "cypress": "latest",
     "eslint": "8.34.0",
     "jasmine-core": "4.5.0",
+    "json-server": "0.17.1",
     "karma": "6.4.1",
     "karma-chrome-launcher": "3.1.1",
     "karma-coverage": "2.2.0",
@@ -66,6 +67,7 @@
   "scripts": {
     "build:dev": "ng lint && ng build --configuration=development",
     "serve:dev": "ng serve -o --configuration=development",
+    "serve:mock": "json-server --watch db.json",
     "watch:dev": "ng build --watch --configuration=development",
     "build:prod": "ng lint && ng build"
   },

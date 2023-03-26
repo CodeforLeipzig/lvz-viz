@@ -12,7 +12,7 @@ Visualization of LVZ police ticker.
 
 ### Node, npm or yarn
 
-* `node 18.10.0` or higher in combination with
+* `node 18.14.2` or higher in combination with
   * `npm 8.19.2` or higher, used in this repository, or
   * `yarn 1.22.19` or higher
 

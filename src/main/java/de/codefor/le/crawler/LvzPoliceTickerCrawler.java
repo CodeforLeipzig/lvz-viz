@@ -131,6 +131,8 @@ public class LvzPoliceTickerCrawler {
                 new ChromeDriver(new ChromeOptions().addArguments("--headless"));
         if (driver == null) {
             throw new IllegalStateException("initWebDriver for crawling failed");
+        } else {
+            logger.debug("initWebDriver for crawling succeeded");
         }
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }

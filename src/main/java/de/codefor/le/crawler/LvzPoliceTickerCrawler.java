@@ -15,6 +15,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,7 +91,8 @@ public class LvzPoliceTickerCrawler {
 
         // accept cookies first, it's an iframe
         driver.switchTo().frame(driver.findElement(By.cssSelector("iframe[id*=sp_message_iframe]")));
-        driver.findElement(By.cssSelector("button[title=\"Akzeptieren und weiter\"]")).click();
+        final var button = driver.findElement(By.cssSelector("button[title=\"Akzeptieren und weiter\"]"));
+        new Actions(driver).moveToElement(button).click().build().perform();
 
         // switch back to main page after accept cookies and load more articles
         driver.switchTo().parentFrame();

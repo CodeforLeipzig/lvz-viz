@@ -26,7 +26,7 @@ COPY --chown=${USER} --from=build-js /home/node/build/resources/main/public/js/a
 
 RUN gradle --info assemble
 
-FROM eclipse-temurin:11-jdk-alpine
+FROM eclipse-temurin:17-jre-alpine
 
 LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>" \
       org.opencontainers.image.authors="Sebastian Peters <Sebastian.Peters@gmail.com>" \

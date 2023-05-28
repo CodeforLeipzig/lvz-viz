@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
-import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { NgxSliderModule } from 'ngx-slider-v2';
 import { AngularSplitModule } from 'angular-split';
 
 import { LongPressDirective } from '../shared/material/long-press.directive';

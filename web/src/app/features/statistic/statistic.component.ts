@@ -1,4 +1,4 @@
-import { ChangeContext, Options } from '@angular-slider/ngx-slider';
+import { ChangeContext, Options } from 'ngx-slider-v2';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 import { addDays, subDays } from 'date-fns';

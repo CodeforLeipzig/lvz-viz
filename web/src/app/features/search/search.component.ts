@@ -148,7 +148,7 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
     this.markers = new L.FeatureGroup();
     content.forEach((c) => {
       if (c.coords) {
-        var marker = L.marker([c.coords.lat, c.coords.lon]).bindPopup(`<a href="${c.url}">${c.title}</a><br>${c.snippet}`);
+        const marker = L.marker([c.coords.lat, c.coords.lon]).bindPopup(`<a href="${c.url}">${c.title}</a><br>${c.snippet}`);
         this.markers.addLayer(marker);
       }
     });
@@ -162,7 +162,7 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
    * @returns string
    */
   displayContent(element: Content): string {
-    let article = element.article ? element.article : element.snippet;
+    const article = element.article ? element.article : element.snippet;
     this.author = article.substring(article.lastIndexOf('.') + 2, article.length);
     return article.substring(0, article.lastIndexOf('.') + 1);
   }

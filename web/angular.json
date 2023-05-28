@@ -16,7 +16,7 @@
       "schematics": {},
       "root": "",
       "sourceRoot": "src",
-      "prefix": "lvz-viz",
+      "prefix": "lvzviz",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",

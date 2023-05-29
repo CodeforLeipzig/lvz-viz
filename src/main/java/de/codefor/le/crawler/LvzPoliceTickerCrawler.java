@@ -91,7 +91,7 @@ public class LvzPoliceTickerCrawler {
 
         // accept cookies first, it's an iframe
         driver.switchTo().frame(driver.findElement(By.cssSelector("iframe[id*=sp_message_iframe]")));
-        final var button = driver.findElement(By.cssSelector("button[title=\"Akzeptieren und weiter\"]"));
+        final var button = driver.findElement(By.cssSelector("button[title=\"Einwilligen und weiter\"]"));
         new Actions(driver).moveToElement(button).click().build().perform();
 
         // switch back to main page after accept cookies and load more articles

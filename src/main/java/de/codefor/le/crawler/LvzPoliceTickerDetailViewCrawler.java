@@ -76,13 +76,10 @@ public class LvzPoliceTickerDetailViewCrawler {
         } catch (final IOException e) {
             throw new UncheckedIOException("Request for url " + url + " failed.", e);
         }
-        PoliceTicker result = null;
-        if (doc != null) {
-            result = convertToDataModel(doc);
-            result.setUrl(url);
-            result.setId(Utils.generateHashForUrl(url));
-            logger.info("Crawled {}.", url);
-        }
+        final PoliceTicker result = convertToDataModel(doc);
+        result.setUrl(url);
+        result.setId(Utils.generateHashForUrl(url));
+        logger.info("Crawled {}.", url);
         if (logger.isDebugEnabled()) {
             logger.debug("Extracted {}.", result);
         }

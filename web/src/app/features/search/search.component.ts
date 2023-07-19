@@ -1,13 +1,16 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-import { SplitComponent } from 'angular-split';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { AngularSplitModule, SplitComponent } from 'angular-split';
 
 import * as L from 'leaflet';
 import { debounceTime, distinctUntilChanged, fromEvent, map, merge, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
+import { DatePipe, NgIf } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { Content } from './content.model';
 import { SearchService } from './search.service';
 
@@ -22,6 +25,8 @@ import { SearchService } from './search.service';
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
+  standalone: true,
+  imports: [AngularSplitModule, MatFormFieldModule, MatInputModule, NgIf, MatTableModule, MatPaginatorModule, DatePipe],
 })
 export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
   displayedColumns: string[] = ['title', 'publication'];

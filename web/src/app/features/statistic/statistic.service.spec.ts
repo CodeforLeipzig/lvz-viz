@@ -7,13 +7,14 @@ import { StatisticService } from './statistic.service';
 
 describe('StatisticService', () => {
   let service: StatisticService;
-  let httpMock: HttpTestingController;
+  let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
     });
     service = TestBed.inject(StatisticService);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
   it('should be created', () => {
@@ -21,7 +22,6 @@ describe('StatisticService', () => {
   });
 
   it('should fetch dates with query minmaxdate', (done) => {
-    httpMock = TestBed.inject(HttpTestingController);
     const mockResponse: DateTime[] = [
       {
         year: 2021,
@@ -38,12 +38,11 @@ describe('StatisticService', () => {
       expect(response).toEqual(mockResponse);
       done();
     });
-    const mockRequest = httpMock.expectOne('./minmaxdate');
+    const mockRequest = httpTestingController.expectOne('./api/minmaxdate');
     mockRequest.flush(mockResponse);
   });
 
   it('should fetch dates with query last7days', (done) => {
-    httpMock = TestBed.inject(HttpTestingController);
     const mockResponse: DateTime[] = [
       {
         year: 2021,
@@ -60,12 +59,11 @@ describe('StatisticService', () => {
       expect(response).toEqual(mockResponse);
       done();
     });
-    const mockRequest = httpMock.expectOne('./last7days');
+    const mockRequest = httpTestingController.expectOne('./api/last7days');
     mockRequest.flush(mockResponse);
   });
 
   it('should fetch content', (done) => {
-    httpMock = TestBed.inject(HttpTestingController);
     const mockResponse: Content[] = [
       {
         id: '5260376b8960373336f93f38b7a56d1877e0b974',
@@ -89,7 +87,7 @@ describe('StatisticService', () => {
      expect(response).toEqual(mockResponse);
       done();
     });
-    const mockRequest = httpMock.expectOne('./searchbetween?from=2021-12-19T23:00:00.000Z&to=2021-12-26T23:00:00.000Z');
+    const mockRequest = httpTestingController.expectOne('./api/searchbetween?from=2021-12-19T23:00:00.000Z&to=2021-12-26T23:00:00.000Z');
     mockRequest.flush({ content: mockResponse});
   });
 

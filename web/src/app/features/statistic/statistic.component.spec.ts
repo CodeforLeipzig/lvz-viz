@@ -2,16 +2,14 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StatisticComponent } from './statistic.component';
-import { MaterialModule } from 'src/app/shared/material/material.module';
 
 describe('StatisticComponent', () => {
   let component: StatisticComponent;
   let fixture: ComponentFixture<StatisticComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [StatisticComponent],
-      imports: [HttpClientTestingModule, MaterialModule],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
     }).compileComponents();
   });
 

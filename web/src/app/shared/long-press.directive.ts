@@ -7,6 +7,7 @@ import { filter, map, switchMap } from 'rxjs/operators';
 
 @Directive({
   selector: '[lvzvizLongPress]',
+  standalone: true,
 })
 export class LongPressDirective implements OnDestroy {
   private eventSubscribe: Subscription;

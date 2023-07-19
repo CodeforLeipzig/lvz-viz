@@ -1,5 +1,5 @@
-import { ChangeContext, Options } from 'ngx-slider-v2';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { ChangeContext, NgxSliderModule, Options } from 'ngx-slider-v2';
 
 import { addDays, subDays } from 'date-fns';
 import { forkJoin } from 'rxjs';
@@ -15,6 +15,10 @@ import { forkJoin } from 'rxjs';
 import * as L from 'leaflet';
 import 'leaflet.heat/dist/leaflet-heat.js';
 
+import { NgIf } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { LongPressDirective } from '../../shared/long-press.directive';
 import { Content } from '../search/content.model';
 import { DateTime } from './date-time.model';
 import { StatisticService } from './statistic.service';
@@ -23,6 +27,8 @@ import { StatisticService } from './statistic.service';
   selector: 'lvzviz-statistic',
   templateUrl: './statistic.component.html',
   styleUrls: ['./statistic.component.css'],
+  standalone: true,
+  imports: [NgIf, NgxSliderModule, MatButtonModule, LongPressDirective, MatIconModule],
 })
 export class StatisticComponent implements OnInit, AfterViewInit {
   private map!: L.Map;

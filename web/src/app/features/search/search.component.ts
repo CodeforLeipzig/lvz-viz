@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Content } from './content.model';
 import { SearchService } from './search.service';
+import { SearchServiceMock } from './search.service.mock';
 
 @Component({
   selector: 'lvzviz-search',
@@ -27,6 +28,9 @@ import { SearchService } from './search.service';
   ],
   standalone: true,
   imports: [AngularSplitModule, MatFormFieldModule, MatInputModule, NgIf, MatTableModule, MatPaginatorModule, DatePipe],
+  providers: [
+    // { provide: SearchService, useClass: SearchServiceMock }
+  ],
 })
 export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
   displayedColumns: string[] = ['title', 'publication'];

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
@@ -10,6 +10,9 @@ import { environment } from 'src/environments/environment';
 export class SearchServiceMock {
   constructor(private httpClient: HttpClient) {}
 
+  /**
+   * This mock is used to override some parameters to get json server working.
+   */
   fetch(_page: number, _limit: number, _sort: string, q?: string): Observable<any> {
     const collected = { _page: _page + 1, _limit, _sort, _order: _sort.slice(_sort.indexOf(',') + 1) };
     const params = new HttpParams({ fromObject: q ? { ...collected, q } : collected });

@@ -290,5 +290,29 @@
       "datePublished": "2023-02-13T12:24:51.000+0000",
       "coords": null
     }
+  ],
+  "minmaxdate": [
+    {
+      "year": 2023,
+      "monthOfYear": 2,
+      "dayOfMonth": 13
+    },
+    {
+      "year": 2023,
+      "monthOfYear": 2,
+      "dayOfMonth": 17
+    }
+  ],
+  "last7days": [
+    {
+      "year": 2023,
+      "monthOfYear": 2,
+      "dayOfMonth": 10
+    },
+    {
+      "year": 2023,
+      "monthOfYear": 2,
+      "dayOfMonth": 17
+    }
   ]
 }

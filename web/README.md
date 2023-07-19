@@ -47,7 +47,8 @@ For the other options your app should run on a server which you like.
 
 If you want to work with mock data, start the mock server in a separate terminal, reachable on [http://localhost:3000/](http://localhost:3000/).
 
-Comment out the provider in `FeaturesModule` to use the mock service.
+Comment out the providers in `SearchComponent` and `StatisticComponent` to use the mock services.
+Update your `environment.dev.ts` file `api` to `http://localhost:3000/`.
 
 ```bash
 npm run serve:mock

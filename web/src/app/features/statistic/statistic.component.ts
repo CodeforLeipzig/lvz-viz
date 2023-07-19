@@ -22,6 +22,7 @@ import { LongPressDirective } from '../../shared/long-press.directive';
 import { Content } from '../search/content.model';
 import { DateTime } from './date-time.model';
 import { StatisticService } from './statistic.service';
+import { StatisticServiceMock } from './statistic.service.mock';
 
 @Component({
   selector: 'lvzviz-statistic',
@@ -29,6 +30,9 @@ import { StatisticService } from './statistic.service';
   styleUrls: ['./statistic.component.css'],
   standalone: true,
   imports: [NgIf, NgxSliderModule, MatButtonModule, LongPressDirective, MatIconModule],
+  providers: [
+    // { provide: StatisticService, useClass: StatisticServiceMock }
+  ],
 })
 export class StatisticComponent implements OnInit, AfterViewInit {
   private map!: L.Map;

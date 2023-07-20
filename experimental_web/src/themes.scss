@@ -1,0 +1,98 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+mat.$theme-ignore-duplication-warnings: true;
+
+.indigo-pink-theme {
+  $indigo-pink-primary: mat.define-palette(mat.$indigo-palette, 500);
+  $indigo-pink-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+  $indigo-pink-theme: mat.define-light-theme((
+    color: (
+      primary: $indigo-pink-primary,
+      accent: $indigo-pink-accent,
+    ),
+    typography: mat.define-typography-config(),
+  ));
+
+  @include mat.all-component-themes($indigo-pink-theme);
+}
+
+.deeppurple-amber-theme {
+  $deeppurple-amber-primary: mat.define-palette(mat.$deep-purple-palette, 500);
+  $deeppurple-amber-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
+
+  $deeppurple-amber-theme: mat.define-light-theme((
+    color: (
+      primary: $deeppurple-amber-primary,
+      accent: $deeppurple-amber-accent,
+    ),
+    typography: mat.define-typography-config(),
+  ));
+
+  @include mat.all-component-themes($deeppurple-amber-theme);
+}
+
+.pink-bluegrey-theme {
+  $pink-bluegrey-primary: mat.define-palette(mat.$pink-palette, 500);
+  $pink-bluegrey-accent: mat.define-palette(mat.$blue-grey-palette, A200, A100, A400);
+
+  $pink-bluegrey-theme: mat.define-dark-theme((
+    color: (
+      primary: $pink-bluegrey-primary,
+      accent: $pink-bluegrey-accent,
+    ),
+    typography: mat.define-typography-config(),
+  ));
+
+  @include mat.all-component-themes($pink-bluegrey-theme);
+}
+
+.purple-green-theme {
+  $purple-green-primary: mat.define-palette(mat.$purple-palette, 500);
+  $purple-green-accent: mat.define-palette(mat.$green-palette, A200, A100, A400);
+
+  $purple-green-theme: mat.define-dark-theme((
+    color: (
+      primary: $purple-green-primary,
+      accent: $purple-green-accent,
+    ),
+    typography: mat.define-typography-config(),
+  ));
+
+  @include mat.all-component-themes($purple-green-theme);
+}
+
+.custom-light-theme {
+  $custom-light-primary: mat.define-palette(mat.$light-blue-palette, 500);
+  $custom-light-accent: mat.define-palette(mat.$orange-palette, A200, A100, A400);
+
+  $custom-light-theme: mat.define-light-theme((
+    color: (
+      primary: $custom-light-primary,
+      accent: $custom-light-accent,
+    ),
+    typography: mat.define-typography-config(),
+  ));
+
+  @include mat.all-component-themes($custom-light-theme);
+}
+
+.custom-dark-theme {
+  $custom-dark-primary: mat.define-palette(mat.$grey-palette, 500);
+  $custom-dark-accent: mat.define-palette(mat.$blue-palette, A200, A100, A400);
+
+  $custom-dark-theme: mat.define-dark-theme((
+    color: (
+      primary: $custom-dark-primary,
+      accent: $custom-dark-accent,
+    ),
+    typography: mat.define-typography-config(),
+  ));
+
+  @include mat.all-component-themes($custom-dark-theme);
+}
+
+.mat-mdc-tab-nav-bar, .mat-mdc-tab-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}

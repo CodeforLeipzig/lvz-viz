@@ -1,0 +1,37 @@
+<div class="flex xs:flex-col">
+  <p class="flex-1">
+    Häufigkeit und Orte der im LVZ-Polizeiticker beschriebenen Fälle in Leipzig.
+    <br />
+    Verändern Sie den Slider, um verschiedene Zeitfenster zu sehen.
+  </p>
+  <p class="flex-1">
+    Die hier abgebildeten Daten entstammen prototypischen Algorithmen, welche Orte aus Texten extrahieren.
+    <br />
+    Das Mapping der Orte auf die Karte erfolgt über die
+    <a href="https://nominatim.openstreetmap.org" target="_blank" rel="noopener noreferrer">Nominatim-API</a> von
+    <a href="https://www.openstreetmap.org" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>.
+  </p>
+</div>
+<div id="map-statistic"></div>
+<ngx-slider
+  *ngIf="dataLoaded"
+  [(value)]="minValue"
+  [(highValue)]="maxValue"
+  [options]="options"
+  (userChangeEnd)="onUserChangeEnd($event)"
+></ngx-slider>
+<div class="flex justify-center space-x-5 items-center">
+  <button lvzvizLongPress (mouseLongPress)="runBackward($event)" (click)="runBackward($event)" mat-mini-fab color="primary">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+  <p class="text-center">
+    Drücken Sie einen der beiden Buttons um das Zeitfenster zu bewegen.
+    <br />
+    Halten Sie einen der beiden Buttons gedrückt,
+    <br />
+    bewegt sich der Slider automatisch im gewählten Zeitfenster.
+  </p>
+  <button lvzvizLongPress (mouseLongPress)="runForward($event)" (click)="runForward($event)" mat-mini-fab color="primary">
+    <mat-icon>keyboard_arrow_right</mat-icon>
+  </button>
+</div>

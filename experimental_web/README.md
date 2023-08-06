@@ -1,6 +1,6 @@
 # LVZ Polizeiticker
 
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE.md)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](../LICENSE)
 
 Visualization of LVZ police ticker.
 
@@ -40,7 +40,7 @@ cp src/environments/environment.ts src/environments/environment.prod.ts
 
 ### Recommendation
 
-It is recommanded to use a server to get full access of all angular.
+It is recommended to use a server to get full access of all angular.
 For the other options your app should run on a server which you like.
 
 ### Run in development mode
@@ -86,7 +86,7 @@ ng e2e
 
 ### General
 
-All options have to been set in the environment files but some of them do not need to be changed.
+All options have to be set in the environment files but some of them do not need to be changed.
 All defaults refer to the environment file (`environment.ts`), they are prepared in `development mode` (`environment.dev.ts`).
 Change for `production mode` the option `production` to `true`.
 
@@ -107,7 +107,7 @@ If you want to work with mock data, use [http://localhost:3000/](http://localhos
 
 ### `appname`
 
-Applicationwide title of the app, displayed in title and toolbar.
+Application-wide title of the app, displayed in title and toolbar.
 
 * default: `LVZ Polizeiticker`
 * type: `string`

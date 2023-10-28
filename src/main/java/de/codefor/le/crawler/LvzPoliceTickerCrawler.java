@@ -99,21 +99,30 @@ public class LvzPoliceTickerCrawler {
 
         // workaround: click only ten times and avoid "endless" loading
         for (int i = 0; i < 10; i++) {
-            loadMoreArticles();
+            if (!loadMoreArticles()) {
+                logger.info("stop loading");
+                break;
+            }
         }
 
         return driver.findElement(By.id("fusion-app")).getAttribute("innerHTML");
     }
 
-    private void loadMoreArticles() {
+    /**
+     * Load more articles via specific button.
+     *
+     * @return true, if exactly one button was found
+     */
+    private boolean loadMoreArticles() {
         final var elements = driver.findElements(By.cssSelector("div[class*=LoadMorestyled__Button] button"));
-        if (elements.size() != 1) {
-            if (logger.isDebugEnabled()) {
+        final var size = elements.size();
+        if (size != 1) {
+            if (size != 0 && logger.isDebugEnabled()) {
                 logger.debug("available buttons: {}",
                         elements.stream().map(e -> e.getAttribute("class")).collect(Collectors.joining(", ")));
             }
-            logger.warn("unexpected number of buttons: {}", elements.size());
-            return;
+            logger.warn("unexpected number of buttons: {}", size);
+            return false;
         }
         final WebElement element = elements.get(0);
         if ("Mehr anzeigen".equals(element.getText())) {
@@ -122,6 +131,7 @@ public class LvzPoliceTickerCrawler {
             }
             element.click();
         }
+        return true;
     }
 
     private void initWebDriver() {

@@ -18,7 +18,7 @@ import { SearchServiceMock } from './search.service.mock';
 @Component({
   selector: 'lvzviz-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css'],
+  styleUrl: './search.component.css',
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px' })),

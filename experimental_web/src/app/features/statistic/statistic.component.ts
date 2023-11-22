@@ -27,7 +27,7 @@ import { StatisticServiceMock } from './statistic.service.mock';
 @Component({
   selector: 'lvzviz-statistic',
   templateUrl: './statistic.component.html',
-  styleUrls: ['./statistic.component.css'],
+  styleUrl: './statistic.component.css',
   standalone: true,
   imports: [NgIf, NgxSliderModule, MatButtonModule, LongPressDirective, MatIconModule],
   providers: [

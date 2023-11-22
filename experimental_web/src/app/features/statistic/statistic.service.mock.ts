@@ -1,11 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
-
-import { environment } from 'src/environments/environment';
-import { DateTime } from '../statistic/date-time.model';
-import { Content } from 'leaflet';
 import { addDays, differenceInDays, toDate } from 'date-fns';
+import { Content } from 'leaflet';
+import { Observable, map } from 'rxjs';
+
+import { environment } from '../../../environments/environment';
+import { DateTime } from '../statistic/date-time.model';
 
 @Injectable({
   providedIn: 'root',

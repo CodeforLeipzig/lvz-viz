@@ -150,7 +150,8 @@ public class LvzPoliceTickerCrawler {
     private Collection<String> extractNewArticleLinks(final Elements links) {
         final Collection<String> result = new ArrayList<>(links.size());
         for (final var link : links) {
-            final String detailLink = LVZ_BASE_URL + link.attr("href");
+            final var href = link.attr("href");
+            final var detailLink = !href.startsWith("http") ? LVZ_BASE_URL + href : href;
             logger.debug("article url: {}", detailLink);
             if (shouldSkipUrl(detailLink)) {
                 continue;

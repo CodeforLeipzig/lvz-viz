@@ -40,7 +40,7 @@ public class LvzPoliceTickerCrawler {
 
     protected static final int REQUEST_TIMEOUT = 30000;
 
-    protected static final String LVZ_BASE_URL = "http://www.lvz.de";
+    protected static final String LVZ_BASE_URL = "https://www.lvz.de";
 
     protected static final String LVZ_POLICE_TICKER_BASE_URL = LVZ_BASE_URL + "/themen/leipzig-polizei";
 

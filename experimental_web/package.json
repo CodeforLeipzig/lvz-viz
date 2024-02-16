@@ -29,7 +29,7 @@
   },
   "description": "Visualization of LVZ police ticker.",
   "devDependencies": {
-    "@angular-devkit/build-angular": "17.0.9",
+    "@angular-devkit/build-angular": "17.2.0",
     "@angular-eslint/builder": "17.2.0",
     "@angular-eslint/eslint-plugin": "17.2.0",
     "@angular-eslint/eslint-plugin-template": "17.2.0",

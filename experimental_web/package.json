@@ -25,26 +25,26 @@
     "material-icons": "1.13.12",
     "rxjs": "7.8.1",
     "tslib": "2.6.2",
-    "zone.js": "0.14.5"
+    "zone.js": "0.14.6"
   },
   "description": "Visualization of LVZ police ticker.",
   "devDependencies": {
     "@angular-devkit/build-angular": "18.0.2",
-    "@angular-eslint/builder": "17.4.0",
-    "@angular-eslint/eslint-plugin": "17.4.0",
-    "@angular-eslint/eslint-plugin-template": "17.4.0",
-    "@angular-eslint/schematics": "17.4.0",
-    "@angular-eslint/template-parser": "17.4.0",
+    "@angular-eslint/builder": "18.0.1",
+    "@angular-eslint/eslint-plugin": "18.0.1",
+    "@angular-eslint/eslint-plugin-template": "18.0.1",
+    "@angular-eslint/schematics": "18.0.1",
+    "@angular-eslint/template-parser": "18.0.1",
     "@angular/cli": "18.0.2",
     "@angular/compiler-cli": "18.0.1",
     "@cypress/schematic": "2.5.1",
     "@types/jasmine": "5.1.4",
     "@types/leaflet": "1.9.12",
-    "@typescript-eslint/eslint-plugin": "7.8.0",
-    "@typescript-eslint/parser": "7.8.0",
+    "@typescript-eslint/eslint-plugin": "7.11.0",
+    "@typescript-eslint/parser": "7.11.0",
     "autoprefixer": "10.4.19",
-    "cypress": "13.9.0",
-    "eslint": "9.2.0",
+    "cypress": "13.10.0",
+    "eslint": "9.4.0",
     "jasmine-core": "5.1.2",
     "json-server": "0.17.4",
     "karma": "6.4.3",
@@ -57,7 +57,7 @@
     "typescript": "5.4.5"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=20.13.1"
   },
   "homepage": "https://lvz-viz.leipzig.codefor.de",
   "license": "GPL",

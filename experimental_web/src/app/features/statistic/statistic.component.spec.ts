@@ -1,7 +1,8 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StatisticComponent } from './statistic.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('StatisticComponent', () => {
   let component: StatisticComponent;
@@ -9,8 +10,9 @@ describe('StatisticComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-    }).compileComponents();
+    imports: [],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
   });
 
   beforeEach(() => {

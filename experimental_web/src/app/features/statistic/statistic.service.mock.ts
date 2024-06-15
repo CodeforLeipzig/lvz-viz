@@ -28,6 +28,7 @@ export class StatisticServiceMock {
       },
     });
     // the correct URL is searchbetween instead of getx but in db.json this is the same object
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.httpClient.get<any>(`${environment.api}getx`, { params }).pipe(map((data: any) => data));
   }
 

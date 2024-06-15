@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Content } from './content.model';
 import { SearchService } from './search.service';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SearchServiceMock } from './search.service.mock';
 
 @Component({
@@ -39,6 +40,7 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
   destroyed = new Subject<void>();
   smallSize = false;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   expandedElement: any;
 
   length = 0;

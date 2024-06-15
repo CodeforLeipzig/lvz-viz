@@ -13,10 +13,12 @@ export class SearchServiceMock {
   /**
    * This mock is used to override some parameters to get json server working.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetch(_page: number, _limit: number, _sort: string, q?: string): Observable<any> {
     const collected = { _page: _page + 1, _limit, _sort, _order: _sort.slice(_sort.indexOf(',') + 1) };
     const params = new HttpParams({ fromObject: q ? { ...collected, q } : collected });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.httpClient.get<any>(`${environment.api}getx`, { params }).pipe(
       map((result) => {
         const content = { content: result };

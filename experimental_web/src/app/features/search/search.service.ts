@@ -10,10 +10,12 @@ import { environment } from '../../../environments/environment';
 export class SearchService {
   constructor(private httpClient: HttpClient) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetch(page: number, size: number, sort: string, query?: string): Observable<any> {
     const collected = { page, size, sort };
     const params = new HttpParams({ fromObject: query ? { ...collected, query } : collected });
     const url = query ? 'search' : 'getx';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.httpClient.get<any>(environment.api + url, { params });
   }
 }

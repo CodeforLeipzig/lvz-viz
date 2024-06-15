@@ -22,6 +22,7 @@ import { LongPressDirective } from '../../shared/long-press.directive';
 import { Content } from '../search/content.model';
 import { DateTime } from './date-time.model';
 import { StatisticService } from './statistic.service';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { StatisticServiceMock } from './statistic.service.mock';
 
 @Component({
@@ -36,6 +37,7 @@ import { StatisticServiceMock } from './statistic.service.mock';
 })
 export class StatisticComponent implements OnInit, AfterViewInit {
   private map!: L.Map;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private heat: any;
   dataLoaded = false;
 
@@ -105,6 +107,7 @@ export class StatisticComponent implements OnInit, AfterViewInit {
      *
      * error TS2339: Property 'heatLayer' does not exist on type 'typeof import("/home/marcel/dev/workspace/github/lvz-viz/client/node_modules/@types/leaflet/index")'.
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.heat = (L as any).heatLayer([], {
       radius: 25,
       minOpacity: 0.5,
@@ -124,6 +127,7 @@ export class StatisticComponent implements OnInit, AfterViewInit {
    * @param content
    */
   private addToMap(content: Content[]): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const latlng: any[] = [];
     content.forEach((c) => {
       if (c.coords) {
@@ -141,16 +145,19 @@ export class StatisticComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onUserChangeEnd(changeContext: ChangeContext): void {
     this.loadContent();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   runBackward($event: Event): void {
     if (this.minValue > this.minBound) {
       this.runAndLoad(true);
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   runForward($event: Event): void {
     if (this.maxValue < this.maxBound) {
       this.runAndLoad(false);

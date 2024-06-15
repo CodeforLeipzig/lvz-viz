@@ -19,6 +19,7 @@ export class StatisticService {
 
   fetch(from: number, to: number): Observable<Content[]> {
     const params = new HttpParams({ fromObject: { from: toDate(from).toISOString(), to: toDate(to).toISOString() } });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.httpClient.get<any>(environment.api + 'searchbetween', { params }).pipe(map((data: any) => data.content));
   }
 

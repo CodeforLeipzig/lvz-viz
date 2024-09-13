@@ -10,11 +10,11 @@ Visualization of LVZ police ticker.
 
 * `@angular/cli 18.2.4` or higher
 
-### Node, npm or yarn
+### Node, npm or pnpm
 
 * `node 20.15.1` or higher in combination with
-  * `npm 10.7.0` or higher, used in this repository, or
-  * `yarn 1.22.22` or higher
+  * `npm 10.7.0` or higher, or
+  * `pnpm 9.10.0` or higher used in this repository
 
 ## Getting started
 
@@ -24,7 +24,7 @@ git clone
 cd lvz-viz
 
 # install tools and frontend dependencies
-npm install
+pnpm install
 ```
 
 Create environment files for `development mode` and `production mode`.
@@ -51,25 +51,25 @@ Comment out the providers in `SearchComponent` and `StatisticComponent` to use t
 Update your `environment.dev.ts` file `api` to `http://localhost:3000/`.
 
 ```bash
-npm run serve:mock
+pnpm run serve:mock
 ```
 
 ```bash
 # build, reachable on http://localhost/app/path/to/dist/
-npm run build:dev
+pnpm run build:dev
 
 # build and starts a server, rebuild after changes, reachable on http://localhost:4200/
-npm run serve:dev
+pnpm run serve:dev
 
 # build, rebuild after changes, reachable on http://localhost/app/path/to/dist/
-npm run watch:dev
+pnpm run watch:dev
 ```
 
 ### Package
 
 ```bash
 # build in production mode, compressed
-npm run build:prod
+pnpm run build:prod
 ```
 
 ### Tests

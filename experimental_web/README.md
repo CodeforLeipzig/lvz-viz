@@ -51,7 +51,7 @@ Comment out the providers in `SearchComponent` and `StatisticComponent` to use t
 Update your `environment.dev.ts` file `api` to `http://localhost:3000/`.
 
 ```bash
-pnpm run serve:mock
+pnpm run mock
 ```
 
 ```bash
@@ -59,10 +59,7 @@ pnpm run serve:mock
 pnpm run build:dev
 
 # build and starts a server, rebuild after changes, reachable on http://localhost:4200/
-pnpm run serve:dev
-
-# build, rebuild after changes, reachable on http://localhost/app/path/to/dist/
-pnpm run watch:dev
+pnpm run start
 ```
 
 ### Package

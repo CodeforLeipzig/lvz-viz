@@ -72,7 +72,7 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
      * Images not loaded correctly: marker-shadow.png 404.
      * So images are copied from node_modules leaflet folder into assets folder.
      */
-    L.Icon.Default.imagePath = 'assets/leaflet/';
+    L.Icon.Default.imagePath = 'leaflet/';
   }
 
   ngAfterViewInit(): void {

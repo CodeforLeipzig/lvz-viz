@@ -61,10 +61,9 @@
   "repository": "https://github.com/CodeforLeipzig/lvz-viz",
   "scripts": {
     "build:dev": "ng lint && ng build --configuration=development",
-    "serve:dev": "ng serve -o --configuration=development",
-    "serve:mock": "json-server --watch db.json",
-    "watch:dev": "ng build --watch --configuration=development",
-    "build:prod": "ng lint && ng build"
+    "build:prod": "ng lint && ng build",
+    "mock": "json-server --watch db.json",
+    "start": "ng serve -o --configuration=development"
   },
   "version": "2.1.0-SNAPSHOT"
 }

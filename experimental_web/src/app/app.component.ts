@@ -1,7 +1,7 @@
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { Component, HostBinding } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
+import { DOCUMENT } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { environment } from '../environments/environment';
@@ -13,18 +13,14 @@ import { StatisticComponent } from './features/statistic/statistic.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   standalone: true,
-  imports: [MatTabsModule, MatToolbarModule, SearchComponent ,StatisticComponent],
+  imports: [MatTabsModule, MatToolbarModule, SearchComponent, StatisticComponent],
 })
 export class AppComponent {
-  public appname: string;
+  appname: string;
 
-  // Adds the custom theme to the app root.
-  @HostBinding('class') class = `${environment.theme}-theme`;
-
-  public constructor(private titleService: Title, public overlayContainer: OverlayContainer) {
+  public constructor(private titleService: Title, @Inject(DOCUMENT) private document: Document) {
     this.appname = environment.appname;
     this.titleService.setTitle(this.appname);
-    // Adds the custom theme to dialogs.
-    this.overlayContainer.getContainerElement().classList.add(`${environment.theme}-theme`);
+    this.document.body.classList.add(`${environment.theme}-theme`);
   }
 }

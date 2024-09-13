@@ -4,6 +4,7 @@ body {
   overflow-y: scroll;
 }
 
+/** set height for footer */
 div.mat-app-background {
   min-height: 100vh;
 }

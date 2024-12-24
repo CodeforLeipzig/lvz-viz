@@ -27,7 +27,6 @@ import { SearchServiceMock } from './search.service.mock';
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
-  standalone: true,
   imports: [AngularSplitModule, MatFormFieldModule, MatInputModule, NgIf, MatTableModule, MatPaginatorModule, DatePipe],
   providers: [
     // { provide: SearchService, useClass: SearchServiceMock }

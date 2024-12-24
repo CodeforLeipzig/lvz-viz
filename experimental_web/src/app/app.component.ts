@@ -12,7 +12,6 @@ import { StatisticComponent } from './features/statistic/statistic.component';
   selector: 'lvzviz-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  standalone: true,
   imports: [MatTabsModule, MatToolbarModule, SearchComponent, StatisticComponent],
 })
 export class AppComponent {

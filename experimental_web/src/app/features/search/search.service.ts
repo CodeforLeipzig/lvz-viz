@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -8,7 +8,8 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class SearchService {
-  constructor(private httpClient: HttpClient) {}
+  private httpClient = inject(HttpClient);
+
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetch(page: number, size: number, sort: string, query?: string): Observable<any> {

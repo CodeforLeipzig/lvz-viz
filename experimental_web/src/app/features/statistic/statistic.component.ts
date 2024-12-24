@@ -1,5 +1,5 @@
 import { ChangeContext, NgxSliderModule, Options } from '@angular-slider/ngx-slider';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 
 import { addDays, subDays } from 'date-fns';
 import { forkJoin } from 'rxjs';
@@ -35,6 +35,8 @@ import { StatisticServiceMock } from './statistic.service.mock';
   ],
 })
 export class StatisticComponent implements OnInit, AfterViewInit {
+  private statisticService = inject(StatisticService);
+
   private map!: L.Map;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private heat: any;
@@ -45,8 +47,6 @@ export class StatisticComponent implements OnInit, AfterViewInit {
   minValue = 0;
   maxValue = 0;
   options!: Options;
-
-  constructor(private statisticService: StatisticService) {}
 
   ngOnInit(): void {
     this.initSlider();

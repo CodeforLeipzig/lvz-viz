@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { DOCUMENT } from '@angular/common';
@@ -15,9 +15,12 @@ import { StatisticComponent } from './features/statistic/statistic.component';
   imports: [MatTabsModule, MatToolbarModule, SearchComponent, StatisticComponent],
 })
 export class AppComponent {
+  private titleService = inject(Title);
+  private document = inject<Document>(DOCUMENT);
+
   appname: string;
 
-  public constructor(private titleService: Title, @Inject(DOCUMENT) private document: Document) {
+  public constructor() {
     this.appname = environment.appname;
     this.titleService.setTitle(this.appname);
     this.document.body.classList.add(`${environment.theme}-theme`);

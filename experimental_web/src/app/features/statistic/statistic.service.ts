@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { addDays, differenceInDays, toDate } from 'date-fns';
 import { Observable, map } from 'rxjs';
 
@@ -11,7 +11,8 @@ import { DateTime } from './date-time.model';
   providedIn: 'root',
 })
 export class StatisticService {
-  constructor(private httpClient: HttpClient) {}
+  private httpClient = inject(HttpClient);
+
 
   fetchDates(query: string): Observable<DateTime[]> {
     return this.httpClient.get<DateTime[]>(environment.api + query);

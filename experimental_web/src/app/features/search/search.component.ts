@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AngularSplitModule, SplitComponent } from 'angular-split';
@@ -33,6 +33,9 @@ import { SearchServiceMock } from './search.service.mock';
   ],
 })
 export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
+  private breakpointObserver = inject(BreakpointObserver);
+  private searchService = inject(SearchService);
+
   displayedColumns: string[] = ['title', 'publication'];
   dataSource = new MatTableDataSource<Content>();
 
@@ -52,7 +55,7 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('input') input!: ElementRef;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private breakpointObserver: BreakpointObserver, private searchService: SearchService) {
+  constructor() {
     this.breakpointObserver
       .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
       .pipe(takeUntil(this.destroyed))

@@ -1,7 +1,7 @@
 /**
  * Source: https://medium.com/@ankit.rana.1195/angular-long-press-directive-with-rxjs-c3d6a3eb8c60
  */
-import { Directive, ElementRef, EventEmitter, OnDestroy, Output } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, OnDestroy, Output, inject } from '@angular/core';
 import { fromEvent, merge, of, Subscription, timer } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 
@@ -10,13 +10,17 @@ import { filter, map, switchMap } from 'rxjs/operators';
   standalone: true,
 })
 export class LongPressDirective implements OnDestroy {
+  private elementRef = inject(ElementRef);
+
   private eventSubscribe: Subscription;
   threshold = 500;
 
   @Output()
   mouseLongPress = new EventEmitter();
 
-  constructor(private elementRef: ElementRef) {
+  constructor() {
+    const elementRef = this.elementRef;
+
     const mousedown = fromEvent<MouseEvent>(elementRef.nativeElement, 'mousedown').pipe(
       filter((event) => event.button == 0), // Only allow left button (Primary button)
       map(() => true) // turn on threshold counter

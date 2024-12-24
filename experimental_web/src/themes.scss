@@ -1,6 +1,7 @@
 @use '@angular/material' as mat;
 
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 mat.$theme-ignore-duplication-warnings: true;
 
 .indigo-pink-theme {

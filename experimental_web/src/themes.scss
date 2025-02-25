@@ -1,99 +1,64 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
-@include mat.elevation-classes();
-@include mat.app-background();
-mat.$theme-ignore-duplication-warnings: true;
-
-.indigo-pink-theme {
-  $indigo-pink-primary: mat.m2-define-palette(mat.$m2-indigo-palette, 500);
-  $indigo-pink-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
-
-  $indigo-pink-theme: mat.m2-define-light-theme((
-    color: (
-      primary: $indigo-pink-primary,
-      accent: $indigo-pink-accent,
-    ),
-    typography: mat.m2-define-typography-config(),
+body {
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  @include mat.theme((
+    typography: Roboto,
+    density: 0,
   ));
-
-  @include mat.all-component-themes($indigo-pink-theme);
 }
 
-.deeppurple-amber-theme {
-  $deeppurple-amber-primary: mat.m2-define-palette(mat.$m2-deep-purple-palette, 500);
-  $deeppurple-amber-accent: mat.m2-define-palette(mat.$m2-amber-palette, A200, A100, A400);
-
-  $deeppurple-amber-theme: mat.m2-define-light-theme((
+.rose-red-theme {
+  @include mat.theme((
     color: (
-      primary: $deeppurple-amber-primary,
-      accent: $deeppurple-amber-accent,
+      theme-type: light,
+      primary: mat.$rose-palette,
+      tertiary: mat.$red-palette,
     ),
-    typography: mat.m2-define-typography-config(),
   ));
-
-  @include mat.all-component-themes($deeppurple-amber-theme);
 }
 
-.pink-bluegrey-theme {
-  $pink-bluegrey-primary: mat.m2-define-palette(mat.$m2-pink-palette, 500);
-  $pink-bluegrey-accent: mat.m2-define-palette(mat.$m2-blue-grey-palette, A200, A100, A400);
-
-  $pink-bluegrey-theme: mat.m2-define-dark-theme((
+.azure-blue-theme {
+  @include mat.theme((
     color: (
-      primary: $pink-bluegrey-primary,
-      accent: $pink-bluegrey-accent,
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
     ),
-    typography: mat.m2-define-typography-config(),
   ));
-
-  @include mat.all-component-themes($pink-bluegrey-theme);
 }
 
-.purple-green-theme {
-  $purple-green-primary: mat.m2-define-palette(mat.$m2-purple-palette, 500);
-  $purple-green-accent: mat.m2-define-palette(mat.$m2-green-palette, A200, A100, A400);
-
-  $purple-green-theme: mat.m2-define-dark-theme((
+.magenta-violet-theme {
+  @include mat.theme((
     color: (
-      primary: $purple-green-primary,
-      accent: $purple-green-accent,
+      theme-type: dark,
+      primary: mat.$magenta-palette,
+      tertiary: mat.$violet-palette,
     ),
-    typography: mat.m2-define-typography-config(),
   ));
-
-  @include mat.all-component-themes($purple-green-theme);
 }
 
-.custom-light-theme {
-  $custom-light-primary: mat.m2-define-palette(mat.$m2-light-blue-palette, 500);
-  $custom-light-accent: mat.m2-define-palette(mat.$m2-orange-palette, A200, A100, A400);
-
-  $custom-light-theme: mat.m2-define-light-theme((
+.cyan-orange-theme {
+  @include mat.theme((
     color: (
-      primary: $custom-light-primary,
-      accent: $custom-light-accent,
+      theme-type: dark,
+      primary: mat.$cyan-palette,
+      tertiary: mat.$orange-palette,
     ),
-    typography: mat.m2-define-typography-config(),
   ));
-
-  @include mat.all-component-themes($custom-light-theme);
 }
 
-.custom-dark-theme {
-  $custom-dark-primary: mat.m2-define-palette(mat.$m2-grey-palette, 500);
-  $custom-dark-accent: mat.m2-define-palette(mat.$m2-blue-palette, A200, A100, A400);
-
-  $custom-dark-theme: mat.m2-define-dark-theme((
-    color: (
-      primary: $custom-dark-primary,
-      accent: $custom-dark-accent,
-    ),
-    typography: mat.m2-define-typography-config(),
+.custom-theme {
+  color-scheme: light dark;
+  @include mat.theme((
+    color: mat.$chartreuse-palette,
   ));
-
-  @include mat.all-component-themes($custom-dark-theme);
 }
 
-.mat-mdc-tab-nav-bar, .mat-mdc-tab-header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+mat-toolbar {
+  @include mat.toolbar-overrides((
+    container-background-color: var(--mat-sys-primary-container),
+    container-text-color: var(--mat-sys-on-primary-container),
+  ));
 }

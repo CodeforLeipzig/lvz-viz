@@ -151,20 +151,6 @@
             "headless": false
           }
         },
-        "ct": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "lvz-viz:serve",
-            "watch": true,
-            "headless": false,
-            "testingType": "component"
-          },
-          "configurations": {
-            "development": {
-              "devServerTarget": "lvz-viz:serve:development"
-            }
-          }
-        },
         "e2e": {
           "builder": "@cypress/schematic:cypress",
           "options": {

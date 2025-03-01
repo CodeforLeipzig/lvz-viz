@@ -1,4 +1,4 @@
-<div class="flex xs:flex-col">
+<div class="flex statistic-description">
   <p class="flex-1">
     Häufigkeit und Orte der im LVZ-Polizeiticker beschriebenen Fälle in Leipzig.
     <br />
@@ -21,7 +21,7 @@
   (userChangeEnd)="onUserChangeEnd($event)"
 ></ngx-slider>
 <div class="flex justify-center space-x-5 items-center">
-  <button lvzvizLongPress (mouseLongPress)="runBackward($event)" (click)="runBackward($event)" mat-mini-fab color="primary">
+  <button class="ml-2" lvzvizLongPress (mouseLongPress)="runBackward($event)" (click)="runBackward($event)" mat-mini-fab>
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
   <p class="text-center">
@@ -31,7 +31,7 @@
     <br />
     bewegt sich der Slider automatisch im gewählten Zeitfenster.
   </p>
-  <button lvzvizLongPress (mouseLongPress)="runForward($event)" (click)="runForward($event)" mat-mini-fab color="primary">
+  <button class="mr-2" lvzvizLongPress (mouseLongPress)="runForward($event)" (click)="runForward($event)" mat-mini-fab>
     <mat-icon>keyboard_arrow_right</mat-icon>
   </button>
 </div>

@@ -10,7 +10,6 @@ import { environment } from '../../../environments/environment';
 export class SearchService {
   private httpClient = inject(HttpClient);
 
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetch(page: number, size: number, sort: string, query?: string): Observable<any> {
     const collected = { page, size, sort };

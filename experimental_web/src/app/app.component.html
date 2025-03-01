@@ -1,18 +1,13 @@
-<div class="mat-app-background flex flex-col">
-  <mat-toolbar color="primary" class="mat-elevation-z4">
+<div class="min-h-screen flex flex-col">
+  <mat-toolbar>
     {{ appname }}
   </mat-toolbar>
   <mat-tab-group mat-stretch-tabs="false">
     <mat-tab label="Suche">
-      <!-- 
-        workaround:
-        Inactive tab content is initialized by ngOnInit but DOM is not loaded, this causes errors due the DOM is not ready on tab activation.
-        https://stackoverflow.com/a/56634256
-        https://material.angular.io/components/tabs/overview#lazy-loading
-      -->
+      <!-- need to lazy load the tabs, see: https://material.angular.io/components/tabs/overview#lazy-loading -->
       <ng-template matTabContent>
         <lvzviz-search></lvzviz-search>
-     </ng-template>
+      </ng-template>
     </mat-tab>
     <mat-tab label="Statistik">
       <ng-template matTabContent>
@@ -21,17 +16,18 @@
     </mat-tab>
   </mat-tab-group>
   <footer class="mt-auto">
-    <mat-toolbar color="primary" class="mat-elevation-z4 flex flex-col lt-md:footer-lt-md">
-      <div class="flex-1 text-center lt-md:mt-2.5">
+    <mat-toolbar class="flex footer-mat-toolbar">
+      <div class="flex-1 text-center text-sm">
         Unser Impressum findet Ihr hier: <a href="https://codefor.de/impressum">Impressum</a>
-        <br>
+        <br />
         Des Weiteren beziehen wir uns auf das
-        <a href="http://www.lvz-online.de/nachrichten/service/impressum/servicetexte/leistungsschutzrecht/r-servicetexte-a-199230.html">Leistungsschutzrecht der LVZ</a>.
+        <a href="http://www.lvz-online.de/nachrichten/service/impressum/servicetexte/leistungsschutzrecht/r-servicetexte-a-199230.html"
+          >Leistungsschutzrecht der LVZ</a
+        >.
       </div>
-      <div class="flex-1 text-center">
-        Entwickler sind <a href="https://github.com/RicardoUsbeck">Ricardo</a>
-        und <a href="https://github.com/spinner0815">Lars</a>
-        <br>
+      <div class="flex-1 text-center text-sm">
+        Entwickler sind <a href="https://github.com/RicardoUsbeck">Ricardo</a> und <a href="https://github.com/spinner0815">Lars</a>
+        <br />
         Der komplette Code ist auf <a href="https://github.com/CodeforLeipzig/lvz-viz/">GitHub</a>.
       </div>
     </mat-toolbar>

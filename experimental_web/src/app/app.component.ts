@@ -1,9 +1,8 @@
-import { Component, inject } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-
 import { DOCUMENT } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { Title } from '@angular/platform-browser';
 import { environment } from '../environments/environment';
 import { SearchComponent } from './features/search/search.component';
 import { StatisticComponent } from './features/statistic/statistic.component';

@@ -4,21 +4,10 @@ body {
   overflow-y: scroll;
 }
 
-/** set height for footer */
-div.mat-app-background {
-  min-height: 100vh;
-}
-
 mat-tab-body {
   padding: 10px;
 }
 
 footer a {
   color: #3c8abf;
-}
-
-footer mat-toolbar {
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
 }

@@ -1,20 +1,17 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { DatePipe, NgIf } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AngularSplitModule, SplitComponent } from 'angular-split';
-
 import * as L from 'leaflet';
 import { debounceTime, distinctUntilChanged, fromEvent, map, merge, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
-
-import { DatePipe, NgIf } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { Content } from './content.model';
 import { SearchService } from './search.service';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { SearchServiceMock } from './search.service.mock';
 
 @Component({
   selector: 'lvzviz-search',
@@ -40,7 +37,7 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
   dataSource = new MatTableDataSource<Content>();
 
   destroyed = new Subject<void>();
-  smallSize = false;
+  isSmallSize = false;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   expandedElement: any;
@@ -62,7 +59,7 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
       .subscribe((result) => {
         for (const query of Object.keys(result.breakpoints)) {
           if (result.breakpoints[query]) {
-            this.smallSize = query === Breakpoints.XSmall || query === Breakpoints.Small ? true : false;
+            this.isSmallSize = query === Breakpoints.XSmall || query === Breakpoints.Small ? true : false;
           }
         }
       });
@@ -116,8 +113,8 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
             .fetch(this.paginator.pageIndex, this.paginator.pageSize, 'datePublished,desc', this.input.nativeElement.value)
             .pipe(
               map((data) => {
-                this.length = data.totalElements;
-                return data.content;
+                this.length = data.length;
+                return data;
               })
             );
         })

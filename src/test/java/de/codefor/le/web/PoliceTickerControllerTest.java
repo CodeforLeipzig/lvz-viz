@@ -39,8 +39,7 @@ class PoliceTickerControllerTest {
 
     @Test
     void searchBetween() {
-        final var result = controller.searchBetween("term", LocalDateTime.now().minus(1, ChronoUnit.DAYS),
-                LocalDateTime.now(), PageRequest.of(0, 1));
+        final var result = controller.searchBetween("term", LocalDateTime.now().minusDays(1), LocalDateTime.now(), PageRequest.of(0, 1));
         assertThat(result).isNotNull();
         assertThat(result.getNumberOfElements()).isLessThanOrEqualTo(1);
     }

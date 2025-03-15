@@ -5,7 +5,7 @@ LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>" \
       org.opencontainers.image.source="https://github.com/CodeforLeipzig/lvz-viz" \
       org.opencontainers.image.vendor="Open Knowledge Foundation Deutschland e.V."
 
-# see https://github.com/adoptium/containers/blob/main/17/jdk/alpine/Dockerfile.releases.full#L26
+# see https://github.com/adoptium/containers/blob/main/17/jdk/alpine/3.21/Dockerfile#L26
 ENV LANG='de_DE.UTF-8' LANGUAGE='de_DE:de' LC_ALL='de_DE.UTF-8'
 
 RUN echo "Europe/Berlin" > /etc/timezone

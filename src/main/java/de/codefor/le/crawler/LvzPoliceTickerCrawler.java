@@ -142,7 +142,6 @@ public class LvzPoliceTickerCrawler {
     }
 
     private void initWebDriver() {
-        WebDriverManager.chromedriver().setup();
         driver = "dev".equals(activeProfile) || "prod".equals(activeProfile) ?
                 WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub").create() :
                 new ChromeDriver(new ChromeOptions().addArguments("--headless"));

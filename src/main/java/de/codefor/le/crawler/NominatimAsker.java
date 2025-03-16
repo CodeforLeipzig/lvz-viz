@@ -12,8 +12,6 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.google.common.base.Strings;
-
 import de.codefor.le.crawler.model.Nominatim;
 
 @Component
@@ -30,7 +28,7 @@ public class NominatimAsker {
     @Async
     public Future<List<Nominatim>> execute(final String address) {
         List<Nominatim> result;
-        if (!Strings.isNullOrEmpty(address)) {
+        if (address != null && !address.isBlank()) {
             final var url = String.format(NOMINATIM_SEARCH_URL, address);
             logger.debug("url {}", url);
             result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));

@@ -73,7 +73,7 @@ public class LvzPoliceTickerCrawler {
      */
     private Collection<String> crawlNewsFromPage(final String url) {
         final var doc = Jsoup.parse(initLoad(url));
-        final var links = doc.select("a[class*=ContentTeaserstyled__Link]");
+        final var links = doc.select("a[class*=TeaserLinkstyled__Link]");
         final var result = extractNewArticleLinks(links);
         if (links.isEmpty()) {
             logger.warn("No links found.");
@@ -89,7 +89,7 @@ public class LvzPoliceTickerCrawler {
         initWebDriver();
         driver.get(url);
 
-        // accept cookies first, it's an iframe
+        logger.debug("accept cookies first, it's an iframe");
         driver.switchTo().frame(driver.findElement(By.cssSelector("iframe[id*=sp_message_iframe]")));
         final var button = driver.findElement(By.cssSelector("button[title=\"Einwilligen und weiter\"]"));
         new Actions(driver).moveToElement(button).click().build().perform();
@@ -105,7 +105,7 @@ public class LvzPoliceTickerCrawler {
             }
         }
 
-        return driver.findElement(By.id("fusion-app")).getAttribute("innerHTML");
+        return driver.findElement(By.id("fusion-app")).getDomProperty("innerHTML");
     }
 
     /**
@@ -119,7 +119,7 @@ public class LvzPoliceTickerCrawler {
         if (size != 1) {
             if (size != 0 && logger.isDebugEnabled()) {
                 logger.debug("available buttons: {}",
-                        elements.stream().map(e -> e.getAttribute("class")).collect(Collectors.joining(", ")));
+                        elements.stream().map(e -> e.getDomAttribute("class")).collect(Collectors.joining(", ")));
             }
             logger.warn("unexpected number of buttons: {}", size);
             return false;
@@ -127,7 +127,7 @@ public class LvzPoliceTickerCrawler {
         final WebElement element = elements.get(0);
         if ("Mehr anzeigen".equals(element.getText())) {
             if (logger.isDebugEnabled()) {
-                logger.debug("load more articles via button {}", element.getAttribute("class"));
+                logger.debug("load more articles via button {}", element.getDomAttribute("class"));
             }
             element.click();
         }

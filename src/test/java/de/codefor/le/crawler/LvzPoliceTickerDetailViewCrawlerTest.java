@@ -56,7 +56,7 @@ class LvzPoliceTickerDetailViewCrawlerTest {
         assertThat(results).filteredOn(ticker -> ticker.getArticle().startsWith(ARTICLE)).hasSize(1).first()
                 .satisfies(ticker -> {
                     assertThat(ticker.getDatePublished()).isEqualTo(PUBLISHING_DATE);
-                    assertThat(ticker.getCopyright()).isEqualTo("© Quelle: dpa");
+                    assertThat(ticker.getCopyright()).isEqualTo("Quelle: dpa");
                 });
 
         assertThat(results).filteredOn(ticker -> ticker.getArticle().contains("FFP2-Masken")).hasSize(1);
@@ -103,8 +103,8 @@ class LvzPoliceTickerDetailViewCrawlerTest {
 
     @ParameterizedTest
     @CsvSource({
-            "/unfall-im-leipziger-norden-motorrad-von-transporter-erfasst-fahrer-schwer-verletzt-DMCSVDGWNJ3EMPYYQZHGAW42W4.html, 25.05.2022 08:23:25, © Quelle: Einsatzfahrten Leipzig",
-            "/leipzig-passant-findet-brandbombe-bei-der-weissen-elster-IUMQNWJHYTVQ25B22EBFOGDHFE.html, 12.06.2022 11:13:07, © Quelle: dpa"
+            "/unfall-im-leipziger-norden-motorrad-von-transporter-erfasst-fahrer-schwer-verletzt-DMCSVDGWNJ3EMPYYQZHGAW42W4.html, 25.05.2022 08:23:25, Quelle: Einsatzfahrten Leipzig",
+            "/leipzig-passant-findet-brandbombe-bei-der-weissen-elster-IUMQNWJHYTVQ25B22EBFOGDHFE.html, 12.06.2022 11:13:07, Quelle: dpa"
     })
     void extractPublishedDate(final String path,
             @JavaTimeConversionPattern("dd.MM.yyyy HH:mm:ss") final LocalDateTime published, final String copyright)

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -129,7 +130,13 @@ public class LvzPoliceTickerCrawler {
             if (logger.isDebugEnabled()) {
                 logger.debug("load more articles via button {}", element.getDomAttribute("class"));
             }
-            element.click();
+            try {
+                element.click();
+            } catch (ElementNotInteractableException e) {
+                logger.warn("Unable to click element {}", element.getDomAttribute("class"));
+                logger.debug("Cause", e);
+                return false;
+            }
         }
         return true;
     }

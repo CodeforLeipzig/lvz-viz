@@ -101,7 +101,7 @@ public class LvzPoliceTickerCrawler {
         // workaround: click only ten times and avoid "endless" loading
         for (int i = 0; i < 10; i++) {
             if (!loadMoreArticles()) {
-                logger.info("stop loading");
+                logger.debug("Stop loading more articles.");
                 break;
             }
         }

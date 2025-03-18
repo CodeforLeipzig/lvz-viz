@@ -10,7 +10,7 @@ ENV LANG='de_DE.UTF-8' LANGUAGE='de_DE:de' LC_ALL='de_DE.UTF-8'
 
 RUN echo "Europe/Berlin" > /etc/timezone
 
-ENV USER lvz-viz
+ENV USER=lvz-viz
 
 RUN addgroup ${USER} \
   && adduser -D -G ${USER} -S ${USER}

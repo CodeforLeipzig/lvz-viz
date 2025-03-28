@@ -14,7 +14,7 @@ Visualization of LVZ police ticker.
 
 * `node 22.14.0` or higher in combination with
   * `npm 10.9.2` or higher or
-  * `pnpm 10.4.1` or higher, used in this repository
+  * `pnpm 10.7.0` or higher, used in this repository
 
 ## Getting started
 

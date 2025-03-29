@@ -2,7 +2,7 @@ name: Node CI
 
 on:
   push:
-    branches: [experimental-web-290325]
+    branches: [master]
 
 defaults:
   run:

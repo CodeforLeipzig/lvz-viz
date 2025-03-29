@@ -11,7 +11,6 @@ import * as L from 'leaflet';
 import { debounceTime, distinctUntilChanged, fromEvent, map, merge, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { Content } from './content.model';
 import { SearchService } from './search.service';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 @Component({
   selector: 'lvzviz-search',

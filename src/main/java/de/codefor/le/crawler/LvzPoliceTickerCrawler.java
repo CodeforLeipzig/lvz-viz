@@ -1,6 +1,9 @@
 package de.codefor.le.crawler;
 
-import java.time.Duration;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -10,13 +13,6 @@ import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.interactions.Actions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,11 +20,17 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.FailingHttpStatusCodeException;
+import org.htmlunit.WebClient;
+import org.htmlunit.WebClientOptions;
+import org.htmlunit.WebRequest;
+import org.htmlunit.html.DomElement;
+import org.htmlunit.html.HtmlPage;
 import com.google.common.base.Stopwatch;
 
 import de.codefor.le.repositories.PoliceTickerRepository;
 import de.codefor.le.utilities.Utils;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -50,7 +52,8 @@ public class LvzPoliceTickerCrawler {
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 
-    private WebDriver driver;
+    private WebClient webClient;
+    private HtmlPage htmlPage;
 
     @Async
     public Future<Iterable<String>> execute() {
@@ -61,9 +64,6 @@ public class LvzPoliceTickerCrawler {
             return new AsyncResult<>(crawlNewsFromPage(url));
         } finally {
             watch.stop();
-            if (driver != null) {
-                driver.quit();
-            }
             logger.debug("Finished crawling in {} ms.", watch.elapsed(TimeUnit.MILLISECONDS));
         }
     }
@@ -87,16 +87,19 @@ public class LvzPoliceTickerCrawler {
     }
 
     private String initLoad(final String url) {
-        initWebDriver();
-        driver.get(url);
+        initWebClient();
+        WebRequest request;
+        try {
+            request = new WebRequest(new URI(url).toURL());
+            request.setCharset(StandardCharsets.UTF_8);
+            htmlPage = webClient.getPage(request);
+        } catch (IOException | URISyntaxException | FailingHttpStatusCodeException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-        logger.debug("accept cookies first, it's an iframe");
-        driver.switchTo().frame(driver.findElement(By.cssSelector("iframe[id*=sp_message_iframe]")));
-        final var button = driver.findElement(By.cssSelector("button[title=\"Einwilligen und weiter\"]"));
-        new Actions(driver).moveToElement(button).click().build().perform();
-
-        // switch back to main page after accept cookies and load more articles
-        driver.switchTo().parentFrame();
+        // javascript is disabled so the frame doesn't appear
+        // logger.debug("accept cookies first, it's an iframe");
 
         // workaround: click only ten times and avoid "endless" loading
         for (int i = 0; i < 10; i++) {
@@ -106,7 +109,7 @@ public class LvzPoliceTickerCrawler {
             }
         }
 
-        return driver.findElement(By.id("fusion-app")).getDomProperty("innerHTML");
+        return htmlPage.querySelector("#fusion-app").asXml();
     }
 
     /**
@@ -115,25 +118,29 @@ public class LvzPoliceTickerCrawler {
      * @return true, if exactly one button was found
      */
     private boolean loadMoreArticles() {
-        final var elements = driver.findElements(By.cssSelector("div[class*=LoadMorestyled__Button] button"));
-        final var size = elements.size();
+        final var domNodes = htmlPage.querySelectorAll("div[class*=LoadMorestyled__Button] button");
+        final Collection<DomElement> domElements = domNodes.stream()
+                .filter(DomElement.class::isInstance)
+                .map(DomElement.class::cast).collect(Collectors.toList());
+        final var size = domElements.size();
         if (size != 1) {
             if (size != 0 && logger.isDebugEnabled()) {
                 logger.debug("available buttons: {}",
-                        elements.stream().map(e -> e.getDomAttribute("class")).collect(Collectors.joining(", ")));
+                        domElements.stream().map(e -> e.getAttribute("class"))
+                                .collect(Collectors.joining(", ")));
             }
             logger.warn("unexpected number of buttons: {}", size);
             return false;
         }
-        final WebElement element = elements.get(0);
-        if ("Mehr anzeigen".equals(element.getText())) {
+        final DomElement element = domElements.stream().findFirst().get();
+        if ("Mehr anzeigen".equals(element.getTextContent())) {
             if (logger.isDebugEnabled()) {
-                logger.debug("load more articles via button {}", element.getDomAttribute("class"));
+                logger.debug("load more articles via button {}", element.getAttribute("class"));
             }
             try {
                 element.click();
-            } catch (ElementNotInteractableException e) {
-                logger.warn("Unable to click element {}", element.getDomAttribute("class"));
+            } catch (IOException e) {
+                logger.warn("Unable to click element {}", element.getAttribute("class"));
                 logger.debug("Cause", e);
                 return false;
             }
@@ -141,15 +148,16 @@ public class LvzPoliceTickerCrawler {
         return true;
     }
 
-    private void initWebDriver() {
-        driver = "dev".equals(activeProfile) || "prod".equals(activeProfile) ?
-                WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub").create() :
-                new ChromeDriver(new ChromeOptions().addArguments("--headless"));
-        if (driver == null) {
-            throw new IllegalStateException("initWebDriver for crawling failed");
-        }
-        logger.debug("initWebDriver for crawling succeeded");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+    /**
+     * Init webclient with chrome browser and some options.
+     */
+    private void initWebClient() {
+        webClient = new WebClient(BrowserVersion.CHROME);
+        final WebClientOptions options = webClient.getOptions();
+        options.setJavaScriptEnabled(false);
+        options.setUseInsecureSSL(true);
+        options.setThrowExceptionOnScriptError(false);
+        options.setThrowExceptionOnFailingStatusCode(false);
     }
 
     private Collection<String> extractNewArticleLinks(final Elements links) {

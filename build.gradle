@@ -49,6 +49,7 @@ dependencies {
                  "org.seleniumhq.selenium:selenium-api:$seleniumVersion",
                  "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion",
                  "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion",
+                 "org.htmlunit:htmlunit:4.11.1"
 
   implementation("edu.stanford.nlp:stanford-corenlp:3.9.2") {
     // because https://app.snyk.io/vuln/SNYK-JAVA-COMGOOGLEPROTOBUF-173761

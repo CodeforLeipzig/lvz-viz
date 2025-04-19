@@ -1,4 +1,4 @@
-FROM node:18-alpine AS build-js
+FROM node:20-alpine AS build-js
 
 # see https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
 ENV USER node

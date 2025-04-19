@@ -1,7 +1,7 @@
 FROM node:20-alpine AS build-js
 
 # see https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
-ENV USER node
+ENV USER=node
 USER ${USER}
 WORKDIR /home/${USER}
 
@@ -14,7 +14,7 @@ RUN npm run --silent grunt-build
 
 FROM gradle:7-jdk17-alpine AS build-java
 
-ENV USER gradle
+ENV USER=gradle
 USER ${USER}
 RUN mkdir -p /home/gradle/app/build/resources/main/public/js
 WORKDIR /home/gradle/app

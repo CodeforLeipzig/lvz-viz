@@ -3,7 +3,6 @@ package de.codefor.le.crawler;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -45,7 +44,7 @@ public class LvzPoliceTickerCrawler {
 
     protected static final String LVZ_POLICE_TICKER_BASE_URL = LVZ_BASE_URL + "/themen/leipzig-polizei";
 
-    private final Optional<PoliceTickerRepository> policeTickerRepository;
+    private final PoliceTickerRepository policeTickerRepository;
 
     @Value("${spring.profiles.active:}")
     private String activeProfile;
@@ -161,14 +160,16 @@ public class LvzPoliceTickerCrawler {
             if (shouldSkipUrl(detailLink)) {
                 continue;
             }
-            policeTickerRepository.ifPresentOrElse(repo -> {
-                if (!repo.existsById(Utils.generateHashForUrl(detailLink))) {
+            if (policeTickerRepository != null) {
+                if (!policeTickerRepository.existsById(Utils.generateHashForUrl(detailLink))) {
                     logger.debug("article not stored yet - save it");
                     result.add(detailLink);
                 } else {
                     logger.debug("article already stored - skip it");
                 }
-            }, () -> result.add(detailLink));
+            } else {
+                result.add(detailLink);
+            }
         }
         return result;
     }

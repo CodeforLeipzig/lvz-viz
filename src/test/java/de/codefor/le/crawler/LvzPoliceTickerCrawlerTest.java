@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class LvzPoliceTickerCrawlerTest {
 
-    private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler(Optional.empty());
+    private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler(null);
 
     @Test
     void testExecute() throws ExecutionException, InterruptedException {

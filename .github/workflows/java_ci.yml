@@ -1,0 +1,59 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [github-ci-for-java]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+
+    services:
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
+        ports:
+          - 9200:9200
+        env:
+          cluster.name: policeticker
+          bootstrap.memory_lock: true
+          ES_JAVA_OPTS: -Xms1g -Xmx1g
+          node.name: policeticker-1
+          network.host: 0.0.0.0
+          discovery.type: single-node
+          discovery.zen.minimum_master_nodes: 1
+          xpack.security.enabled: false
+          xpack.monitoring.enabled: false
+          xpack.ml.enabled: false
+          xpack.graph.enabled: false
+          xpack.watcher.enabled: false
+        options: >-
+          --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Wait for Elasticsearch to be ready
+        run: |
+          echo "Waiting for Elasticsearch..."
+          until curl -s http://localhost:9200 | grep -q "cluster_name"; do
+            sleep 2
+          done
+          echo "Elasticsearch is up!"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Execute Gradle build
+        run: ./gradlew build

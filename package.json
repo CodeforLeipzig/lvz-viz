@@ -1,0 +1,22 @@
+{
+  "author": "Marcel Hendrich <inpercima@gmail.com>",
+  "contributors": [
+    "Marcel Hendrich <inpercima@gmail.com>"
+  ],
+  "description": "",
+  "devDependencies": {
+    "concurrently": "9.1.2"
+  },
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "homepage": "https://lvz-viz.leipzig.codefor.de",
+  "license": "GPL",
+  "name": "lvz-viz",
+  "private": true,
+  "repository": "https://github.com/CodeforLeipzig/lvz-viz",
+  "scripts": {
+    "start": "concurrently \"cd backend && export SPRING_PROFILES_ACTIVE=local && ./gradlew bootRun\" \"cd frontend && pnpm start\""
+  },
+  "version": "2.6.0-SNAPSHOT"
+}

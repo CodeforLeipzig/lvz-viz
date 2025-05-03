@@ -108,7 +108,13 @@ testlogger {
   showStandardStreams false
 }
 
+task installPnpm(type: Exec) {
+    workingDir '../frontend'
+    commandLine 'npm', 'install'
+}
+
 task installFrontendDependencies(type: Exec) {
+  dependsOn installPnpm
     workingDir '../frontend'
     commandLine 'pnpm', 'install'
 }

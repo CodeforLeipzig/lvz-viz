@@ -75,7 +75,7 @@ dockerCompose {
 
 editorconfig {
   includes = ['src/**', '*']
-  excludes = ['**/images', '**/vendor', '*.gz', '*.log']
+  excludes = ['**/static', '*.gz', '*.log']
 }
 
 check.dependsOn editorconfigCheck
@@ -107,3 +107,22 @@ test {
 testlogger {
   showStandardStreams false
 }
+
+task installFrontendDependencies(type: Exec) {
+    workingDir '../frontend'
+    commandLine 'pnpm', 'install'
+}
+
+task buildFrontend(type: Exec) {
+    dependsOn installFrontendDependencies
+    workingDir '../frontend'
+    commandLine 'pnpm', 'run', 'build:prod'
+}
+
+task copyFrontend(type: Copy) {
+    dependsOn buildFrontend
+    from('../frontend/dist/browser')
+    into('src/main/resources/static')
+}
+
+build.dependsOn copyFrontend

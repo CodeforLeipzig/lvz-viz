@@ -5,7 +5,7 @@ import { Content } from 'leaflet';
 import { Observable, map } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { DateTime } from '../statistic/date-time.model';
+import { DateTime } from './date-time.model';
 
 @Injectable({
   providedIn: 'root',

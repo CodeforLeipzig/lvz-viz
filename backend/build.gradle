@@ -107,3 +107,19 @@ test {
 testlogger {
   showStandardStreams false
 }
+
+task buildFrontend(type: Exec) {
+    workingDir '../frontend'
+    commandLine 'pnpm', 'run', 'build:prod'
+}
+
+task copyFrontend(type: Copy) {
+    dependsOn buildFrontend
+    from('../frontend/dist/browser')
+    into('src/main/resources/static')
+}
+
+task fullBuild {
+    description = 'Builds frontend and backend'
+    dependsOn copyFrontend, build
+}

@@ -108,19 +108,7 @@ testlogger {
   showStandardStreams false
 }
 
-task installPnpm(type: Exec) {
-    workingDir '../frontend'
-    commandLine 'npm', 'install'
-}
-
-task installFrontendDependencies(type: Exec) {
-  dependsOn installPnpm
-    workingDir '../frontend'
-    commandLine 'pnpm', 'install'
-}
-
 task buildFrontend(type: Exec) {
-    dependsOn installFrontendDependencies
     workingDir '../frontend'
     commandLine 'pnpm', 'run', 'build:prod'
 }
@@ -131,4 +119,7 @@ task copyFrontend(type: Copy) {
     into('src/main/resources/static')
 }
 
-build.dependsOn copyFrontend
+task fullBuild {
+    description = 'Builds frontend and backend'
+    dependsOn copyFrontend, build
+}

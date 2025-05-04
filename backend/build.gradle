@@ -75,7 +75,7 @@ dockerCompose {
 
 editorconfig {
   includes = ['src/**', '*']
-  excludes = ['**/images', '**/vendor', '*.gz', '*.log']
+  excludes = ['**/static', '*.gz', '*.log']
 }
 
 check.dependsOn editorconfigCheck

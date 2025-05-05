@@ -1,13 +1,14 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { DatePipe } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DatePipe, NgIf } from '@angular/common';
+import { AfterViewInit, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AngularSplitModule, SplitComponent } from 'angular-split';
 import * as L from 'leaflet';
-import { debounceTime, distinctUntilChanged, fromEvent, map, merge, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent } from 'rxjs';
 import { Content } from './content.model';
 import { SearchService } from './search.service';
 
@@ -20,21 +21,23 @@ import { SearchService } from './search.service';
     // { provide: SearchService, useClass: SearchServiceMock }
   ],
 })
-export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
+export class SearchComponent implements AfterViewInit, OnInit {
   private breakpointObserver = inject(BreakpointObserver);
   private searchService = inject(SearchService);
 
   displayedColumns: string[] = ['title', 'publication'];
   dataSource = new MatTableDataSource<Content>();
 
-  destroyed = new Subject<void>();
   isSmallSize = false;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   expandedElement: any;
 
-  length = 0;
+  totalElements = 0;
   author = '';
+  searchTerm = '';
+
+  destroyRef = inject(DestroyRef);
 
   private map!: L.Map;
   private markers!: L.FeatureGroup;
@@ -46,7 +49,7 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
   constructor() {
     this.breakpointObserver
       .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
-      .pipe(takeUntil(this.destroyed))
+      .pipe(takeUntilDestroyed())
       .subscribe((result) => {
         for (const query of Object.keys(result.breakpoints)) {
           if (result.breakpoints[query]) {
@@ -68,12 +71,23 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
   ngAfterViewInit(): void {
     this.initMap();
     this.initSplit();
-    this.loadContent();
+    this.initInput();
+
+    this.loadPage(0, 5);
+    this.paginator.page.subscribe(() => {
+      this.loadPage(this.paginator.pageIndex, this.paginator.pageSize);
+    });
   }
 
-  ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
+  /**
+   * Loads content from backend with parameters which contains much more information and extract the content of articles.
+   */
+  loadPage(pageIndex: number, pageSize: number) {
+    this.searchService.fetch(pageIndex, pageSize, 'datePublished,desc', this.searchTerm).subscribe((response) => {
+      this.totalElements = response.totalElements;
+      this.dataSource = new MatTableDataSource(response.content);
+      this.addToMap(response.content);
+    });
   }
 
   /**
@@ -83,37 +97,6 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
     this.split.dragProgress$.subscribe(() => {
       this.map.invalidateSize();
     });
-  }
-
-  /**
-   * Loads content from backend with parameters which contains much more information and extract the content of articles.
-   */
-  private loadContent(): void {
-    const filter = fromEvent(this.input.nativeElement, 'keyup').pipe(
-      debounceTime(500),
-      distinctUntilChanged(),
-      tap(() => this.paginator.firstPage())
-    );
-
-    merge(filter, this.paginator.page)
-      .pipe(
-        takeUntil(this.destroyed),
-        startWith({}),
-        switchMap(() => {
-          return this.searchService
-            .fetch(this.paginator.pageIndex, this.paginator.pageSize, 'datePublished,desc', this.input.nativeElement.value)
-            .pipe(
-              map((data) => {
-                this.length = data.length;
-                return data;
-              })
-            );
-        })
-      )
-      .subscribe((content) => {
-        this.addToMap(content);
-        this.dataSource = new MatTableDataSource(content);
-      });
   }
 
   /**
@@ -135,6 +118,19 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(this.map);
+  }
+
+  /**
+   * Initialize search field.
+   */
+  initInput(): void {
+    fromEvent(this.input.nativeElement, 'keyup')
+      .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(500), distinctUntilChanged())
+      .subscribe(() => {
+        this.searchTerm = this.input.nativeElement.value;
+        this.paginator.firstPage();
+        this.loadPage(0, this.paginator.pageSize);
+      });
   }
 
   /**

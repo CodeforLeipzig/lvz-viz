@@ -64,7 +64,7 @@
         <tr mat-row *matRowDef="let row; columns: ['article']" class="article-detail-row"></tr>
       </table>
 
-      <mat-paginator [length]="length" [pageSizeOptions]="[5]" aria-label="Select page of articles"></mat-paginator>
+      <mat-paginator [length]="totalElements" [pageSizeOptions]="[5]" aria-label="Select page of articles"></mat-paginator>
     </as-split-area>
   </as-split>
 </div>

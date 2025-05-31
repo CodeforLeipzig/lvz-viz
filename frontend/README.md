@@ -1,40 +1,22 @@
-# LVZ Polizeiticker
-
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](../LICENSE)
-
-Visualization of LVZ police ticker.
-
-## Prerequisites
-
-### Angular CLI
-
-* `@angular/cli 19.2.8` or higher
-
-### Node, npm or pnpm
-
-* `node 22.14.0` or higher in combination with
-  * `npm 10.9.2` or higher or
-  * `pnpm 10.7.0` or higher, used in this repository
+# LVZ Polizeiticker - frontend
 
 ## Getting started
 
 ```bash
-# clone project
-git clone
-cd lvz-viz
+# all commands used in ./frontend
+cd frontend
 
 # install tools and frontend dependencies
 pnpm install
 ```
 
-Create environment files for `development mode` and `production mode`.
+Create environment file for `development mode`.
 
 ```bash
 cp src/environments/environment.ts src/environments/environment.dev.ts
-cp src/environments/environment.ts src/environments/environment.prod.ts
 ```
 
-**Note**: These files will not be under version control but listed in .gitignore.
+**Note**: These file will not be under version control but listed in .gitignore.
 
 ## Usage
 
@@ -45,28 +27,19 @@ For the other options your app should run on a server which you like.
 
 ### Run in development mode
 
-If you want to work with mock data, start the mock server in a separate terminal, reachable on [http://localhost:3000/](http://localhost:3000/).
-
-Comment out the providers in `SearchComponent` and `StatisticComponent` to use the mock services.
-Update your `environment.dev.ts` file `api` to `http://localhost:3000/`.
-
-```bash
-pnpm run mock
-```
-
 ```bash
 # build, reachable on http://localhost/app/path/to/dist/
-pnpm run build:dev
+pnpm build:dev
 
 # build and starts a server, rebuild after changes, reachable on http://localhost:4200/
-pnpm run start
+pnpm start
 ```
 
 ### Package
 
 ```bash
 # build in production mode, compressed
-pnpm run build:prod
+pnpm build:prod
 ```
 
 ### Tests
@@ -97,14 +70,13 @@ Change for `production mode` the option `production` to `true`.
 ### `api`
 
 Defines the URL to the backend.
-If you want to work with mock data, use [http://localhost:3000/](http://localhost:3000/).
 
 * default: `./api/`
 * type: `string`
 
 ### `appname`
 
-Application-wide title of the app, displayed in title and toolbar.
+Applicationwide title of the app, displayed in title and toolbar.
 
 * default: `LVZ Polizeiticker`
 * type: `string`
@@ -119,10 +91,10 @@ Defines whether the app is in production or not.
 
 ### `theme`
 
-Name of a build-in theme from angular-material or a custom light or dark theme.
+Name of a pre-build-theme or a custom theme.
 
-* default: `indigo-pink`
+* default: `rose-red`
 * type: `string`
-* values: `deeppurple-amber`/`indigo-pink`/`pink-bluegrey`/`purple-green`/`custom-light`/`custom-dark`
+* values: `rose-red`/`azure-blue`/`magenta-violet`/`cyan-orange`/`custom`
 
-To create a custom light or dark theme just edit the colors and themes in `themes.scss`.
+To modify the custom theme just edit the colors and themes in `themes.scss`.

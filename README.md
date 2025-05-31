@@ -1,10 +1,9 @@
-# lvz-viz
+# LVZ Polizeiticker
 
-[![Build Status](https://travis-ci.org/sepe81/lvz-viz.svg?branch=master)](https://travis-ci.org/sepe81/lvz-viz)
 ![GitHub license](https://img.shields.io/github/license/CodeforLeipzig/lvz-viz.svg)
-[![Code Climate](https://codeclimate.com/github/CodeforLeipzig/lvz-viz/badges/gpa.svg)](https://codeclimate.com/github/CodeforLeipzig/lvz-viz)
-
 [![Java CI with Gradle](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/java_ci.yml/badge.svg)](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/java_ci.yml)
+[![Node CI](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/node_ci.yml/badge.svg)](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/node_ci.yml)
+[![Build Fullstack App](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/build.yml/badge.svg)](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/build.yml)
 
 ## Intro
 
@@ -13,104 +12,78 @@ Visualization of [LVZ police ticker](https://www.lvz.de/Leipzig/Polizeiticker/Po
 The official website is hosted at <https://lvz-viz.leipzig.codefor.de>
 by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_visualisierung.html).
 
-## Usage
+## Prerequisites
 
-Build and run the app with [npm](https://www.npmjs.com), [Grunt](http://gruntjs.com/) and [Gradle](https://gradle.org).
+### Node, npm or pnpm
 
-The crawling and indexing of new articles is activated by default.
-It can be delayed by setting the startup parameter `--app.initialDelay=<time in ms>` to a high value (e.g. `1800000` for 30 minutes)
-or by setting an environment variable via `export APP_INITIALDELAY=<time in ms>`.
+* `node 22.14.0` or higher in combination with
+  * `npm 10.9.2` or higher or
+  * `pnpm 10.4.1` or higher, used in this repository
 
-Profiles (`dev|local|prod|test`) can be set by the startup parameter `--spring.profiles.active=<profile>`
-or by setting an environment variable via `export SPRING_PROFILES_ACTIVE=<profile>`.
+It's recommended to use [nvm (Node version Manager)](https://github.com/nvm-sh/nvm).
 
-Please use the `prod` profile for production systems with a dedicated data volume (see `docker-compose.prod.yml`).
-
-### npm and Grunt
-
-Use appropriate node and npm version via [nvm](https://github.com/nvm-sh/nvm#nvmrc).
+Install pnpm by running:
 
 ```bash
-nvm use
+npm install -g pnpm@10.4.1
 ```
 
-Download client js dependencies with npm and package them with Grunt.
+This repo uses `pnpm` as package manager.
+You can also use `npm` for your local work but changes will be made by `pnpm` only.
+
+### Angular CLI
+
+* `@angular/cli 19.2.8` or higher
+
+Install @angular/cli by running:
 
 ```bash
-npm install --no-progress
-npm run grunt-build
+pnpm install -g @angular/cli@19
 ```
 
-### Gradle
+### Java
 
-For local development and testing you need to startup elasticsearch via [docker-compose](https://docs.docker.com/compose/).
+* `jdk 17` or higher
+
+### Docker (when running services within docker)
+
+* `docker 28.0.2` or higher
+* `docker compose v2.34.0` or higher
+
+## Getting started
 
 ```bash
-docker-compose up -d elasticsearch
+# clone project
+git clone https://github.com/CodeforLeipzig/lvz-viz
+cd lvz-viz
 ```
 
-You can build and test an executable jar with gradle.
+### Read more
+
+Check the documentation for each module/component.
+
+For frontend check [lvz-viz - frontend](./frontend/README.md).
+
+For backend check [lvz-viz - backend](./backend/README.md).
+
+For docker check [lvz-viz - docker](./README_docker.md).
+
+### Install Tools
+
+Some tools are both used by backend and frontend.
+Run the following command to install:
 
 ```bash
-./gradlew build
+pnpm install
 ```
 
-You can run a specific test with gradle.
+### Starting the application
+
+For development, you can use two separate terminals to start the backend and frontend separately.
+You can find more information in the README files in the separate folders.
+
+You can also use the following command in the root directory to start in a single terminal:
 
 ```bash
-./gradlew test --tests *CrawlSchedulerTest
-```
-
-You can build an executable jar with gradle and run it as a separate process.
-
-```bash
-./gradlew assemble
-java -jar build/libs/lvz-viz-*.jar --spring.profiles.active=local
-```
-
-Or you can simply run the project within gradle during development.
-
-```bash
-export SPRING_PROFILES_ACTIVE=local
-./gradlew bootRun
-```
-
-### Docker
-
-You can build and run the app within a Docker container.
-
-Required version for the multi-stage build: Docker 19.03+
-
-```bash
--- Build or rebuild services
-docker-compose build
--- Create and start containers
-docker-compose up -d
-```
-
-```bash
--- Build services and start containers with dev profile
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
-```
-
-```bash
--- Build services and start containers with prod profile
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-```
-
-```bash
--- View output from containers
-docker-compose logs -f
-```
-
-```bash
--- Stop and remove containers, networks, images, and volumes
-docker-compose down
-```
-
-## Maintenance
-
-```bash
--- Display dependency updates
-./gradlew dependencyUpdates
+pnpm start
 ```

@@ -3,9 +3,7 @@ package de.codefor.le.web;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,13 +19,13 @@ class PoliceTickerControllerTest {
 
     @Test
     void getx() {
-        assertThat(controller.getx(PageRequest.of(0, 1))).isNotNull().isEmpty();
+        assertThat(controller.getx(PageRequest.of(0, 1))).isEmpty();
     }
 
     @Test
     void getLocations() {
-        assertThat(controller.getLocations("Lindenau")).isNotNull().isEmpty();
-        assertThat(controller.getLocations("Zentrum")).isNotNull().isEmpty();
+        assertThat(controller.getLocations("Lindenau")).isEmpty();
+        assertThat(controller.getLocations("Zentrum")).isEmpty();
     }
 
     @Test
@@ -46,13 +44,13 @@ class PoliceTickerControllerTest {
 
     @Test
     void minMaxDate() {
-        assertThat(controller.minMaxDate()).isNotNull().hasSize(2);
+        assertThat(controller.minMaxDate()).hasSize(2);
     }
 
     @Test
     void last7Days() {
         final var result = controller.last7Days();
-        assertThat(result).isNotNull().hasSize(2);
-        assertThat(result[1].getDayOfMonth()).isEqualTo(DateTime.now().getDayOfMonth());
+        assertThat(result).hasSize(2);
+        assertThat(result[1].getDayOfMonth()).isEqualTo(LocalDateTime.now().getDayOfMonth());
     }
 }

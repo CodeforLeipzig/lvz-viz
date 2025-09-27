@@ -16,12 +16,19 @@ public class PoliceTicker {
 
     @Id
     private String id;
+
     private String url;
+
     private String title;
+
     private String article;
+
     private String snippet;
+
     private String copyright;
+
     private Date datePublished;
+
     private GeoPoint coords;
 
 }

@@ -43,16 +43,14 @@ class CrawlSchedulerTest {
     }
 
     @Test
-    void addCoordsToPoliceTickerInformationWithNoSpecificLocation()
-            throws ExecutionException, InterruptedException {
+    void addCoordsToPoliceTickerInformationWithNoSpecificLocation() throws ExecutionException, InterruptedException {
         ticker.setArticle(String.format(ARTICLE, ""));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));
         assertThat(ticker.getCoords()).isNull();
     }
 
     @Test
-    void addCoordsToPoliceTickerInformationWithSpecificLocationInLeipzig()
-            throws ExecutionException, InterruptedException {
+    void addCoordsToPoliceTickerInformationWithSpecificLocationInLeipzig() throws ExecutionException, InterruptedException {
         ticker.setArticle(String.format(ARTICLE, "in Kleinzschocher "));
         scheduler.addCoordsToPoliceTickerInformation(Collections.singletonList(ticker));
         assertThat(ticker.getCoords()).isNotNull();

@@ -18,9 +18,9 @@ public final class Utils {
     /**
      * Generate sha1 hash for url.
      *
-     * @see <a href="https://github.com/google/guava/wiki/HashingExplained">Guava hashing explained</a>
      * @param url the url
      * @return sha1 hash of given url
+     * @see <a href="https://github.com/google/guava/wiki/HashingExplained">Guava hashing explained</a>
      */
     public static String generateHashForUrl(final String url) {
         final String result = Hashing.sha1().newHasher().putString(Strings.nullToEmpty(url), StandardCharsets.UTF_8).hash().toString();

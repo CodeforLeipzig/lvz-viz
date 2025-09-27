@@ -9,9 +9,13 @@ import lombok.Data;
 public class Nominatim {
 
     private String place_id;
+
     private String[] boundingbox;
+
     private String lat;
+
     private String lon;
+
     private String type;
 
 }

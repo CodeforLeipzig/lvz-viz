@@ -15,7 +15,6 @@ import { forkJoin } from 'rxjs';
 import * as L from 'leaflet';
 import 'leaflet.heat/dist/leaflet-heat.js';
 
-import { NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LongPressDirective } from '../../shared/long-press.directive';
@@ -29,7 +28,7 @@ import { StatisticServiceMock } from './statistic.service.mock';
   selector: 'lvzviz-statistic',
   templateUrl: './statistic.component.html',
   styleUrl: './statistic.component.css',
-  imports: [NgIf, NgxSliderModule, MatButtonModule, LongPressDirective, MatIconModule],
+  imports: [NgxSliderModule, MatButtonModule, LongPressDirective, MatIconModule],
   providers: [
     // { provide: StatisticService, useClass: StatisticServiceMock }
   ],

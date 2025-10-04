@@ -8,13 +8,13 @@ Visualization of LVZ police ticker.
 
 ### Angular CLI
 
-* `@angular/cli 19.2.8` or higher
+* `@angular/cli 20.3.4` or higher
 
 ### Node, npm or pnpm
 
-* `node 22.14.0` or higher in combination with
-  * `npm 10.9.2` or higher or
-  * `pnpm 10.7.0` or higher, used in this repository
+* `node 22.20.0` or higher in combination with
+  * `npm 10.9.3` or higher or
+  * `pnpm 10.17.1` or higher, used in this repository
 
 ## Getting started
 

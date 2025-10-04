@@ -14,7 +14,10 @@
           <input matInput placeholder="Suchphrase eingeben" #input />
         </mat-form-field>
         <div id="filter-article">
-          {{ length }} Artikel <span *ngIf="length > 0 && query()"> für Filter mit '{{ query() }}'</span>
+          {{ length }} Artikel
+          @if (length > 0 && query()) {
+            <span> für Filter mit '{{ query() }}'</span>
+          }
         </div>
       </div>
 
@@ -36,10 +39,12 @@
         <!-- expanded content column - The detail row is made up of this one column that spans across all columns -->
         <ng-container matColumnDef="article">
           <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-            <div class="article-element-detail flex flex-col" [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+            <div class="article-element-detail flex flex-col" [class.open]="element === expandedElement">
               <p>{{ displayContent(element) }}</p>
               <div>
-                <span *ngIf="element.article"> ({{ this.author }}) | </span>
+                @if (element.article) {
+                  <span> ({{ this.author }}) | </span>
+                }
                 <a href="https://www.lvz.de/Abo/Servicetexte/Impressum">{{ element.copyright }}</a>
                 |
                 <a href="{{ element.url }}" target="_blank">Artikel öffnen</a>

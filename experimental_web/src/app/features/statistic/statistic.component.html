@@ -13,13 +13,14 @@
   </p>
 </div>
 <div id="map-statistic"></div>
-<ngx-slider
-  *ngIf="dataLoaded"
-  [(value)]="minValue"
-  [(highValue)]="maxValue"
-  [options]="options"
-  (userChangeEnd)="onUserChangeEnd($event)"
-></ngx-slider>
+@if (dataLoaded) {
+  <ngx-slider
+    [(value)]="minValue"
+    [(highValue)]="maxValue"
+    [options]="options"
+    (userChangeEnd)="onUserChangeEnd($event)"
+  ></ngx-slider>
+}
 <div class="flex justify-center space-x-5 items-center">
   <button class="ml-2" lvzvizLongPress (mouseLongPress)="runBackward($event)" (click)="runBackward($event)" mat-mini-fab>
     <mat-icon>keyboard_arrow_left</mat-icon>

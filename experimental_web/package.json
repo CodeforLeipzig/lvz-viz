@@ -48,8 +48,8 @@
     "karma-jasmine-html-reporter": "2.1.0",
     "postcss": "8.5.3",
     "tailwindcss": "4.0.17",
-    "typescript": "5.7.3",
-    "typescript-eslint": "8.28.0"
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.45.0"
   },
   "engines": {
     "node": ">=22.14.0"

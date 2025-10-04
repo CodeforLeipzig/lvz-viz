@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { DatePipe, NgIf } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -23,7 +23,7 @@ import { SearchService } from './search.service';
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
-  imports: [AngularSplitModule, MatFormFieldModule, MatInputModule, NgIf, MatTableModule, MatPaginatorModule, DatePipe],
+  imports: [AngularSplitModule, MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule, DatePipe],
   providers: [
     // { provide: SearchService, useClass: SearchServiceMock }
   ],

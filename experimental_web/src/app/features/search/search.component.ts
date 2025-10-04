@@ -1,4 +1,3 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { DatePipe } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -16,13 +15,6 @@ import { SearchService } from './search.service';
   selector: 'lvzviz-search',
   templateUrl: './search.component.html',
   styleUrl: './search.component.css',
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
   imports: [AngularSplitModule, MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule, DatePipe],
   providers: [
     // { provide: SearchService, useClass: SearchServiceMock }

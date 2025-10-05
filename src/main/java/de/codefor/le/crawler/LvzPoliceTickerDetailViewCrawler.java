@@ -97,7 +97,7 @@ public class LvzPoliceTickerDetailViewCrawler {
         extractTitle(doc, dm);
         extractArticle(doc, dm);
         extractTeaser(doc, dm);
-        extractCopyright(doc, dm);
+        extractCopyright(doc, dm, false);
         extractDatePublished(doc, dm);
         return dm;
     }
@@ -115,13 +115,24 @@ public class LvzPoliceTickerDetailViewCrawler {
         }
     }
 
-    private static void extractCopyright(final Document doc, final PoliceTicker dm) {
+    /**
+     * Extracts the copyright information from the given document and updates the provided PoliceTicker object.
+     * If the copyright information cannot be found in the primary location (ArticleMeta section),
+     * the system will automatically search for it in a secondary location at the end of the article.
+     *
+     * @param retry indicates whether the method is retrying with an alternative CSS query
+     */
+    private static void extractCopyright(final Document doc, final PoliceTicker dm, final boolean retry) {
         final var copyright = "copyright";
-        final var cssQuery = "header p[class*=Copyrightstyled__Copyright]";
+        final var cssQuery = retry ? "div[class*=ArticleMetastyled__ArticleMeta] > div[class*=Stackstyled__Stack] > address" :
+                "#contentMain p[class*=Editorialstyled__Editorial]";
         final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
             logger.debug(LOG_ELEMENT_FOUND, copyright, cssQuery);
             dm.setCopyright(elem.text());
+        }
+        if (Strings.isNullOrEmpty(dm.getCopyright()) && !retry) {
+            extractCopyright(doc, dm, true);
         }
         if (Strings.isNullOrEmpty(dm.getCopyright())) {
             logger.warn(LOG_ELEMENT_NOT_FOUND, copyright);

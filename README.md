@@ -5,6 +5,9 @@
 [![Java CI with Gradle](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/java_ci.yml/badge.svg)](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/java_ci.yml)
 [![Node CI](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/node_ci.yml/badge.svg)](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/node_ci.yml)
 
+[![Maintainability](https://qlty.sh/gh/CodeforLeipzig/projects/lvz-viz/maintainability.svg)](https://qlty.sh/gh/CodeforLeipzig/projects/lvz-viz)
+[![Code Coverage](https://qlty.sh/gh/CodeforLeipzig/projects/lvz-viz/coverage.svg)](https://qlty.sh/gh/CodeforLeipzig/projects/lvz-viz)
+
 ## Intro
 
 Visualization of [LVZ police ticker](https://www.lvz.de/Leipzig/Polizeiticker/Polizeiticker-Leipzig).

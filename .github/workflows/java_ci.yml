@@ -59,3 +59,11 @@ jobs:
 
       - name: Execute Gradle build
         run: ./gradlew build
+
+      - name: Upload code coverage to Qlty.sh
+        uses: qltysh/qlty-action/coverage@v2
+        env:
+          JACOCO_SOURCE_PATH: src/main/java
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: build/reports/jacoco/test/jacocoTestReport.xml

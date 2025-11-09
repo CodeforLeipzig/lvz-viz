@@ -23,8 +23,7 @@
     "leaflet.heat": "0.2.0",
     "material-icons": "1.13.14",
     "rxjs": "7.8.2",
-    "tslib": "2.8.1",
-    "zone.js": "0.15.1"
+    "tslib": "2.8.1"
   },
   "description": "Visualization of LVZ police ticker.",
   "devDependencies": {

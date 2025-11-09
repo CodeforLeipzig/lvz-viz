@@ -3,16 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { addDays, differenceInDays, toDate } from 'date-fns';
 import { Content } from 'leaflet';
 import { Observable, map } from 'rxjs';
-
 import { environment } from '../../../environments/environment';
-import { DateTime } from '../statistic/date-time.model';
+import { DateTime } from './date-time.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StatisticServiceMock {
   private httpClient = inject(HttpClient);
-
 
   fetchDates(query: string): Observable<DateTime[]> {
     return this.httpClient.get<DateTime[]>(environment.api + query);

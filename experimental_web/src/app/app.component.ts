@@ -1,4 +1,4 @@
-import { Component, inject, DOCUMENT } from '@angular/core';
+import { Component, DOCUMENT, inject } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Title } from '@angular/platform-browser';

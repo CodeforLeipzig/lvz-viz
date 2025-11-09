@@ -39,8 +39,8 @@ importers:
         specifier: 20.3.10
         version: 20.3.10(@angular/common@20.3.10(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.3.10(@angular/common@20.3.10(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
       angular-split:
-        specifier: 19.0.0
-        version: 19.0.0(@angular/common@20.3.10(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
+        specifier: 20.0.0
+        version: 20.0.0(@angular/common@20.3.10(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
@@ -1729,8 +1729,8 @@ packages:
       typescript: '*'
       typescript-eslint: ^8.0.0
 
-  angular-split@19.0.0:
-    resolution: {integrity: sha512-vQqXWLcCimFmInu2lpGKIfS9FtYBgKmoWenPjeYkHSRdWmb7HLGlQoNPj1oALrwdhIWFPdySgp0BIXDe2IAepQ==}
+  angular-split@20.0.0:
+    resolution: {integrity: sha512-MtoR8NeFgzBDqiXaSbXPGFqpYsNsaI5W8w2mM/JpYyyU9hkrQ8b3GVhxraR/kGFGEDVmfEUGaqmy2yG0hraOHQ==}
     peerDependencies:
       '@angular/common': '>=19.0.0'
       '@angular/core': '>=19.0.0'
@@ -5983,7 +5983,7 @@ snapshots:
       - chokidar
       - supports-color
 
-  angular-split@19.0.0(@angular/common@20.3.10(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2):
+  angular-split@20.0.0(@angular/common@20.3.10(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2):
     dependencies:
       '@angular/common': 20.3.10(@angular/core@20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)
       '@angular/core': 20.3.10(@angular/compiler@20.3.10)(rxjs@7.8.2)(zone.js@0.15.1)

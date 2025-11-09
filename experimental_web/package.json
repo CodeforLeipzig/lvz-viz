@@ -17,7 +17,7 @@
     "@angular/platform-browser": "20.3.10",
     "@angular/platform-browser-dynamic": "20.3.10",
     "@angular/router": "20.3.10",
-    "angular-split": "19.0.0",
+    "angular-split": "20.0.0",
     "date-fns": "4.1.0",
     "leaflet": "1.9.4",
     "leaflet.heat": "0.2.0",

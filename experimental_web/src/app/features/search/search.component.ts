@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { AngularSplitModule, SplitComponent } from 'angular-split';
+import { SplitAreaComponent, SplitComponent } from 'angular-split';
 import * as L from 'leaflet';
 import { debounceTime, distinctUntilChanged, fromEvent, map, merge, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { Content } from './content.model';
@@ -15,7 +15,7 @@ import { SearchService } from './search.service';
   selector: 'lvzviz-search',
   templateUrl: './search.component.html',
   styleUrl: './search.component.css',
-  imports: [AngularSplitModule, MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule, DatePipe],
+  imports: [SplitComponent, SplitAreaComponent, MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule, DatePipe],
   providers: [
     // { provide: SearchService, useClass: SearchServiceMock }
   ],
@@ -69,6 +69,8 @@ export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
     this.initMap();
     this.initSplit();
     this.loadContent();
+    // workaround: invalidate map size after view init to fix display issues with map in split area
+    setTimeout(() => this.map.invalidateSize(), 0);
   }
 
   ngOnDestroy() {

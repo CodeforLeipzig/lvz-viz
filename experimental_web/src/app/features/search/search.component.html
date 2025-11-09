@@ -4,7 +4,7 @@
   Sie können auch über die Suche nach speziellen Orten und Begriffen suchen.
 </p>
 <div class="split-wrapper">
-  <as-split #split [disabled]="isSmallSize ? true : false" [direction]="isSmallSize ? 'vertical' : 'horizontal'">
+  <as-split #split [disabled]="isSmallSize" [direction]="isSmallSize ? 'vertical' : 'horizontal'">
     <as-split-area [size]="40" [minSize]="isSmallSize ? null : 20" [maxSize]="isSmallSize ? null : 60">
       <div id="map-search" class="map-search"></div>
     </as-split-area>

@@ -1,6 +1,5 @@
 import { ChangeContext, NgxSliderModule, Options } from '@angular-slider/ngx-slider';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
-
 import { addDays, subDays } from 'date-fns';
 import { forkJoin } from 'rxjs';
 /**

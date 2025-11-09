@@ -1,7 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -9,7 +8,6 @@ import { environment } from '../../../environments/environment';
 })
 export class SearchServiceMock {
   private httpClient = inject(HttpClient);
-
 
   /**
    * This mock is used to override some parameters to get json server working.

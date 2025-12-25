@@ -1,10 +1,9 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Content } from '../search/content.model';
 import { DateTime } from './date-time.model';
-
 import { StatisticService } from './statistic.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('StatisticService', () => {
   let service: StatisticService;
@@ -12,9 +11,9 @@ describe('StatisticService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    });
     service = TestBed.inject(StatisticService);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
@@ -23,7 +22,7 @@ describe('StatisticService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch dates with query minmaxdate', (done) => {
+  it('should fetch dates with query minmaxdate', async () => {
     const mockResponse: DateTime[] = [
       {
         year: 2021,
@@ -38,13 +37,12 @@ describe('StatisticService', () => {
     ];
     service.fetchDates('minmaxdate').subscribe((response) => {
       expect(response).toEqual(mockResponse);
-      done();
     });
-    const mockRequest = httpTestingController.expectOne('./api/minmaxdate');
+    const mockRequest = httpTestingController.expectOne('http://localhost:3000/api/minmaxdate');
     mockRequest.flush(mockResponse);
   });
 
-  it('should fetch dates with query last7days', (done) => {
+  it('should fetch dates with query last7days', async () => {
     const mockResponse: DateTime[] = [
       {
         year: 2021,
@@ -59,13 +57,12 @@ describe('StatisticService', () => {
     ];
     service.fetchDates('last7days').subscribe((response) => {
       expect(response).toEqual(mockResponse);
-      done();
     });
-    const mockRequest = httpTestingController.expectOne('./api/last7days');
+    const mockRequest = httpTestingController.expectOne('http://localhost:3000/api/last7days');
     mockRequest.flush(mockResponse);
   });
 
-  it('should fetch content', (done) => {
+  it('should fetch content', async () => {
     const mockResponse: Content[] = [
       {
         id: '5260376b8960373336f93f38b7a56d1877e0b974',
@@ -86,11 +83,12 @@ describe('StatisticService', () => {
       },
     ];
     service.fetch(new Date(2021, 11, 20).getTime(), new Date(2021, 11, 27).getTime()).subscribe((response) => {
-     expect(response).toEqual(mockResponse);
-      done();
+      expect(response).toEqual(mockResponse);
     });
-    const mockRequest = httpTestingController.expectOne('./api/searchbetween?from=2021-12-19T23:00:00.000Z&to=2021-12-26T23:00:00.000Z');
-    mockRequest.flush({ content: mockResponse});
+    const mockRequest = httpTestingController.expectOne(
+      'http://localhost:3000/api/searchbetween?from=2021-12-19T23:00:00.000Z&to=2021-12-26T23:00:00.000Z'
+    );
+    mockRequest.flush({ content: mockResponse });
   });
 
   it('should determine date from dateTime object', () => {

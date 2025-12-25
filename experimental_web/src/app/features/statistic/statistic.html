@@ -22,7 +22,7 @@
   ></ngx-slider>
 }
 <div class="flex justify-center space-x-5 items-center">
-  <button class="ml-2" lvzvizLongPress (mouseLongPress)="runBackward($event)" (click)="runBackward($event)" mat-mini-fab>
+  <button class="ml-2" appLongPress (mouseLongPress)="runBackward($event)" (click)="runBackward($event)" mat-mini-fab>
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
   <p class="text-center mb-0">
@@ -32,7 +32,7 @@
     <br />
     bewegt sich der Slider automatisch im gewählten Zeitfenster.
   </p>
-  <button class="mr-2" lvzvizLongPress (mouseLongPress)="runForward($event)" (click)="runForward($event)" mat-mini-fab>
+  <button class="mr-2" appLongPress (mouseLongPress)="runForward($event)" (click)="runForward($event)" mat-mini-fab>
     <mat-icon>keyboard_arrow_right</mat-icon>
   </button>
 </div>

@@ -12,15 +12,15 @@ import { Content } from './content.model';
 import { SearchService } from './search.service';
 
 @Component({
-  selector: 'lvzviz-search',
-  templateUrl: './search.component.html',
-  styleUrl: './search.component.css',
+  selector: 'app-search',
+  templateUrl: './search.html',
+  styleUrl: './search.css',
   imports: [SplitComponent, SplitAreaComponent, MatFormFieldModule, MatInputModule, MatTableModule, MatPaginatorModule, DatePipe],
   providers: [
     // { provide: SearchService, useClass: SearchServiceMock }
   ],
 })
-export class SearchComponent implements AfterViewInit, OnInit, OnDestroy {
+export class Search implements AfterViewInit, OnInit, OnDestroy {
   private breakpointObserver = inject(BreakpointObserver);
   private searchService = inject(SearchService);
 

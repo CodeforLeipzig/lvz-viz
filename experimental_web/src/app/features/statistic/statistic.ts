@@ -24,15 +24,15 @@ import { StatisticService } from './statistic.service';
 import { StatisticServiceMock } from './statistic.service.mock';
 
 @Component({
-  selector: 'lvzviz-statistic',
-  templateUrl: './statistic.component.html',
-  styleUrl: './statistic.component.css',
+  selector: 'app-statistic',
+  templateUrl: './statistic.html',
+  styleUrl: './statistic.css',
   imports: [NgxSliderModule, MatButtonModule, LongPressDirective, MatIconModule],
   providers: [
     // { provide: StatisticService, useClass: StatisticServiceMock }
   ],
 })
-export class StatisticComponent implements OnInit, AfterViewInit {
+export class Statistic implements OnInit, AfterViewInit {
   private statisticService = inject(StatisticService);
 
   private map!: L.Map;

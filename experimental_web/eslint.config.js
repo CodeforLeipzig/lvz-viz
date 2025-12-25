@@ -1,19 +1,20 @@
 // @ts-check
 const eslint = require("@eslint/js");
+const { defineConfig } = require("eslint/config");
 const tseslint = require("typescript-eslint");
 const angular = require("angular-eslint");
 
-module.exports = tseslint.config(
+module.exports = defineConfig([
   {
     files: ["**/*.ts"],
-    extends: [eslint.configs.recommended, ...tseslint.configs.recommended, ...tseslint.configs.stylistic, ...angular.configs.tsRecommended],
+    extends: [eslint.configs.recommended, tseslint.configs.recommended, tseslint.configs.stylistic, angular.configs.tsRecommended],
     processor: angular.processInlineTemplates,
     rules: {
       "@angular-eslint/directive-selector": [
         "error",
         {
           type: "attribute",
-          prefix: "lvzviz",
+          prefix: "app",
           style: "camelCase",
         },
       ],
@@ -21,7 +22,7 @@ module.exports = tseslint.config(
         "error",
         {
           type: "element",
-          prefix: "lvzviz",
+          prefix: "app",
           style: "kebab-case",
         },
       ],
@@ -29,7 +30,7 @@ module.exports = tseslint.config(
   },
   {
     files: ["**/*.html"],
-    extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
+    extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
     rules: {},
-  }
-);
+  },
+]);

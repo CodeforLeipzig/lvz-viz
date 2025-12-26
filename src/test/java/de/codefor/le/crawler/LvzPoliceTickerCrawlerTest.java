@@ -2,7 +2,6 @@ package de.codefor.le.crawler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.jupiter.api.Test;

@@ -16,7 +16,7 @@ services:
     networks:
       - esnet
     ports:
-      - 8080:8080
+      - "8080:8080"
     restart: unless-stopped
   chrome:
     image: selenium/standalone-chrome:4.29.0-20250303
@@ -24,7 +24,7 @@ services:
     networks:
       - esnet
     ports:
-      - 4444:4444
+      - "4444:4444"
     shm_size: 2gb
   elasticsearch:
     environment:
@@ -51,7 +51,7 @@ services:
     networks:
       - esnet
     ports:
-      - 9200:9200
+      - "9200:9200"
     restart: unless-stopped
     ulimits:
       memlock:

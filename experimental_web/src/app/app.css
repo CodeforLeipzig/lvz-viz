@@ -4,6 +4,10 @@ body {
   overflow-y: scroll;
 }
 
+footer mat-toolbar {
+  height: 32px;
+}
+
 mat-tab-body {
   padding: 10px;
 }

@@ -19,19 +19,6 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
-@utility footer-mat-toolbar {
-
-  /* Angular Material: Small (min-width: 600px) and (max-width: 959.98px) */
-  @media (max-width: 959.98px) {
-    height: 120px !important;
-    flex-direction: column !important;
-
-    div:first-child {
-      @apply mt-2.5;
-    }
-  }
-}
-
 @utility statistic-description {
 
   /* Angular Material: Small (min-width: 600px) and (max-width: 959.98px) */

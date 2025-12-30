@@ -1,6 +1,22 @@
 <div class="min-h-screen flex flex-col">
-  <mat-toolbar>
-    {{ appname }}
+  <mat-toolbar class="justify-between">
+    <img src="logo.png" alt="Polizeiticker Logo" />
+    <div class="pt-2">
+      <a href="http://codefor.de">
+        <img class="h-10" src="CFG_logo.svg" alt="CodeforLeipzig Logo" />
+      </a>
+      <a
+        mat-button
+        href="https://github.com/CodeforLeipzig/lvz-viz"
+        aria-label="GitHub Repository"
+        title="Go to project on Github"
+        target="_blank"
+      >
+        <span matButtonIcon>
+          <img class="h-10 pl-5" alt="GitHub Repository" src="github-mark.svg" />
+        </span>
+      </a>
+    </div>
   </mat-toolbar>
   <mat-tab-group mat-stretch-tabs="false">
     <mat-tab label="Suche">
@@ -16,19 +32,14 @@
     </mat-tab>
   </mat-tab-group>
   <footer class="mt-auto">
-    <mat-toolbar class="flex footer-mat-toolbar">
-      <div class="flex-1 text-center text-sm">
+    <mat-toolbar class="flex justify-center h-5">
+      <div class="text-sm">
         Unser Impressum findet Ihr hier: <a href="https://codefor.de/impressum">Impressum</a>
-        <br />
+        |
         Des Weiteren beziehen wir uns auf das
         <a href="http://www.lvz-online.de/nachrichten/service/impressum/servicetexte/leistungsschutzrecht/r-servicetexte-a-199230.html"
           >Leistungsschutzrecht der LVZ</a
         >.
-      </div>
-      <div class="flex-1 text-center text-sm">
-        Entwickler sind <a href="https://github.com/RicardoUsbeck">Ricardo</a> und <a href="https://github.com/spinner0815">Lars</a>
-        <br />
-        Der komplette Code ist auf <a href="https://github.com/CodeforLeipzig/lvz-viz/">GitHub</a>.
       </div>
     </mat-toolbar>
   </footer>

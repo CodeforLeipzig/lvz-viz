@@ -45,7 +45,7 @@ dependencies {
   def seleniumVersion = '4.38.0'
   implementation "io.github.bonigarcia:webdrivermanager:6.3.3",
                  "com.google.guava:guava:33.5.0-jre",
-                 "org.jsoup:jsoup:1.21.2",
+                 "org.jsoup:jsoup:1.22.1",
                  "org.seleniumhq.selenium:selenium-api:$seleniumVersion",
                  "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion",
                  "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion",

@@ -107,3 +107,25 @@ test {
 testlogger {
   showStandardStreams false
 }
+
+task buildFrontend(type: Exec) {
+  description = 'Builds the frontend.'
+  workingDir 'frontend'
+  commandLine 'pnpm', 'install'
+  commandLine 'pnpm', 'run', 'build:prod'
+}
+
+task copyFrontend(type: Copy) {
+  description = 'Copies the built frontend files into the backend resources directory.'
+  dependsOn buildFrontend
+  def frontendDir = file('frontend/dist/lvz-viz/browser')
+  onlyIf {
+    frontendDir.exists()
+  }
+  from(frontendDir)
+  into('src/main/resources/static/')
+}
+
+tasks.named('processResources') {
+  dependsOn copyFrontend
+}

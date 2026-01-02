@@ -1,49 +1,28 @@
-# LVZ Polizeiticker
+# lvz-viz - Frontend
 
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](../LICENSE)
-
-Visualization of LVZ police ticker.
-
-## Prerequisites
-
-### Angular CLI
-
-* `@angular/cli 21.0.5` or higher
-
-### Node, npm or pnpm
-
-* `node 22.20.0` or higher in combination with
-  * `npm 10.9.3` or higher or
-  * `pnpm 10.26.1` or higher, used in this repository
+The UI of LVZ police ticker.
 
 ## Getting started
 
 ```bash
-# clone project
-git clone
-cd lvz-viz
+# all commands used in ./frontend
+cd frontend
 
 # install tools and frontend dependencies
 pnpm install
 ```
 
-Create environment files for `development mode` and `production mode`.
+Create an environment file for `development mode`.
 
 ```bash
 cp src/environments/environment.ts src/environments/environment.dev.ts
-cp src/environments/environment.ts src/environments/environment.prod.ts
 ```
 
-**Note**: These files will not be under version control but listed in .gitignore.
+**Note**: This file will not be under version control but listed in .gitignore.
 
 ## Usage
 
-### Recommendation
-
-It is recommended to use a server to get full access of all angular.
-For the other options your app should run on a server which you like.
-
-### Run in development mode
+### Use mock data (if working with mock data)
 
 If you want to work with mock data, start the mock server in a separate terminal, reachable on [http://localhost:3000/](http://localhost:3000/).
 
@@ -53,6 +32,8 @@ Update your `environment.dev.ts` file `api` to `http://localhost:3000/`.
 ```bash
 pnpm run mock
 ```
+
+### Run in development mode
 
 ```bash
 # build, reachable on http://localhost/app/path/to/dist/
@@ -98,6 +79,7 @@ Change for `production mode` the option `production` to `true`.
 
 Defines the URL to the backend.
 If you want to work with mock data, use [http://localhost:3000/](http://localhost:3000/).
+If you want to work with backend data, use [http://localhost:4200/api/](http://localhost:4200/api/).
 
 * default: `./api/`
 * type: `string`
@@ -106,7 +88,7 @@ If you want to work with mock data, use [http://localhost:3000/](http://localhos
 
 Application-wide title of the app, displayed in title and toolbar.
 
-* default: `LVZ Polizeiticker`
+* default: `LVZ-Polizeiticker`
 * type: `string`
 
 ### `production`

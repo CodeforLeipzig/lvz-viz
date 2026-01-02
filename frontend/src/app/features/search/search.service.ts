@@ -2,6 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Content } from './content.model';
+import { PagedResponse } from './paged-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -9,12 +11,10 @@ import { environment } from '../../../environments/environment';
 export class SearchService {
   private httpClient = inject(HttpClient);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fetch(page: number, size: number, sort: string, query?: string): Observable<any> {
+  fetch(page: number, size: number, sort: string, query?: string): Observable<PagedResponse<Content>> {
     const collected = { page, size, sort };
     const params = new HttpParams({ fromObject: query ? { ...collected, query } : collected });
     const url = query ? 'search' : 'getx';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return this.httpClient.get<any>(environment.api + url, { params });
+    return this.httpClient.get<PagedResponse<Content>>(environment.api + url, { params });
   }
 }

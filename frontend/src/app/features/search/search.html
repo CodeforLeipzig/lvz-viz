@@ -14,8 +14,8 @@
           <input matInput placeholder="Suchphrase eingeben" #input />
         </mat-form-field>
         <div id="filter-article">
-          {{ length }} Artikel
-          @if (length > 0 && query()) {
+          {{ totalElements }} Artikel
+          @if (totalElements > 0 && query()) {
             <span> für Filter mit '{{ query() }}'</span>
           }
         </div>
@@ -64,7 +64,7 @@
         <tr mat-row *matRowDef="let row; columns: ['article']" class="article-detail-row"></tr>
       </table>
 
-      <mat-paginator [length]="length" [pageSizeOptions]="[5]" aria-label="Select page of articles"></mat-paginator>
+      <mat-paginator [length]="totalElements" [pageSizeOptions]="[5]" aria-label="Select page of articles"></mat-paginator>
     </as-split-area>
   </as-split>
 </div>

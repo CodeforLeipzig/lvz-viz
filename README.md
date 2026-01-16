@@ -23,13 +23,13 @@ by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_v
 
 * `jdk 17` or higher
 
-We recommand the usage of [The Software Development Kit Manager](https://sdkman.io/).
+We recommend the usage of [The Software Development Kit Manager](https://sdkman.io/).
 
 ### Node and pnpm
 
 * `node 22.20.0` or higher
 
-We recommand the usage of [Node Version Manager](https://github.com/nvm-sh/nvm).
+We recommend the usage of [Node Version Manager](https://github.com/nvm-sh/nvm).
 
 * `pnpm 10.27.0` or higher
 

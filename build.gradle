@@ -111,7 +111,7 @@ testlogger {
 task buildFrontend(type: Exec) {
   description = 'Builds the frontend.'
   workingDir 'frontend'
-  commandLine 'pnpm', 'install'
+  commandLine 'pnpm', 'install --frozen-lockfile'
   commandLine 'pnpm', 'run', 'build:prod'
 }
 
@@ -123,9 +123,13 @@ task copyFrontend(type: Copy) {
     frontendDir.exists()
   }
   from(frontendDir)
-  into('src/main/resources/static/')
+  into("$buildDir/resources/main/static/")
 }
 
 tasks.named('processResources') {
-  dependsOn copyFrontend
+  def localBuild = project.findProperty("localBuild") == "true"
+
+  if (localBuild) {
+    dependsOn copyFrontend
+  }
 }

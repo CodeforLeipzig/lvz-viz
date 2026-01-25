@@ -103,7 +103,7 @@ You can run a specific test with gradle.
 You can build an executable jar with gradle and run it as a separate process.
 
 ```bash
-./gradlew assemble
+./gradlew assemble -PlocalBuild=true
 java -jar build/libs/lvz-viz-*.jar --spring.profiles.active=local
 ```
 

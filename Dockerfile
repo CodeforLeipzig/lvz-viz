@@ -13,7 +13,7 @@ RUN pnpm install --frozen-lockfile
 
 RUN pnpm build:prod
 
-FROM gradle:7-jdk17-alpine AS build-backend
+FROM gradle:7-jdk17 AS build-backend
 
 ENV USER=gradle
 USER ${USER}
@@ -22,7 +22,6 @@ WORKDIR /home/gradle/app
 
 COPY --chown=${USER} build.gradle .
 COPY --chown=${USER} src ./src
-RUN rm -f src/main/resources/public/js/*.js
 COPY --chown=${USER} --from=build-frontend /home/node/dist/lvz-viz/browser ./src/main/resources/static/
 
 RUN gradle --info assemble

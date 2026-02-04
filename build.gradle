@@ -111,8 +111,7 @@ testlogger {
 task buildFrontend(type: Exec) {
   description = 'Builds the frontend.'
   workingDir 'frontend'
-  commandLine 'pnpm', 'install --frozen-lockfile'
-  commandLine 'pnpm', 'run', 'build:prod'
+  commandLine 'sh', '-c', 'pnpm install --frozen-lockfile && pnpm run build:prod'
 }
 
 task copyFrontend(type: Copy) {

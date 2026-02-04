@@ -64,7 +64,7 @@ ng e2e
 
 ### General
 
-All options have to be set in the environment files but some of them do not need to be changed.
+All options have to be set in the environment files, but some of them do not need to be changed.
 All defaults refer to the environment file (`environment.ts`), they are prepared in `development mode` (`environment.dev.ts`).
 Change for `production mode` the option `production` to `true`.
 
@@ -86,7 +86,7 @@ If you want to work with backend data, use [http://localhost:4200/api/](http://l
 
 ### `appname`
 
-Application-wide title of the app, displayed in title and toolbar.
+Application-wide title of the app, displayed in the title and toolbar.
 
 * default: `LVZ-Polizeiticker`
 * type: `string`
@@ -101,10 +101,10 @@ Defines whether the app is in production or not.
 
 ### `theme`
 
-Name of a build-in theme from angular-material or a custom light or dark theme.
+Name of a built-in theme from angular-material or a custom light or dark theme.
 
 * default: `indigo-pink`
 * type: `string`
 * values: `deeppurple-amber`/`indigo-pink`/`pink-bluegrey`/`purple-green`/`custom-light`/`custom-dark`
 
-To create a custom light or dark theme just edit the colors and themes in `themes.scss`.
+To create a custom light or dark theme, edit the colors and themes in `themes.scss`.

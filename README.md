@@ -82,32 +82,32 @@ nvm use
 
 #### Gradle
 
-For local development and testing you need to startup elasticsearch via [docker-compose](https://docs.docker.com/compose/).
+For local development and testing you need to start up elasticsearch via [docker-compose](https://docs.docker.com/compose/).
 
 ```bash
 docker compose up -d elasticsearch
 ```
 
-You can build and test an executable jar with gradle.
+You can build and test an executable jar with Gradle.
 
 ```bash
 ./gradlew build
 ```
 
-You can run a specific test with gradle.
+You can run a specific test with Gradle.
 
 ```bash
 ./gradlew test --tests "*CrawlSchedulerTest"
 ```
 
-You can build an executable jar with gradle and run it as a separate process.
+You can build an executable jar with Gradle and run it as a separate process.
 
 ```bash
 ./gradlew assemble -PlocalBuild=true
 java -jar build/libs/lvz-viz-*.jar --spring.profiles.active=local
 ```
 
-Or you can simply run the project within gradle during development.
+Or you can run the project within Gradle during development.
 
 ```bash
 export SPRING_PROFILES_ACTIVE=local
@@ -116,10 +116,10 @@ export SPRING_PROFILES_ACTIVE=local
 
 ### Running backend and frontend together
 
-For development you can use two separate terminals for starting backend and frontend separately.
+For development, you can use two separate terminals for starting backend and frontend separately.
 For further information, please refer to the README files.
 
-You could also use following command in root folder to start development in one single terminal:
+You could also use the following command in the root folder to start development in one single terminal:
 Run the following command to install:
 
 ```bash

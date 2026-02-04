@@ -122,7 +122,7 @@ task copyFrontend(type: Copy) {
     frontendDir.exists()
   }
   from(frontendDir)
-  into("$buildDir/resources/main/static/")
+  into(layout.buildDirectory.dir("resources/main/static/"))
 }
 
 tasks.named('processResources') {

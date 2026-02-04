@@ -8,7 +8,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { SplitAreaComponent, SplitComponent } from 'angular-split';
 import * as L from 'leaflet';
-import { debounceTime, distinctUntilChanged, fromEvent } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 import { Content } from './content.model';
 import { SearchService } from './search.service';
 
@@ -105,9 +105,14 @@ export class Search implements AfterViewInit, OnInit {
    */
   initInput(): void {
     fromEvent(this.input.nativeElement, 'keyup')
-      .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(500), distinctUntilChanged())
-      .subscribe(() => {
-        this.searchTerm = this.input.nativeElement.value;
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(500),
+        map(() => this.input.nativeElement.value),
+        distinctUntilChanged()
+      )
+      .subscribe((value) => {
+        this.searchTerm = value;
         this.paginator.firstPage();
         this.loadPage(0, this.paginator.pageSize);
       });

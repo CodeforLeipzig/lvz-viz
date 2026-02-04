@@ -101,7 +101,7 @@ export class Search implements AfterViewInit, OnInit {
   }
 
   /**
-   * Initialize search field.
+   * Initialize search field with debounced input handling.
    */
   initInput(): void {
     fromEvent(this.input.nativeElement, 'keyup')
@@ -113,9 +113,19 @@ export class Search implements AfterViewInit, OnInit {
       )
       .subscribe((value) => {
         this.searchTerm = value;
-        this.paginator.firstPage();
+        this.paginator.pageIndex = 0;
         this.loadPage(0, this.paginator.pageSize);
       });
+  }
+
+  /**
+   * Handles Enter key press for immediate search.
+   */
+  onEnterKey(): void {
+    const value = this.input.nativeElement.value;
+    this.searchTerm = value;
+    this.paginator.pageIndex = 0;
+    this.loadPage(0, this.paginator.pageSize);
   }
 
   /**

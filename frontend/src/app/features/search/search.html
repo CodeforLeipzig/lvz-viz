@@ -11,7 +11,7 @@
     <as-split-area [size]="60">
       <div class="flex justify-between items-center ml-0 mt-2.5 md:mt-0 md:ml-2.5">
         <mat-form-field class="w-1/2">
-          <input matInput placeholder="Suchphrase eingeben" #input />
+          <input matInput placeholder="Suchphrase eingeben" #input (keyup.enter)="onEnterKey()" />
         </mat-form-field>
         <div id="filter-article">
           {{ totalElements }} Artikel

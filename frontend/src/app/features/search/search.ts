@@ -75,7 +75,7 @@ export class Search implements AfterViewInit, OnInit {
     setTimeout(() => this.map.invalidateSize(), 0);
 
     this.loadPage(0, 5);
-    this.paginator.page.subscribe(() => {
+    this.paginator.page.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.loadPage(this.paginator.pageIndex, this.paginator.pageSize);
     });
   }

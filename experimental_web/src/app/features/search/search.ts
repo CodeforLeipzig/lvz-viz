@@ -43,6 +43,14 @@ export class Search implements AfterViewInit, OnDestroy {
   paginator = viewChild.required<MatPaginator>(MatPaginator);
 
   constructor() {
+    // Initialize Leaflet icon path once
+    /**
+     * workaround:
+     * Images not loaded correctly: marker-shadow.png 404.
+     * So images are copied from node_modules leaflet folder into assets folder.
+     */
+    L.Icon.Default.imagePath = 'leaflet/';
+
     // Observe breakpoints and update isSmallSize signal
     const breakpointState = toSignal(
       this.breakpointObserver.observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge]),
@@ -54,18 +62,9 @@ export class Search implements AfterViewInit, OnDestroy {
       for (const query of Object.keys(result.breakpoints)) {
         if (result.breakpoints[query]) {
           this.isSmallSize.set(query === Breakpoints.XSmall || query === Breakpoints.Small);
+          break; // Exit after first match to avoid unnecessary overwrites
         }
       }
-    });
-
-    // Initialize Leaflet icon path
-    effect(() => {
-      /**
-       * workaround:
-       * Images not loaded correctly: marker-shadow.png 404.
-       * So images are copied from node_modules leaflet folder into assets folder.
-       */
-      L.Icon.Default.imagePath = 'leaflet/';
     });
   }
 
@@ -87,7 +86,7 @@ export class Search implements AfterViewInit, OnDestroy {
    */
   private initSplit(): void {
     const splitComponent = this.split();
-    splitComponent.dragProgress$.subscribe(() => {
+    splitComponent.dragProgress$.pipe(takeUntil(this.destroyed)).subscribe(() => {
       this.map.invalidateSize();
     });
   }

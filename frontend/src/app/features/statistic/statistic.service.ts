@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { addDays, differenceInDays, toDate } from 'date-fns';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Content } from '../search/content.model';
+import { Content } from '../search/models/content.model';
 import { DateTime } from './date-time.model';
 
 @Injectable({

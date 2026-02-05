@@ -4,24 +4,24 @@
   Sie können auch über die Suche nach speziellen Orten und Begriffen suchen.
 </p>
 <div class="split-wrapper">
-  <as-split #split [disabled]="isSmallSize" [direction]="isSmallSize ? 'vertical' : 'horizontal'">
-    <as-split-area [size]="40" [minSize]="isSmallSize ? null : 20" [maxSize]="isSmallSize ? null : 60">
+  <as-split #split [disabled]="isSmallSize()" [direction]="isSmallSize() ? 'vertical' : 'horizontal'">
+    <as-split-area [size]="40" [minSize]="isSmallSize() ? null : 20" [maxSize]="isSmallSize() ? null : 60">
       <div id="map-search" class="map-search"></div>
     </as-split-area>
     <as-split-area [size]="60">
       <div class="flex justify-between items-center ml-0 mt-2.5 md:mt-0 md:ml-2.5">
         <mat-form-field class="w-1/2">
-          <input matInput placeholder="Suchphrase eingeben" #input (keyup.enter)="onEnterKey()" />
+          <input matInput placeholder="Suchbegriff eingeben" (input)="onSearchInput($event.target.value)" />
         </mat-form-field>
         <div id="filter-article">
-          {{ totalElements }} Artikel
-          @if (totalElements > 0 && query()) {
+          {{ totalElements() }} Artikel
+          @if (totalElements() > 0 && query()) {
             <span> für Filter mit '{{ query() }}'</span>
           }
         </div>
       </div>
 
-      <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="ml-0 md:ml-2.5">
+      <table mat-table [dataSource]="dataSource()" multiTemplateDataRows class="ml-0 md:ml-2.5">
         <!-- title and content for Titel-->
         <ng-container matColumnDef="title">
           <th class="w-9/12" mat-header-cell *matHeaderCellDef>Titel</th>
@@ -38,7 +38,7 @@
 
         <!-- expanded content column - The detail row is made up of this one column that spans across all columns -->
         <ng-container matColumnDef="article">
-          <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns().length">
             <div class="article-element-detail flex flex-col" [class.open]="element === expandedElement">
               <p>{{ displayContent(element) }}</p>
               <div>
@@ -53,10 +53,10 @@
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
         <tr
           mat-row
-          *matRowDef="let element; columns: displayedColumns"
+          *matRowDef="let element; columns: displayedColumns()"
           class="article-element-row"
           [class.article-expanded-row]="expandedElement === element"
           (click)="expandedElement = element === expandedElement ? null : element"
@@ -64,7 +64,12 @@
         <tr mat-row *matRowDef="let row; columns: ['article']" class="article-detail-row"></tr>
       </table>
 
-      <mat-paginator [length]="totalElements" [pageSizeOptions]="[5]" aria-label="Select page of articles"></mat-paginator>
+      <mat-paginator
+        [length]="totalElements()"
+        [pageSizeOptions]="[5]"
+        (page)="onPageChange($event)"
+        aria-label="Select page of articles"
+      ></mat-paginator>
     </as-split-area>
   </as-split>
 </div>

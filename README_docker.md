@@ -30,7 +30,7 @@ Defines the base image to use for lvz-viz.
 
 Defines the version of the image to use for lvz-viz.
 
-* default: `2.6.0`
+* default: `2.5.0`
 * type: `string`
 
 ### `ES_VERSION`

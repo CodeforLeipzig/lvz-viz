@@ -66,7 +66,7 @@ export class Search implements AfterViewInit, OnDestroy {
        * So images are copied from node_modules leaflet folder into assets folder.
        */
       L.Icon.Default.imagePath = 'leaflet/';
-    }, { allowSignalWrites: false });
+    });
   }
 
   ngAfterViewInit(): void {

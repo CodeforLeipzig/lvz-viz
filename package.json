@@ -5,7 +5,10 @@
   ],
   "description": "Development mode: concurrently load of backend and frontend",
   "devDependencies": {
-    "concurrently": "9.2.1"
+    "concurrently": "9.2.1",
+    "@semantic-release/commit-analyzer": "13.0.1",
+    "@semantic-release/release-notes-generator": "14.1.0",
+    "@semantic-release/github": "12.0.3"
   },
   "engines": {
     "node": ">=22.20.0"

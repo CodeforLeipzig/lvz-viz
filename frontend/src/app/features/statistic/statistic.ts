@@ -1,9 +1,9 @@
 import { ChangeContext, NgxSliderModule, Options } from '@angular-slider/ngx-slider';
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import { addDays, subDays } from 'date-fns';
 import { forkJoin } from 'rxjs';
 /**
- * workaround:
+ * Workaround:
  * Leaflet and leaflet.heat imported here so normally no need to import on other files.
  * But the library is not fully prepared to use in angular, so the following error occurs in the browser console:
  *
@@ -17,11 +17,9 @@ import 'leaflet.heat/dist/leaflet-heat.js';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LongPressDirective } from '../../shared/long-press.directive';
-import { Content } from '../search/content.model';
+import { Content } from '../search/models/content.model';
 import { DateTime } from './date-time.model';
 import { StatisticService } from './statistic.service';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { StatisticServiceMock } from './statistic.service.mock';
 
 @Component({
   selector: 'app-statistic',
@@ -32,7 +30,7 @@ import { StatisticServiceMock } from './statistic.service.mock';
     // { provide: StatisticService, useClass: StatisticServiceMock }
   ],
 })
-export class Statistic implements OnInit, AfterViewInit {
+export class Statistic implements AfterViewInit {
   private statisticService = inject(StatisticService);
 
   private map!: L.Map;
@@ -46,11 +44,8 @@ export class Statistic implements OnInit, AfterViewInit {
   maxValue = 0;
   options!: Options;
 
-  ngOnInit(): void {
-    this.initSlider();
-  }
-
   ngAfterViewInit(): void {
+    this.initSlider();
     this.initMap();
   }
 

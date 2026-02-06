@@ -4,15 +4,11 @@ import { addDays, subDays } from 'date-fns';
 import { forkJoin } from 'rxjs';
 /**
  * Workaround:
- * Leaflet and leaflet.heat imported here so normally no need to import on other files.
- * But the library is not fully prepared to use in angular, so the following error occurs in the browser console:
- *
- * Uncaught ReferenceError: L is not defined
- *
- * B/c of this, in angular.json file both include under scripts in build section in the right order.
+ * leaflet.heat references L as a global variable and is not a proper ES module.
+ * With the esbuild-based Angular builder, a static side-effect import does not work.
+ * Instead, L is assigned to window and leaflet.heat is loaded via dynamic import in initMap().
  */
 import * as L from 'leaflet';
-import 'leaflet.heat/dist/leaflet-heat.js';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -44,9 +40,9 @@ export class Statistic implements AfterViewInit {
   maxValue = 0;
   options!: Options;
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
+    await this.initMap();
     this.initSlider();
-    this.initMap();
   }
 
   /**
@@ -81,7 +77,7 @@ export class Statistic implements AfterViewInit {
   /**
    * Initialize map.
    */
-  private initMap(): void {
+  private async initMap(): Promise<void> {
     /** workaround:
      * Images not loaded correctly so images are copied from node_modules leaflet folder into assets folder.
      */
@@ -95,10 +91,14 @@ export class Statistic implements AfterViewInit {
 
     /**
      * workaround:
-     * cast L to any to avoid following error.
-     *
-     * error TS2339: Property 'heatLayer' does not exist on type 'typeof import("/home/marcel/dev/workspace/github/lvz-viz/client/node_modules/@types/leaflet/index")'.
+     * leaflet.heat references L as a global variable. With the esbuild-based Angular builder,
+     * the static side-effect import does not expose L globally. Assign L to window and use
+     * a dynamic import so leaflet.heat can find it at evaluation time.
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).L = L;
+    await import('leaflet.heat/dist/leaflet-heat.js');
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.heat = (L as any).heatLayer([], {
       radius: 25,

@@ -1,13 +1,13 @@
 package de.codefor.le.ner;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -48,7 +48,9 @@ public final class NER {
     private static AbstractSequenceClassifier<CoreLabel> initClassifier() {
         logger.info("Init classifier for Named-entity recognition (NER).");
         try {
-            return CRFClassifier.getClassifier(new File(SERIALIZED_CLASSIFIER));
+            var props = new Properties();
+            props.setProperty("tokenizerOptions", "splitHyphenated=false");
+            return CRFClassifier.getClassifier(SERIALIZED_CLASSIFIER, props);
         } catch (ClassCastException | ClassNotFoundException | IOException e) {
             throw new IllegalStateException(e);
         }

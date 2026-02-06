@@ -50,7 +50,7 @@ dependencies {
                  "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion",
                  "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion",
 
-  implementation("edu.stanford.nlp:stanford-corenlp:3.9.2") {
+  implementation("edu.stanford.nlp:stanford-corenlp:4.5.8") {
     // because https://app.snyk.io/vuln/SNYK-JAVA-COMGOOGLEPROTOBUF-173761
     exclude group: "com.google.protobuf", module: "protobuf-java"
     // because https://app.snyk.io/vuln/SNYK-JAVA-XALAN-31385

@@ -41,8 +41,12 @@ export class Statistic implements AfterViewInit {
   options!: Options;
 
   async ngAfterViewInit(): Promise<void> {
-    await this.initMap();
-    this.initSlider();
+    try {
+      await this.initMap();
+      this.initSlider();
+    } catch (error) {
+      console.error('Failed to initialize map', error);
+    }
   }
 
   /**
@@ -92,18 +96,24 @@ export class Statistic implements AfterViewInit {
     /**
      * workaround:
      * leaflet.heat references L as a global variable. With the esbuild-based Angular builder,
-     * the static side-effect import does not expose L globally. Assign L to window and use
-     * a dynamic import so leaflet.heat can find it at evaluation time.
+     * the static side-effect import does not expose L globally. Assign an extensible copy of L
+     * to window and use a dynamic import so leaflet.heat can find it and modify it at evaluation time.
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).L = L;
+    (window as any).L = Object.assign({}, L);
+
     await import('leaflet.heat/dist/leaflet-heat.js');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.heat = (L as any).heatLayer([], {
-      radius: 25,
-      minOpacity: 0.5,
-    });
+    const globalL = (window as any).L;
+    if (globalL && typeof globalL.heatLayer === 'function') {
+      this.heat = globalL.heatLayer([], {
+        radius: 25,
+        minOpacity: 0.5,
+      });
+    } else {
+      throw new Error('leaflet.heat failed to register heatLayer on L');
+    }
   }
 
   /**
@@ -119,6 +129,9 @@ export class Statistic implements AfterViewInit {
    * @param content
    */
   private addToMap(content: Content[]): void {
+    if (!this.heat) {
+      return;
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const latlng: any[] = [];
     content.forEach((c) => {

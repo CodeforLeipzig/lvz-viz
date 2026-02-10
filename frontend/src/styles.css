@@ -1,0 +1,44 @@
+/* You can add global styles to this file, and also import other style files */
+@import url("app/app.css");
+@import url("fonts.css");
+@import url("leaflet/dist/leaflet.css");
+
+/*
+  Avoid using base.
+
+  Normally the import for tailwind looks like:
+
+  @import "tailwindcss";
+
+  but this breaks the resets that angular material does.
+  To avoid this, the individual layers are imported without the base layer.
+
+  See: https://tailwindcss.com/docs/preflight#disabling-preflight
+*/
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@utility statistic-description {
+
+  /* Angular Material: Small (min-width: 600px) and (max-width: 959.98px) */
+  @media (max-width: 959.98px) {
+    flex-direction: column !important;
+  }
+}
+
+@utility map-search {
+
+  /* Angular Material: Small (min-width: 600px) and (max-width: 959.98px) */
+  @media (max-width: 959.98px) {
+    height: 310px !important;
+  }
+}
+
+@utility split-wrapper {
+
+  /* Angular Material: Small (min-width: 600px) and (max-width: 959.98px) */
+  @media (max-width: 959.98px) {
+    height: 800px !important;
+  }
+}

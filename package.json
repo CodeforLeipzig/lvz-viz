@@ -1,25 +1,26 @@
 {
-  "author": "Sebastian Peters",
-  "description": "lvz-viz javascript project",
-  "homepage": "https://github.com/CodeforLeipzig/lvz-viz",
+  "author": "Marcel Hendrich <inpercima@gmail.com>",
+  "contributors": [
+    "Marcel Hendrich <inpercima@gmail.com>"
+  ],
+  "description": "Development mode: concurrently load of backend and frontend",
+  "devDependencies": {
+    "@semantic-release/commit-analyzer": "13.0.1",
+    "@semantic-release/release-notes-generator": "14.1.0",
+    "concurrently": "9.2.1",
+    "conventional-changelog-conventionalcommits": "9.1.0",
+    "semantic-release": "25.0.3"
+  },
+  "engines": {
+    "node": ">=22.20.0"
+  },
+  "homepage": "https://lvz-viz.leipzig.codefor.de",
   "license": "GPL",
   "name": "lvz-viz",
   "private": true,
-  "version": "2.5.0",
-  "dependencies": {
-    "grunt": "^1.6.1",
-    "grunt-contrib-clean": "^2.0.1",
-    "grunt-contrib-concat": "^2.1.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-uglify": "^5.2.2",
-    "load-grunt-tasks": "^5.1.0"
-  },
-  "devDependencies": {
-    "grunt-cli": "^1.4.3",
-    "grunt-contrib-jshint": "^3.1.1",
-    "grunt-contrib-watch": "^1.1.0"
-  },
+  "repository": "https://github.com/CodeforLeipzig/lvz-viz",
   "scripts": {
-    "grunt-build": "grunt build"
-  }
+    "start": "concurrently \"export SPRING_PROFILES_ACTIVE=local && ./gradlew bootRun\" \"cd frontend && pnpm start\""
+  },
+  "version": "2.5.0"
 }

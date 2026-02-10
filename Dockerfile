@@ -1,18 +1,19 @@
-FROM node:22-alpine AS build-js
+FROM node:22.20.0-slim AS build-frontend
+
+RUN npm install -g pnpm@10.27.0
 
 # see https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
 ENV USER=node
 USER ${USER}
 WORKDIR /home/${USER}
 
-COPY --chown=${USER} package*.json ./
-RUN npm install --omit=dev
+COPY --chown=${USER} frontend ./
+RUN pnpm audit --audit-level critical || exit 1
+RUN pnpm install --frozen-lockfile
 
-COPY --chown=${USER} Gruntfile.js ./
-COPY --chown=${USER} src/main/resources/public/js ./src/main/resources/public/js
-RUN npm run --silent grunt-build
+RUN pnpm build:prod
 
-FROM gradle:7-jdk17-alpine AS build-java
+FROM gradle:7-jdk17 AS build-backend
 
 ENV USER=gradle
 USER ${USER}
@@ -21,8 +22,7 @@ WORKDIR /home/gradle/app
 
 COPY --chown=${USER} build.gradle .
 COPY --chown=${USER} src ./src
-RUN rm -f src/main/resources/public/js/*.js
-COPY --chown=${USER} --from=build-js /home/node/build/resources/main/public/js/app.min.js ./src/main/resources/public/js/
+COPY --chown=${USER} --from=build-frontend /home/node/dist/lvz-viz/browser ./src/main/resources/static/
 
 RUN gradle --info assemble
 
@@ -47,7 +47,7 @@ USER ${USER}
 WORKDIR /home/${USER}
 
 COPY --chown=${USER} dewac_175m_600.crf.ser.gz .
-COPY --chown=${USER} --from=build-java /home/gradle/app/build/libs/*.jar ./app.jar
+COPY --chown=${USER} --from=build-backend /home/gradle/app/build/libs/*.jar ./app.jar
 
 EXPOSE 8080
 

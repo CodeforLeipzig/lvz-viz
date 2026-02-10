@@ -1,12 +1,14 @@
 # lvz-viz
 
-![GitHub license](https://img.shields.io/github/license/CodeforLeipzig/lvz-viz.svg)
+<div align="center">
 
+![GitHub license](https://img.shields.io/github/license/CodeforLeipzig/lvz-viz.svg)
 [![Java CI with Gradle](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/java_ci.yml/badge.svg)](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/java_ci.yml)
 [![Node CI](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/node_ci.yml/badge.svg)](https://github.com/CodeforLeipzig/lvz-viz/actions/workflows/node_ci.yml)
-
 [![Maintainability](https://qlty.sh/gh/CodeforLeipzig/projects/lvz-viz/maintainability.svg)](https://qlty.sh/gh/CodeforLeipzig/projects/lvz-viz)
 [![Code Coverage](https://qlty.sh/gh/CodeforLeipzig/projects/lvz-viz/coverage.svg)](https://qlty.sh/gh/CodeforLeipzig/projects/lvz-viz)
+
+</div>
 
 ## Intro
 
@@ -15,9 +17,41 @@ Visualization of [LVZ police ticker](https://www.lvz.de/Leipzig/Polizeiticker/Po
 The official website is hosted at <https://lvz-viz.leipzig.codefor.de>
 by [OK Lab Leipzig](http://codefor.de/projekte/2014-07-01-le-lvz_polizeiticker_visualisierung.html).
 
+## Prerequisites
+
+### Java
+
+* `jdk 17` or higher
+
+We recommend the usage of [The Software Development Kit Manager](https://sdkman.io/).
+
+### Node and pnpm
+
+* `node 22.20.0` or higher
+
+We recommend the usage of [Node Version Manager](https://github.com/nvm-sh/nvm).
+
+* `pnpm 10.27.0` or higher
+
+Check out the [installation instructions](https://pnpm.io/installation).
+
+### Angular CLI
+
+* `@angular/cli 21.0.4` or higher
+
+Install @angular/cli by running:
+
+```bash
+pnpm install -g @angular/cli@21
+```
+
+### Docker (when running services within docker)
+
+* `docker 28.0.2` or higher
+
 ## Usage
 
-Build and run the app with [npm](https://www.npmjs.com), [Grunt](http://gruntjs.com/) and [Gradle](https://gradle.org).
+Build and run the app with [pnpm](https://pnpm.io) and [Gradle](https://gradle.org).
 
 The crawling and indexing of new articles is activated by default.
 It can be delayed by setting the startup parameter `--app.initialDelay=<time in ms>` to a high value (e.g. `1800000` for 30 minutes)
@@ -28,91 +62,77 @@ or by setting an environment variable via `export SPRING_PROFILES_ACTIVE=<profil
 
 Please use the `prod` profile for production systems with a dedicated data volume (see `docker-compose.prod.yml`).
 
-### npm and Grunt
+### Read more
 
-Use appropriate node and npm version via [nvm](https://github.com/nvm-sh/nvm#nvmrc).
+Check the documentation for each module.
+
+For frontend check [lvz-viz - Frontend](./frontend/README.md).
+
+For docker check [lvz-viz - Docker](./README_docker.md).
+
+### Set node version
+
+Use appropriate node and pnpm version via [nvm](https://github.com/nvm-sh/nvm#nvmrc).
 
 ```bash
 nvm use
 ```
 
-Download client js dependencies with npm and package them with Grunt.
+### Starting development
+
+#### Gradle
+
+For local development and testing you need to start up elasticsearch via [docker-compose](https://docs.docker.com/compose/).
 
 ```bash
-npm install --no-progress
-npm run grunt-build
+docker compose up -d elasticsearch
 ```
 
-### Gradle
-
-For local development and testing you need to startup elasticsearch via [docker-compose](https://docs.docker.com/compose/).
-
-```bash
-docker-compose up -d elasticsearch
-```
-
-You can build and test an executable jar with gradle.
+You can build and test an executable jar with Gradle.
 
 ```bash
 ./gradlew build
 ```
 
-You can run a specific test with gradle.
+You can run a specific test with Gradle.
 
 ```bash
 ./gradlew test --tests "*CrawlSchedulerTest"
 ```
 
-You can build an executable jar with gradle and run it as a separate process.
+You can build an executable jar with Gradle and run it as a separate process.
 
 ```bash
-./gradlew assemble
+./gradlew assemble -PlocalBuild=true
 java -jar build/libs/lvz-viz-*.jar --spring.profiles.active=local
 ```
 
-Or you can simply run the project within gradle during development.
+Or you can run the project within Gradle during development.
 
 ```bash
 export SPRING_PROFILES_ACTIVE=local
 ./gradlew bootRun
 ```
 
-### Docker
+### Running backend and frontend together
 
-You can build and run the app within a Docker container.
+For development, you can use two separate terminals for starting backend and frontend separately.
+For further information, please refer to the README files.
 
-Required version for the multi-stage build: Docker 19.03+
-
-```bash
--- Build or rebuild services
-docker-compose build
--- Create and start containers
-docker-compose up -d
-```
+You could also use the following command in the root folder to start development in one single terminal:
+Run the following command to install:
 
 ```bash
--- Build services and start containers with dev profile
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
-```
+# install dependencies
+pnpm install
 
-```bash
--- Build services and start containers with prod profile
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-```
-
-```bash
--- View output from containers
-docker-compose logs -f
-```
-
-```bash
--- Stop and remove containers, networks, images, and volumes
-docker-compose down
+# start both development server
+pnpm start
 ```
 
 ## Maintenance
 
 ```bash
--- Display dependency updates
+# display dependency updates
 ./gradlew dependencyUpdates
 ```

@@ -11,15 +11,18 @@ importers:
       '@semantic-release/commit-analyzer':
         specifier: 13.0.1
         version: 13.0.1(semantic-release@25.0.3)
-      '@semantic-release/github':
-        specifier: 12.0.3
-        version: 12.0.3(semantic-release@25.0.3)
       '@semantic-release/release-notes-generator':
         specifier: 14.1.0
         version: 14.1.0(semantic-release@25.0.3)
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
+      conventional-changelog-conventionalcommits:
+        specifier: 9.1.0
+        version: 9.1.0
+      semantic-release:
+        specifier: 25.0.3
+        version: 25.0.3
 
 packages:
 
@@ -273,6 +276,10 @@ packages:
 
   conventional-changelog-angular@8.1.0:
     resolution: {integrity: sha512-GGf2Nipn1RUCAktxuVauVr1e3r8QrLP/B0lEUsFktmGqc3ddbQkhoJZHJctVU829U1c6mTSWftrVOCHaL85Q3w==}
+    engines: {node: '>=18'}
+
+  conventional-changelog-conventionalcommits@9.1.0:
+    resolution: {integrity: sha512-MnbEysR8wWa8dAEvbj5xcBgJKQlX/m0lhS8DsyAAWDHdfs2faDJxTgzRYlRYpXSe7UiKrIIlB4TrBKU9q9DgkA==}
     engines: {node: '>=18'}
 
   conventional-changelog-writer@8.2.0:
@@ -1537,6 +1544,10 @@ snapshots:
       proto-list: 1.2.4
 
   conventional-changelog-angular@8.1.0:
+    dependencies:
+      compare-func: 2.0.0
+
+  conventional-changelog-conventionalcommits@9.1.0:
     dependencies:
       compare-func: 2.0.0
 

@@ -1,0 +1,104 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22]
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Determine next version
+        id: determine_next_version
+        run: |
+          set +e
+          set -o pipefail
+
+          pnpm dlx semantic-release --dry-run | tee release.log
+          EXIT_CODE=${PIPESTATUS[0]}
+
+          # semantic-release: no relevant changes → not an error
+          if [ "$EXIT_CODE" = "1" ] && grep -qi "no relevant changes" release.log; then
+            echo "No new changes, no release necessary."
+            echo "release=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # real error
+          if [ "$EXIT_CODE" != "0" ]; then
+            echo "semantic-release failed"
+            exit $EXIT_CODE
+          fi
+
+          VERSION=$(grep "next release version is" release.log \
+            | sed -E 's/.* ([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+
+          if [ -z "$VERSION" ]; then
+            echo "No version detected, skipping release."
+            echo "release=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Next version: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "release=true" >> $GITHUB_OUTPUT
+
+      - name: Update version files
+        if: steps.determine_next_version.outputs.release == 'true'
+        run: |
+          # root package.json
+          pnpm version "$VERSION" --no-git-tag-version
+
+          # frontend package.json
+          cd frontend
+          pnpm version "$VERSION" --no-git-tag-version
+          cd ..
+
+          # Gradle
+          sed -i "s/^version = .*/version = '$VERSION'/" build.gradle
+
+          # env-file
+          sed -i "s/^VERSION=.*/VERSION=$VERSION/" default.env
+
+      - name: Commit & tag release
+        if: steps.determine_next_version.outputs.release == 'true'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git commit -am "chore(release): v$VERSION"
+          git tag "v$VERSION"
+          git push origin main --tags
+
+      - name: Create GitHub release
+        if: steps.determine_next_version.outputs.release == 'true'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.VERSION }}
+          release_name: v${{ env.VERSION }}
+          generate_release_notes: true

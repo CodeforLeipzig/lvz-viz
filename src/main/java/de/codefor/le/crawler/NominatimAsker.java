@@ -3,10 +3,14 @@ package de.codefor.le.crawler;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
@@ -23,6 +27,8 @@ public class NominatimAsker {
 
     private static final String NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search?q=%s&format=json";
 
+    static final String USER_AGENT = "lvz-viz (https://github.com/CodeforLeipzig/lvz-viz)";
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Async
@@ -31,7 +37,10 @@ public class NominatimAsker {
         if (address != null && !address.isBlank()) {
             final var url = String.format(NOMINATIM_SEARCH_URL, address);
             logger.debug("url {}", url);
-            result = Arrays.asList(restTemplate.getForObject(url, Nominatim[].class));
+            final var headers = new HttpHeaders();
+            headers.set(HttpHeaders.USER_AGENT, USER_AGENT);
+            final var entity = new HttpEntity<>(headers);
+            result = Arrays.asList(Optional.ofNullable(restTemplate.exchange(url, HttpMethod.GET, entity, Nominatim[].class).getBody()).orElse(new Nominatim[0]));
         } else {
             result = Collections.emptyList();
         }

@@ -27,8 +27,6 @@ public class NominatimAsker {
 
     private static final String NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search?q=%s&format=json";
 
-    static final String USER_AGENT = "lvz-viz (https://github.com/CodeforLeipzig/lvz-viz)";
-
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Async
@@ -38,7 +36,7 @@ public class NominatimAsker {
             final var url = String.format(NOMINATIM_SEARCH_URL, address);
             logger.debug("url {}", url);
             final var headers = new HttpHeaders();
-            headers.set(HttpHeaders.USER_AGENT, USER_AGENT);
+            headers.set(HttpHeaders.USER_AGENT, LvzPoliceTickerCrawler.USER_AGENT);
             final var entity = new HttpEntity<>(headers);
             result = Arrays.asList(Optional.ofNullable(restTemplate.exchange(url, HttpMethod.GET, entity, Nominatim[].class).getBody()).orElse(new Nominatim[0]));
         } else {

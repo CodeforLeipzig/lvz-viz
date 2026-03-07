@@ -16,6 +16,8 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import de.codefor.le.crawler.model.Nominatim;
 
 @Component
@@ -27,7 +29,16 @@ public class NominatimAsker {
 
     private static final String NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search?q=%s&format=json";
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    public NominatimAsker() {
+        this.restTemplate = new RestTemplate();
+    }
+
+    @VisibleForTesting
+    NominatimAsker(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Async
     public Future<List<Nominatim>> execute(final String address) {

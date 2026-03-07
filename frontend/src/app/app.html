@@ -1,0 +1,46 @@
+<div class="min-h-screen flex flex-col">
+  <mat-toolbar class="justify-between">
+    <img src="logo.png" alt="Polizeiticker Logo" />
+    <div class="pt-2">
+      <a href="http://codefor.de">
+        <img class="h-10" src="CFG_logo.svg" alt="CodeforLeipzig Logo" />
+      </a>
+      <a
+        mat-button
+        href="https://github.com/CodeforLeipzig/lvz-viz"
+        aria-label="GitHub Repository"
+        title="Go to project on Github"
+        target="_blank"
+      >
+        <span matButtonIcon>
+          <img class="h-10 pl-5" alt="GitHub Repository" src="github-mark.svg" />
+        </span>
+      </a>
+    </div>
+  </mat-toolbar>
+  <mat-tab-group mat-stretch-tabs="false">
+    <mat-tab label="Suche">
+      <!-- need to lazy load the tabs, see: https://material.angular.io/components/tabs/overview#lazy-loading -->
+      <ng-template matTabContent>
+        <app-search></app-search>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Statistik">
+      <ng-template matTabContent>
+        <app-statistic></app-statistic>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+  <footer class="mt-auto">
+    <mat-toolbar class="flex justify-center h-5">
+      <div class="text-sm">
+        Unser Impressum findet Ihr hier: <a href="https://codefor.de/impressum">Impressum</a>
+        |
+        Des Weiteren beziehen wir uns auf das
+        <a href="http://www.lvz-online.de/nachrichten/service/impressum/servicetexte/leistungsschutzrecht/r-servicetexte-a-199230.html"
+          >Leistungsschutzrecht der LVZ</a
+        >.
+      </div>
+    </mat-toolbar>
+  </footer>
+</div>

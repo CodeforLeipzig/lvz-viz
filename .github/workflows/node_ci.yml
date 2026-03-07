@@ -6,13 +6,12 @@ on:
   pull_request:
     branches: [master]
 
-defaults:
-  run:
-    working-directory: ./experimental_web
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
     strategy:
       matrix:
         node-version: [22]
@@ -28,7 +27,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
-          cache-dependency-path: ./experimental_web/pnpm-lock.yaml
+          cache-dependency-path: ./frontend/pnpm-lock.yaml
       - name: Install and Build
         run: |
           pnpm install

@@ -55,5 +55,5 @@
     "mock": "json-server --watch db.json",
     "start": "ng serve -o --configuration=development"
   },
-  "version": "2.5.0"
+  "version": "2.7.0"
 }

@@ -37,7 +37,7 @@ Check out the [installation instructions](https://pnpm.io/installation).
 
 ### Angular CLI
 
-* `@angular/cli 21.0.4` or higher
+* `@angular/cli 21.2.5` or higher
 
 Install @angular/cli by running:
 

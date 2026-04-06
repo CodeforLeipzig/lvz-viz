@@ -1,6 +1,6 @@
 export const environment = {
   api: './api/',
   appname: 'LVZ-Polizeiticker',
-  production: false,
+  production: true,
   theme: 'azure-blue',
 };

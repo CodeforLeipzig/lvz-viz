@@ -36,7 +36,7 @@ public class LvzPoliceTickerCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(LvzPoliceTickerCrawler.class);
 
-    protected static final String USER_AGENT = "leipzig crawler";
+    protected static final String USER_AGENT = "Mozilla/5.0 (Macintosh; ARM Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.7680.178 Safari/537.36";
 
     protected static final int REQUEST_TIMEOUT = 30000;
 

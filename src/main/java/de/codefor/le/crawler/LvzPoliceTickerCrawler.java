@@ -11,6 +11,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -58,6 +59,9 @@ public class LvzPoliceTickerCrawler {
         logger.debug("Start crawling {}.", url);
         try {
             return new AsyncResult<>(crawlNewsFromPage(url));
+        } catch (NoSuchElementException e) {
+            WebDriverScreenshot.take(driver, "no_such_element");
+            throw e;
         } finally {
             watch.stop();
             if (driver != null) {
@@ -113,6 +117,7 @@ public class LvzPoliceTickerCrawler {
         final var fusionAppElements = driver.findElements(By.id("fusion-app"));
         if (fusionAppElements.isEmpty()) {
             logger.warn("fusion-app element not found — site may be blocking the crawler (title: {})", driver.getTitle());
+            WebDriverScreenshot.take(driver, "blocked");
             throw new IllegalStateException("fusion-app element not found, page title: " + driver.getTitle());
         }
         return fusionAppElements.get(0).getDomProperty("innerHTML");

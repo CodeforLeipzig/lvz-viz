@@ -110,7 +110,12 @@ public class LvzPoliceTickerCrawler {
             }
         }
 
-        return driver.findElement(By.id("fusion-app")).getDomProperty("innerHTML");
+        final var fusionAppElements = driver.findElements(By.id("fusion-app"));
+        if (fusionAppElements.isEmpty()) {
+            logger.warn("fusion-app element not found — site may be blocking the crawler (title: {})", driver.getTitle());
+            throw new IllegalStateException("fusion-app element not found, page title: " + driver.getTitle());
+        }
+        return fusionAppElements.get(0).getDomProperty("innerHTML");
     }
 
     /**

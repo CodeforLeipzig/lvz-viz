@@ -89,13 +89,18 @@ public class LvzPoliceTickerCrawler {
         initWebDriver();
         driver.get(url);
 
-        logger.debug("accept cookies first, it's an iframe");
-        driver.switchTo().frame(driver.findElement(By.cssSelector("iframe[id*=sp_message_iframe]")));
-        final var button = driver.findElement(By.cssSelector("button[title=\"Einwilligen und weiter\"]"));
-        new Actions(driver).moveToElement(button).click().build().perform();
+        final var consentFrames = driver.findElements(By.cssSelector("iframe[id*=sp_message_iframe]"));
+        if (!consentFrames.isEmpty()) {
+            logger.debug("accept cookies first, it's an iframe");
+            driver.switchTo().frame(consentFrames.get(0));
+            final var button = driver.findElement(By.cssSelector("button[title=\"Einwilligen und weiter\"]"));
+            new Actions(driver).moveToElement(button).click().build().perform();
 
-        // switch back to main page after accept cookies and load more articles
-        driver.switchTo().parentFrame();
+            // switch back to main page after accept cookies and load more articles
+            driver.switchTo().parentFrame();
+        } else {
+            logger.debug("cookie consent iframe not present, skipping");
+        }
 
         // workaround: click only ten times and avoid "endless" loading
         for (int i = 0; i < 10; i++) {

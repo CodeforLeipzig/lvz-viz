@@ -148,7 +148,10 @@ public class LvzPoliceTickerCrawler {
     private void initWebDriver() {
         driver = "dev".equals(activeProfile) || "prod".equals(activeProfile) ?
                 WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub").create() :
-                new ChromeDriver(new ChromeOptions().addArguments("--headless"));
+                new ChromeDriver(new ChromeOptions()
+                        .addArguments("--headless")
+                        .addArguments("--disable-blink-features=AutomationControlled")
+                        .addArguments("--user-agent=" + USER_AGENT));
         if (driver == null) {
             throw new IllegalStateException("initWebDriver for crawling failed");
         }

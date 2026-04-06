@@ -14,6 +14,10 @@ import org.slf4j.LoggerFactory;
 
 public final class WebDriverScreenshot {
 
+    public static final String REASON_BLOCKED = "blocked";
+
+    public static final String REASON_NO_SUCH_ELEMENT = "no_such_element";
+
     private static final Logger logger = LoggerFactory.getLogger(WebDriverScreenshot.class);
 
     private WebDriverScreenshot() {

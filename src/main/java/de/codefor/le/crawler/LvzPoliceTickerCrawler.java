@@ -60,7 +60,7 @@ public class LvzPoliceTickerCrawler {
         try {
             return new AsyncResult<>(crawlNewsFromPage(url));
         } catch (NoSuchElementException e) {
-            WebDriverScreenshot.take(driver, "no_such_element");
+            WebDriverScreenshot.take(driver, WebDriverScreenshot.REASON_NO_SUCH_ELEMENT);
             throw e;
         } finally {
             watch.stop();
@@ -117,7 +117,7 @@ public class LvzPoliceTickerCrawler {
         final var fusionAppElements = driver.findElements(By.id("fusion-app"));
         if (fusionAppElements.isEmpty()) {
             logger.warn("fusion-app element not found — site may be blocking the crawler (title: {})", driver.getTitle());
-            WebDriverScreenshot.take(driver, "blocked");
+            WebDriverScreenshot.take(driver, WebDriverScreenshot.REASON_BLOCKED);
             throw new IllegalStateException("fusion-app element not found, page title: " + driver.getTitle());
         }
         return fusionAppElements.get(0).getDomProperty("innerHTML");

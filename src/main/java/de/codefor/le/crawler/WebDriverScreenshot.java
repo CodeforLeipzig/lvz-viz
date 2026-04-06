@@ -22,7 +22,7 @@ public final class WebDriverScreenshot {
     public static void take(final WebDriver driver, final String reason) {
         if (driver instanceof TakesScreenshot) {
             try {
-                final var timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+                final var timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
                 final var path = Paths.get("logs", reason + "_" + timestamp + ".png");
                 Files.createDirectories(path.getParent());
                 Files.write(path, ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES));

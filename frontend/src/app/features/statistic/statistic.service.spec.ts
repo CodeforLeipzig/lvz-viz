@@ -1,7 +1,7 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { Content } from '../search/content.model';
+import { Content } from '../search/models/content.model';
 import { DateTime } from './date-time.model';
 import { StatisticService } from './statistic.service';
 
@@ -38,7 +38,7 @@ describe('StatisticService', () => {
     service.fetchDates('minmaxdate').subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
-    const mockRequest = httpTestingController.expectOne('http://localhost:3000/api/minmaxdate');
+    const mockRequest = httpTestingController.expectOne('./api/minmaxdate');
     mockRequest.flush(mockResponse);
   });
 
@@ -58,7 +58,7 @@ describe('StatisticService', () => {
     service.fetchDates('last7days').subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
-    const mockRequest = httpTestingController.expectOne('http://localhost:3000/api/last7days');
+    const mockRequest = httpTestingController.expectOne('./api/last7days');
     mockRequest.flush(mockResponse);
   });
 
@@ -86,7 +86,7 @@ describe('StatisticService', () => {
       expect(response).toEqual(mockResponse);
     });
     const mockRequest = httpTestingController.expectOne(
-      'http://localhost:3000/api/searchbetween?from=2021-12-19T23:00:00.000Z&to=2021-12-26T23:00:00.000Z'
+      './api/searchbetween?from=2021-12-19T23:00:00.000Z&to=2021-12-26T23:00:00.000Z'
     );
     mockRequest.flush({ content: mockResponse });
   });

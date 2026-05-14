@@ -35,7 +35,7 @@
     "eslint": "10.2.0",
     "json-server": "0.17.4",
     "jsdom": "29.0.1",
-    "postcss": "8.5.8",
+    "postcss": "8.5.10",
     "tailwindcss": "4.2.2",
     "typescript": "5.9.3",
     "typescript-eslint": "8.57.2",

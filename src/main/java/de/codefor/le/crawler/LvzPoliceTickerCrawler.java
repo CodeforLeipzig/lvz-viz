@@ -3,7 +3,9 @@ package de.codefor.le.crawler;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -16,7 +18,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.Augmenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +48,12 @@ public class LvzPoliceTickerCrawler {
     protected static final String LVZ_BASE_URL = "https://www.lvz.de";
 
     protected static final String LVZ_POLICE_TICKER_BASE_URL = LVZ_BASE_URL + "/themen/leipzig-polizei";
+
+    private static final String STEALTH_SCRIPT = "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})";
+
+    private static final long MIN_DELAY_MS = 500;
+
+    private static final long MAX_ADDITIONAL_DELAY_MS = 1500;
 
     private final PoliceTickerRepository policeTickerRepository;
 
@@ -99,6 +109,7 @@ public class LvzPoliceTickerCrawler {
             driver.switchTo().frame(consentFrames.get(0));
             final var button = driver.findElement(By.cssSelector("button[title=\"Einwilligen und weiter\"]"));
             new Actions(driver).moveToElement(button).click().build().perform();
+            randomDelay();
 
             // switch back to main page after accept cookies and load more articles
             driver.switchTo().parentFrame();
@@ -146,6 +157,7 @@ public class LvzPoliceTickerCrawler {
             }
             try {
                 element.click();
+                randomDelay();
             } catch (ElementNotInteractableException e) {
                 logger.warn("Unable to click element {}", element.getDomAttribute("class"));
                 logger.debug("Cause", e);
@@ -156,17 +168,49 @@ public class LvzPoliceTickerCrawler {
     }
 
     private void initWebDriver() {
-        driver = "dev".equals(activeProfile) || "prod".equals(activeProfile) ?
-                WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub").create() :
-                new ChromeDriver(new ChromeOptions()
-                        .addArguments("--headless")
-                        .addArguments("--disable-blink-features=AutomationControlled")
-                        .addArguments("--user-agent=" + USER_AGENT));
+        final var options = new ChromeOptions()
+                .addArguments("--disable-blink-features=AutomationControlled")
+                .addArguments("--window-size=1920,1080")
+                .addArguments("--lang=de")
+                .addArguments("--user-agent=" + USER_AGENT);
+        if ("dev".equals(activeProfile) || "prod".equals(activeProfile)) {
+            final var remote = WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub")
+                    .capabilities(options).create();
+            driver = new Augmenter().augment(remote);
+        } else {
+            options.addArguments("--headless=new")
+                    .addArguments("--no-sandbox")
+                    .addArguments("--disable-dev-shm-usage");
+            driver = new ChromeDriver(options);
+        }
         if (driver == null) {
             throw new IllegalStateException("initWebDriver for crawling failed");
         }
         logger.debug("initWebDriver for crawling succeeded");
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        applyStealthSettings();
+    }
+
+    /**
+     * Suppress the {@code navigator.webdriver} flag via the Chrome DevTools Protocol so that
+     * bot-detection scripts cannot trivially identify the browser as automated.
+     */
+    private void applyStealthSettings() {
+        if (driver instanceof ChromiumDriver) {
+            ((ChromiumDriver) driver).executeCdpCommand("Page.addScriptToEvaluateOnNewDocument",
+                    Map.of("source", STEALTH_SCRIPT));
+            logger.debug("Applied CDP stealth settings");
+        } else {
+            logger.debug("Driver does not support CDP, skipping stealth settings");
+        }
+    }
+
+    private void randomDelay() {
+        try {
+            Thread.sleep(MIN_DELAY_MS + ThreadLocalRandom.current().nextLong(MAX_ADDITIONAL_DELAY_MS));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     private Collection<String> extractNewArticleLinks(final Elements links) {

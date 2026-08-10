@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,14 @@ public class LvzPoliceTickerCrawler {
     protected static final String LVZ_BASE_URL = "https://www.lvz.de";
 
     protected static final String LVZ_POLICE_TICKER_BASE_URL = LVZ_BASE_URL + "/themen/leipzig-polizei";
+
+    private static final long MIN_DELAY_MS = 1500;
+
+    private static final long MAX_ADDITIONAL_DELAY_MS = 3500;
+
+    private static final long MIN_DELAY_MS_2 = 200;
+
+    private static final long MAX_ADDITIONAL_DELAY_MS_2 = 500;
 
     private final PoliceTickerRepository policeTickerRepository;
 
@@ -93,6 +102,8 @@ public class LvzPoliceTickerCrawler {
         initWebDriver();
         driver.get(url);
 
+        driver.switchTo().frame(0);
+
         final var consentFrames = driver.findElements(By.cssSelector("iframe[id*=sp_message_iframe]"));
         if (!consentFrames.isEmpty()) {
             logger.debug("accept cookies first, it's an iframe");
@@ -116,7 +127,29 @@ public class LvzPoliceTickerCrawler {
 
         final var fusionAppElements = driver.findElements(By.id("fusion-app"));
         if (fusionAppElements.isEmpty()) {
-            logger.warn("fusion-app element not found — site may be blocking the crawler (title: {})", driver.getTitle());
+            logger.warn("fusion-app element not found — site may be blocking the crawler (title: {})",
+                    driver.getTitle());
+            final var slider = driver.findElement(By.cssSelector("div.slider"));
+            new Actions(driver)
+                    .dragAndDropBy(slider, 80, 0)
+                    .perform();
+
+            randomDelayMin();
+
+            new Actions(driver)
+                    .dragAndDropBy(slider, 120, 0)
+                    .perform();
+
+            randomDelay();
+
+            new Actions(driver)
+                    .dragAndDropBy(slider, 100, 0)
+                    .perform();
+
+            driver.switchTo().parentFrame();
+
+            randomDelay();
+
             WebDriverScreenshot.take(driver, WebDriverScreenshot.REASON_BLOCKED);
             throw new IllegalStateException("fusion-app element not found, page title: " + driver.getTitle());
         }
@@ -156,9 +189,9 @@ public class LvzPoliceTickerCrawler {
     }
 
     private void initWebDriver() {
-        driver = "dev".equals(activeProfile) || "prod".equals(activeProfile) ?
-                WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub").create() :
-                new ChromeDriver(new ChromeOptions()
+        driver = "dev".equals(activeProfile) || "prod".equals(activeProfile)
+                ? WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub").create()
+                : new ChromeDriver(new ChromeOptions()
                         .addArguments("--headless")
                         .addArguments("--disable-blink-features=AutomationControlled")
                         .addArguments("--user-agent=" + USER_AGENT));
@@ -201,6 +234,22 @@ public class LvzPoliceTickerCrawler {
             return true;
         }
         return false;
+    }
+
+    private void randomDelay() {
+        try {
+            Thread.sleep(MIN_DELAY_MS + ThreadLocalRandom.current().nextLong(MAX_ADDITIONAL_DELAY_MS));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private void randomDelayMin() {
+        try {
+            Thread.sleep(MIN_DELAY_MS_2 + ThreadLocalRandom.current().nextLong(MAX_ADDITIONAL_DELAY_MS_2));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
 }

@@ -156,12 +156,15 @@ public class LvzPoliceTickerCrawler {
     }
 
     private void initWebDriver() {
+        // lvz.de blocks Chrome that exposes navigator.webdriver, so both the remote and the local
+        // driver need this flag. Headless is detected regardless of stealth options, hence a real
+        // (container: Xvfb-backed) display is required.
+        final var options = new ChromeOptions()
+                .addArguments("--disable-blink-features=AutomationControlled");
         driver = "dev".equals(activeProfile) || "prod".equals(activeProfile) ?
-                WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub").create() :
-                new ChromeDriver(new ChromeOptions()
-                        .addArguments("--headless")
-                        .addArguments("--disable-blink-features=AutomationControlled")
-                        .addArguments("--user-agent=" + USER_AGENT));
+                WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub")
+                        .capabilities(options).create() :
+                new ChromeDriver(options);
         if (driver == null) {
             throw new IllegalStateException("initWebDriver for crawling failed");
         }

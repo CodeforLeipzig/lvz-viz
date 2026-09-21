@@ -27,7 +27,7 @@ We recommend the usage of [The Software Development Kit Manager](https://sdkman.
 
 ### Node and pnpm
 
-* `node 22.20.0` or higher
+* `node 24.16.0` or higher
 
 We recommend the usage of [Node Version Manager](https://github.com/nvm-sh/nvm).
 

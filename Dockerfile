@@ -1,4 +1,4 @@
-FROM node:22.20.0-slim AS build-frontend
+FROM node:24.16.0-slim AS build-frontend
 
 RUN npm install -g pnpm@10.27.0
 

@@ -37,12 +37,12 @@ Check out the [installation instructions](https://pnpm.io/installation).
 
 ### Angular CLI
 
-* `@angular/cli 21.2.5` or higher
+* `@angular/cli 22.1.8` or higher
 
 Install @angular/cli by running:
 
 ```bash
-pnpm install -g @angular/cli@21
+pnpm install -g @angular/cli@22
 ```
 
 ### Docker (when running services within docker)

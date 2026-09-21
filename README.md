@@ -31,7 +31,7 @@ We recommend the usage of [The Software Development Kit Manager](https://sdkman.
 
 We recommend the usage of [Node Version Manager](https://github.com/nvm-sh/nvm).
 
-* `pnpm 10.27.0` or higher
+* `pnpm 11.24.0` or higher
 
 Check out the [installation instructions](https://pnpm.io/installation).
 

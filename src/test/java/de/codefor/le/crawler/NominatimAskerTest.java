@@ -61,7 +61,7 @@ class NominatimAskerTest {
         assertThat(result).hasSize(1);
         assertThat(result.get(0)).extracting(Nominatim::getLat, Nominatim::getLon).containsExactly("51.34", "12.38");
         assertThat(entityCaptor.getValue().getHeaders().getFirst(HttpHeaders.USER_AGENT))
-                .isEqualTo(LvzPoliceTickerCrawler.USER_AGENT);
+                .isEqualTo(NominatimAsker.USER_AGENT);
     }
 
     @Test

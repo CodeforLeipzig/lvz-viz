@@ -29,6 +29,13 @@ public class NominatimAsker {
 
     private static final String NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search?q=%s&format=json";
 
+    /**
+     * Nominatim rejects requests without a user agent with a 403 and asks for one that identifies
+     * the application. Naming no browser or os version keeps it from going stale.
+     */
+    @VisibleForTesting
+    static final String USER_AGENT = "lvz-viz (+https://github.com/CodeforLeipzig/lvz-viz)";
+
     private final RestTemplate restTemplate;
 
     public NominatimAsker() {
@@ -47,7 +54,7 @@ public class NominatimAsker {
             final var url = String.format(NOMINATIM_SEARCH_URL, address);
             logger.debug("url {}", url);
             final var headers = new HttpHeaders();
-            headers.set(HttpHeaders.USER_AGENT, LvzPoliceTickerCrawler.USER_AGENT);
+            headers.set(HttpHeaders.USER_AGENT, USER_AGENT);
             final var entity = new HttpEntity<>(headers);
             result = Arrays.asList(Optional.ofNullable(restTemplate.exchange(url, HttpMethod.GET, entity, Nominatim[].class).getBody()).orElse(new Nominatim[0]));
         } else {

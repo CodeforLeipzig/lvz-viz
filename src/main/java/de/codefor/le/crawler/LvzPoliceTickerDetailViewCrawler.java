@@ -57,6 +57,12 @@ public class LvzPoliceTickerDetailViewCrawler implements DisposableBean {
 
     private static final String ARTICLE_HEAD_SELECTOR = "div[class*=ArticleHeadstyled__ArticleHeadHeadlineContainer]";
 
+    /** Headline of the page the bot detection serves instead of the article. */
+    private static final String BLOCK_PAGE_TEXT = "Der Zugriff ist vorübergehend eingeschränkt";
+
+    /** The block page may also be embedded as an iframe from the bot detection vendor. */
+    private static final String BLOCK_PAGE_IFRAME_SELECTOR = "iframe[src*=captcha-delivery.com]";
+
     private final CrawlerWebDriverFactory webDriverFactory;
 
     private WebDriver driver;
@@ -124,12 +130,18 @@ public class LvzPoliceTickerDetailViewCrawler implements DisposableBean {
         // the article is rendered client-side, so wait (via the implicit timeout) for the headline
         // before serializing the DOM. Without it we would happily parse a blocking page into an
         // article with empty fields.
-        if (driver.findElements(By.cssSelector(ARTICLE_HEAD_SELECTOR)).isEmpty()) {
-            logger.warn("article headline not found — site may be blocking the crawler (title: {})", driver.getTitle());
-            WebDriverScreenshot.take(driver, WebDriverScreenshot.REASON_BLOCKED);
+        final var headlineMissing = driver.findElements(By.cssSelector(ARTICLE_HEAD_SELECTOR)).isEmpty();
+        final var doc = Jsoup.parse(driver.getPageSource(), url);
+        if (headlineMissing) {
+            if (isBlockPage(doc)) {
+                logger.warn("blocked by the bot detection at {}", url);
+                WebDriverScreenshot.take(driver, WebDriverScreenshot.REASON_BLOCKED);
+                throw new CrawlerBlockedException("blocked by the bot detection at " + url);
+            }
+            logger.warn("article headline not found for {} (page title: {})", url, driver.getTitle());
+            WebDriverScreenshot.take(driver, WebDriverScreenshot.REASON_NO_SUCH_ELEMENT);
             throw new IllegalStateException("article headline not found for " + url + ", page title: " + driver.getTitle());
         }
-        final var doc = Jsoup.parse(driver.getPageSource(), url);
         final PoliceTicker result = convertToDataModel(doc);
         // the container above can be present while the extraction still yields nothing, e.g. after
         // a markup change. Without a title the article is useless, so do not let it reach the index.
@@ -145,6 +157,10 @@ public class LvzPoliceTickerDetailViewCrawler implements DisposableBean {
             logger.debug("Extracted {}.", result);
         }
         return result;
+    }
+
+    private static boolean isBlockPage(final Document doc) {
+        return doc.text().contains(BLOCK_PAGE_TEXT) || !doc.select(BLOCK_PAGE_IFRAME_SELECTOR).isEmpty();
     }
 
     /**

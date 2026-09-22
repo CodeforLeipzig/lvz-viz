@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -24,6 +25,8 @@ class CrawlSchedulerDetailPagesTest {
     private static final String BLOCKED_URL = LvzPoliceTickerCrawler.LVZ_BASE_URL + "/blocked.html";
 
     private static final String VALID_URL = LvzPoliceTickerCrawler.LVZ_BASE_URL + "/valid.html";
+
+    private static final String NOT_REACHED_URL = LvzPoliceTickerCrawler.LVZ_BASE_URL + "/not-reached.html";
 
     private final PoliceTickerRepository repository = mock(PoliceTickerRepository.class);
 
@@ -59,6 +62,25 @@ class CrawlSchedulerDetailPagesTest {
 
         assertThatThrownBy(scheduler::crawl).hasMessage("session lost");
 
+        verify(detailCrawler).closeBrowser();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void crawlStopsBatchWhenBlocked() throws ExecutionException, InterruptedException {
+        final var ticker = new PoliceTicker();
+        ticker.setUrl(VALID_URL);
+        when(crawler.execute()).thenReturn(new AsyncResult<>(Arrays.asList(VALID_URL, BLOCKED_URL, NOT_REACHED_URL)));
+        when(detailCrawler.execute(VALID_URL)).thenReturn(new AsyncResult<>(ticker));
+        when(detailCrawler.execute(BLOCKED_URL))
+                .thenReturn(AsyncResult.forExecutionException(new CrawlerBlockedException("blocked")));
+
+        scheduler.crawl();
+
+        verify(detailCrawler, never()).execute(NOT_REACHED_URL);
+        final ArgumentCaptor<Iterable<PoliceTicker>> saved = ArgumentCaptor.forClass(Iterable.class);
+        verify(repository).saveAll(saved.capture());
+        assertThat(saved.getValue()).containsExactly(ticker);
         verify(detailCrawler).closeBrowser();
     }
 }

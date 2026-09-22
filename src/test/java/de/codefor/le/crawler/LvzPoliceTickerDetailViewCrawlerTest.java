@@ -2,6 +2,7 @@ package de.codefor.le.crawler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -20,17 +22,20 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.JavaTimeConversionPattern;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.springframework.mock.env.MockEnvironment;
 
 import de.codefor.le.model.PoliceTicker;
 
+@ExtendWith(SkipWhenBlocked.class)
 class LvzPoliceTickerDetailViewCrawlerTest {
 
     private static final String BASE_URL = LvzPoliceTickerCrawler.LVZ_BASE_URL + "/lokales/leipzig";
@@ -157,5 +162,31 @@ class LvzPoliceTickerDetailViewCrawlerTest {
 
         verify(factory, times(2)).create();
         verify(driver, times(2)).quit();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "<html><head><title>lvz.de</title></head><body><h1>Der Zugriff ist vorübergehend eingeschränkt</h1></body></html>",
+            "<html><head><title>lvz.de</title></head><body><iframe src=\"https://geo.captcha-delivery.com/captcha/\"></iframe></body></html>"
+    })
+    void executeRecognizesBlockPage(final String pageSource) {
+        final var pageCrawler = crawlerShowing(pageSource);
+        assertThatThrownBy(() -> pageCrawler.execute(BASE_URL)).isInstanceOf(CrawlerBlockedException.class);
+    }
+
+    @Test
+    void executeTreatsMissingHeadlineWithoutBlockPageAsMarkupChange() {
+        final var pageCrawler = crawlerShowing("<html><head><title>lvz.de</title></head><body><p>anything</p></body></html>");
+        assertThatThrownBy(() -> pageCrawler.execute(BASE_URL)).isExactlyInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("article headline not found");
+    }
+
+    private static LvzPoliceTickerDetailViewCrawler crawlerShowing(final String pageSource) {
+        final var factory = mock(CrawlerWebDriverFactory.class);
+        final var driver = mock(WebDriver.class);
+        when(factory.create()).thenReturn(driver);
+        when(driver.findElements(any(By.class))).thenReturn(Collections.emptyList());
+        when(driver.getPageSource()).thenReturn(pageSource);
+        return new LvzPoliceTickerDetailViewCrawler(factory);
     }
 }

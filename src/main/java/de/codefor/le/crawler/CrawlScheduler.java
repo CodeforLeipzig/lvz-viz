@@ -27,7 +27,7 @@ public class CrawlScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(CrawlScheduler.class);
 
-    private static final int WAIT_TO_PREVENT_BANNING_IN_MS = 50;
+    private static final int WAIT_TO_PREVENT_BANNING_IN_MS = 2_000;
 
     private final PoliceTickerRepository policeTickerRepository;
 
@@ -68,7 +68,14 @@ public class CrawlScheduler {
                         policeTickers.add(ticker);
                     }
                 } catch (final ExecutionException e) {
-                    // a single blocked or restructured article must not discard the whole run
+                    if (e.getCause() instanceof CrawlerBlockedException) {
+                        // every further request while blocked only makes it worse, so keep what we
+                        // have and let the next scheduler run try again
+                        logger.warn("Blocked by the bot detection, stopping after {} articles: {}", policeTickers.size(),
+                                e.getCause().getMessage());
+                        break;
+                    }
+                    // a single restructured article must not discard the whole run
                     logger.warn("Skipping article {}", url, e);
                 }
                 Thread.sleep(WAIT_TO_PREVENT_BANNING_IN_MS);

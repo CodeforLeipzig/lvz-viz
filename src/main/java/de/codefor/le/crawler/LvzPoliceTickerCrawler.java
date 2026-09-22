@@ -1,6 +1,5 @@
 package de.codefor.le.crawler;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Future;
@@ -14,12 +13,9 @@ import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
@@ -28,7 +24,6 @@ import com.google.common.base.Stopwatch;
 
 import de.codefor.le.repositories.PoliceTickerRepository;
 import de.codefor.le.utilities.Utils;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -39,16 +34,13 @@ public class LvzPoliceTickerCrawler {
 
     protected static final String USER_AGENT = "Mozilla/5.0 (Macintosh; ARM Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.7680.178 Safari/537.36";
 
-    protected static final int REQUEST_TIMEOUT = 30000;
-
     protected static final String LVZ_BASE_URL = "https://www.lvz.de";
 
     protected static final String LVZ_POLICE_TICKER_BASE_URL = LVZ_BASE_URL + "/themen/leipzig-polizei";
 
     private final PoliceTickerRepository policeTickerRepository;
 
-    @Value("${spring.profiles.active:}")
-    private String activeProfile;
+    private final CrawlerWebDriverFactory webDriverFactory;
 
     private WebDriver driver;
 
@@ -156,20 +148,8 @@ public class LvzPoliceTickerCrawler {
     }
 
     private void initWebDriver() {
-        // lvz.de blocks Chrome that exposes navigator.webdriver, so both the remote and the local
-        // driver need this flag. Headless is detected regardless of stealth options, hence a real
-        // (container: Xvfb-backed) display is required.
-        final var options = new ChromeOptions()
-                .addArguments("--disable-blink-features=AutomationControlled");
-        driver = "dev".equals(activeProfile) || "prod".equals(activeProfile) ?
-                WebDriverManager.chromedriver().remoteAddress("http://chrome:4444/wd/hub")
-                        .capabilities(options).create() :
-                new ChromeDriver(options);
-        if (driver == null) {
-            throw new IllegalStateException("initWebDriver for crawling failed");
-        }
+        driver = webDriverFactory.create();
         logger.debug("initWebDriver for crawling succeeded");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
 
     private Collection<String> extractNewArticleLinks(final Elements links) {

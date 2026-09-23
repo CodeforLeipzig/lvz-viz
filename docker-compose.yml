@@ -20,6 +20,8 @@ services:
     restart: unless-stopped
   chrome:
     image: selenium/standalone-chrome:4.49.0-20260909
+    environment:
+      - TZ=Europe/Berlin
     mem_limit: 2g
     networks:
       - esnet

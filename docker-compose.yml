@@ -19,7 +19,7 @@ services:
       - "8080:8080"
     restart: unless-stopped
   chrome:
-    image: selenium/standalone-chrome:4.29.0-20250303
+    image: selenium/standalone-chrome:4.49.0-20260909
     mem_limit: 2g
     networks:
       - esnet

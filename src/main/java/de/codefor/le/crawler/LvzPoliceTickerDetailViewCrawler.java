@@ -1,7 +1,5 @@
 package de.codefor.le.crawler;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -14,8 +12,12 @@ import java.util.stream.Stream;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,7 @@ import com.google.common.base.Strings;
 
 import de.codefor.le.model.PoliceTicker;
 import de.codefor.le.utilities.Utils;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Crawls the concrete url of an article to extract the following information into a <code>PoliceTicker</code> model:
@@ -39,7 +42,8 @@ import de.codefor.le.utilities.Utils;
  * </ul>
  */
 @Component
-public class LvzPoliceTickerDetailViewCrawler {
+@RequiredArgsConstructor
+public class LvzPoliceTickerDetailViewCrawler implements DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(LvzPoliceTickerDetailViewCrawler.class);
 
@@ -50,6 +54,46 @@ public class LvzPoliceTickerDetailViewCrawler {
     private static final String ARTICLE_ALSO_READ = "Lesen Sie auch";
 
     private static final String ARTICLE_READ_MORE = "Mehr aus dem Polizeiticker";
+
+    private static final String ARTICLE_HEAD_SELECTOR = "div[class*=ArticleHeadstyled__ArticleHeadHeadlineContainer]";
+
+    /** Headline of the page the bot detection serves instead of the article. */
+    private static final String BLOCK_PAGE_TEXT = "Der Zugriff ist vorübergehend eingeschränkt";
+
+    /** The block page may also be embedded as an iframe from the bot detection vendor. */
+    private static final String BLOCK_PAGE_IFRAME_SELECTOR = "iframe[src*=captcha-delivery.com]";
+
+    private final CrawlerWebDriverFactory webDriverFactory;
+
+    private WebDriver driver;
+
+    /**
+     * Closes the browser once a batch of detail pages is done. Keeping it open until the next
+     * scheduler run would hit the idle session timeout of the selenium node.
+     * <p>
+     * Synchronized like {@link #crawl(String)}: the driver is created on an async worker thread but
+     * closed by the scheduler thread, and one session must never be shared concurrently.
+     */
+    public synchronized void closeBrowser() {
+        if (driver != null) {
+            driver.quit();
+            driver = null;
+        }
+    }
+
+    private void closeBrowserQuietly() {
+        try {
+            closeBrowser();
+        } catch (final WebDriverException e) {
+            logger.debug("Closing the broken browser session failed", e);
+            driver = null;
+        }
+    }
+
+    @Override
+    public void destroy() {
+        closeBrowser();
+    }
 
     @Async
     public Future<PoliceTicker> execute(final String url) {
@@ -69,14 +113,43 @@ public class LvzPoliceTickerDetailViewCrawler {
      * @param url article url
      * @return PoliceTicker
      */
-    private static PoliceTicker crawl(final String url) {
-        Document doc;
+    private synchronized PoliceTicker crawl(final String url) {
+        // A plain HTTP client gets a 403 here: the bot detection rejects it on the TLS
+        // fingerprint, so neither headers nor cookies help. Only a real browser gets through.
+        if (driver == null) {
+            driver = webDriverFactory.create();
+        }
         try {
-            doc = Jsoup.connect(url).userAgent(LvzPoliceTickerCrawler.USER_AGENT).timeout(LvzPoliceTickerCrawler.REQUEST_TIMEOUT).get();
-        } catch (final IOException e) {
-            throw new UncheckedIOException("Request for url " + url + " failed.", e);
+            driver.get(url);
+        } catch (final WebDriverException e) {
+            // the session may be gone (e.g. a crashed selenium node). Drop it, so the next article
+            // starts a fresh one instead of failing the same way for the rest of the batch.
+            closeBrowserQuietly();
+            throw e;
+        }
+        // the article is rendered client-side, so wait (via the implicit timeout) for the headline
+        // before serializing the DOM. Without it we would happily parse a blocking page into an
+        // article with empty fields.
+        final var headlineMissing = driver.findElements(By.cssSelector(ARTICLE_HEAD_SELECTOR)).isEmpty();
+        final var doc = Jsoup.parse(driver.getPageSource(), url);
+        if (headlineMissing) {
+            if (isBlockPage(doc)) {
+                logger.warn("blocked by the bot detection at {}", url);
+                WebDriverScreenshot.take(driver, WebDriverScreenshot.REASON_BLOCKED);
+                throw new CrawlerBlockedException("blocked by the bot detection at " + url);
+            }
+            logger.warn("article headline not found for {} (page title: {})", url, driver.getTitle());
+            WebDriverScreenshot.take(driver, WebDriverScreenshot.REASON_NO_SUCH_ELEMENT);
+            throw new IllegalStateException("article headline not found for " + url + ", page title: " + driver.getTitle());
         }
         final PoliceTicker result = convertToDataModel(doc);
+        // the container above can be present while the extraction still yields nothing, e.g. after
+        // a markup change. Without a title the article is useless, so do not let it reach the index.
+        if (Strings.isNullOrEmpty(result.getTitle())) {
+            logger.warn("no title extracted for {} (page title: {})", url, driver.getTitle());
+            WebDriverScreenshot.take(driver, WebDriverScreenshot.REASON_NO_SUCH_ELEMENT);
+            throw new IllegalStateException("no title extracted for " + url);
+        }
         result.setUrl(url);
         result.setId(Utils.generateHashForUrl(url));
         logger.info("Crawled {}.", url);
@@ -84,6 +157,10 @@ public class LvzPoliceTickerDetailViewCrawler {
             logger.debug("Extracted {}.", result);
         }
         return result;
+    }
+
+    private static boolean isBlockPage(final Document doc) {
+        return doc.text().contains(BLOCK_PAGE_TEXT) || !doc.select(BLOCK_PAGE_IFRAME_SELECTOR).isEmpty();
     }
 
     /**
@@ -163,17 +240,13 @@ public class LvzPoliceTickerDetailViewCrawler {
         logger.debug("extractDate from {}", date);
         Date result = null;
         if (!Strings.isNullOrEmpty(date)) {
-            ZonedDateTime zonedDateTime;
             try {
-                String normalizedDate = date;
-                if (date.length() == 20 && date.endsWith("Z")) {
-                    normalizedDate = date.substring(0, date.length() - 1);
-                }
-                if (normalizedDate.length() == 19) {
-                    zonedDateTime = LocalDateTime.parse(normalizedDate).atZone(ZoneId.of("Europe/Berlin"));
-                } else {
-                    zonedDateTime = ZonedDateTime.parse(normalizedDate);
-                }
+                // only a timestamp without any zone is local time; anything else carries its own
+                // offset. The site renders the same article as either "...Z" or "...+02:00",
+                // so both have to end up at the same instant.
+                final var zonedDateTime = date.length() == 19
+                        ? LocalDateTime.parse(date).atZone(ZoneId.of("Europe/Berlin"))
+                        : ZonedDateTime.parse(date);
                 result = Date.from(zonedDateTime.toInstant());
             } catch (final DateTimeParseException e) {
                 logger.warn(e.toString(), e);

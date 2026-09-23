@@ -15,7 +15,7 @@ jobs:
 
     services:
       elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
+        image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.23
         ports:
           - 9200:9200
         env:
@@ -26,11 +26,6 @@ jobs:
           network.host: 0.0.0.0
           discovery.type: single-node
           discovery.zen.minimum_master_nodes: 1
-          xpack.security.enabled: false
-          xpack.monitoring.enabled: false
-          xpack.ml.enabled: false
-          xpack.graph.enabled: false
-          xpack.watcher.enabled: false
         options: >-
           --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
           --health-interval 10s
@@ -53,6 +48,14 @@ jobs:
             sleep 2
           done
           echo "Elasticsearch is up!"
+
+      # lvz.de blocks headless Chrome, so the crawler test needs a real browser on a virtual
+      # display. Xvfb ships with the runner image. DISPLAY is exported here so the Gradle
+      # daemon inherits it.
+      - name: Start virtual display
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5

@@ -5,10 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.env.MockEnvironment;
 
 class LvzPoliceTickerCrawlerTest {
 
-    private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler(null);
+    private final LvzPoliceTickerCrawler crawler = new LvzPoliceTickerCrawler(null, new CrawlerWebDriverFactory(new MockEnvironment()));
 
     @Test
     void testExecute() throws ExecutionException, InterruptedException {

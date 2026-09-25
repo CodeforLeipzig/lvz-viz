@@ -29,6 +29,13 @@ public class CrawlScheduler {
 
     private static final int WAIT_TO_PREVENT_BANNING_IN_MS = 2_000;
 
+    /**
+     * lvz.de blocks clients that open articles at a superhuman pace, so wait much longer between
+     * the detail pages than between the nominatim requests.
+     */
+    @VisibleForTesting
+    long waitBetweenDetailPagesInMs = 10_000;
+
     private final PoliceTickerRepository policeTickerRepository;
 
     private final LvzPoliceTickerCrawler crawler;
@@ -78,7 +85,7 @@ public class CrawlScheduler {
                     // a single restructured article must not discard the whole run
                     logger.warn("Skipping article {}", url, e);
                 }
-                Thread.sleep(WAIT_TO_PREVENT_BANNING_IN_MS);
+                Thread.sleep(waitBetweenDetailPagesInMs);
             }
         } finally {
             detailCrawler.closeBrowser();

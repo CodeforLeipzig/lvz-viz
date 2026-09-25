@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -36,6 +37,11 @@ class CrawlSchedulerDetailPagesTest {
 
     private final CrawlScheduler scheduler = new CrawlScheduler(repository, crawler, detailCrawler, null,
             mock(NominatimAsker.class));
+
+    @BeforeEach
+    void skipWaitBetweenDetailPages() {
+        scheduler.waitBetweenDetailPagesInMs = 0;
+    }
 
     @Test
     @SuppressWarnings("unchecked")

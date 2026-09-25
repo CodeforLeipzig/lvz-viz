@@ -46,8 +46,7 @@ export class Search implements OnInit, AfterViewInit {
   readonly size = signal(5);
   readonly sort = signal('');
   readonly query = signal<string | undefined>(undefined);
-  #tempContent = signal<Content[]>([]);
-  #lastTotal = signal(0);
+  #lastSnapshot = signal<PagedResponse<Content>>({ content: [], totalElements: 0 });
 
   readonly searchResource = httpResource<PagedResponse<Content[]>>(() =>
     this.#searchService.fetch(
@@ -60,7 +59,7 @@ export class Search implements OnInit, AfterViewInit {
 
   readonly dataSource = computed(() => {
     const page = this.searchResource.value();
-    const content = this.searchResource.isLoading() ? this.#tempContent() : page?.content.flat() ?? [];
+    const content = this.searchResource.isLoading() ? this.#lastSnapshot().content : page?.content.flat() ?? [];
     // if content is available and map is initialized, add markers to map
     if (content && this.#map) {
       this.#addToMap(content);
@@ -69,7 +68,7 @@ export class Search implements OnInit, AfterViewInit {
   });
 
   readonly totalElements = computed(
-    () => this.searchResource.isLoading() ? this.#lastTotal() : this.searchResource.value()?.totalElements ?? 0
+    () => this.searchResource.isLoading() ? this.#lastSnapshot().totalElements : this.searchResource.value()?.totalElements ?? 0
   );
 
   constructor() {
@@ -91,8 +90,7 @@ export class Search implements OnInit, AfterViewInit {
     effect((): void => {
       const data = this.searchResource.value();
       if (data) {
-        this.#tempContent.set(data.content.flat());
-        this.#lastTotal.set(data.totalElements);
+        this.#lastSnapshot.set({ content: data.content.flat(), totalElements: data.totalElements });
       }
     });
 

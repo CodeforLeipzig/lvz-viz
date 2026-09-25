@@ -52,7 +52,7 @@ public class PoliceTickerController {
     private final Optional<NER> ner;
 
     @GetMapping(value = "/getx")
-    public Page<PoliceTicker> getx(@PageableDefault final Pageable pageable) {
+    public Page<PoliceTicker> getx(@PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED) final Pageable pageable) {
         return policeTickerRepository.findAll(pageable);
     }
 

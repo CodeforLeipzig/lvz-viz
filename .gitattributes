@@ -1,4 +1,9 @@
 # Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto
 
+# Windows scripts must use CRLF
 *.bat text eol=crlf
+
+# Unix scripts must keep LF, even on Windows checkouts
+/gradlew text eol=lf
+*.sh     text eol=lf

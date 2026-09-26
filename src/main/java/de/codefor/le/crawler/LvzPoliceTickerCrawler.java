@@ -20,6 +20,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 
 import de.codefor.le.repositories.PoliceTickerRepository;
@@ -35,6 +36,13 @@ public class LvzPoliceTickerCrawler {
     protected static final String LVZ_BASE_URL = "https://www.lvz.de";
 
     protected static final String LVZ_POLICE_TICKER_BASE_URL = LVZ_BASE_URL + "/themen/leipzig-polizei";
+
+    /**
+     * lvz.de blocks clients that load more articles at a superhuman pace, so wait between clicking
+     * "load more" the same way {@code CrawlScheduler} waits between detail pages.
+     */
+    @VisibleForTesting
+    long waitBetweenLoadMoreClicksInMs = 2_000;
 
     private final PoliceTickerRepository policeTickerRepository;
 
@@ -100,6 +108,12 @@ public class LvzPoliceTickerCrawler {
         for (int i = 0; i < 10; i++) {
             if (!loadMoreArticles()) {
                 logger.debug("Stop loading more articles.");
+                break;
+            }
+            try {
+                Thread.sleep(waitBetweenLoadMoreClicksInMs);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 break;
             }
         }

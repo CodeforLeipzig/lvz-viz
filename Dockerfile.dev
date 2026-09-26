@@ -19,8 +19,12 @@ USER ${USER}
 WORKDIR /home/${USER}
 
 COPY --chown=${USER} dewac_175m_600.crf.ser.gz .
-COPY --chown=${USER} build/libs/*.jar ./app.jar
+# ordered from rarely to frequently changing, so a new commit only replaces the last layers
+COPY --chown=${USER} build/extracted/dependencies/ ./app/
+COPY --chown=${USER} build/extracted/spring-boot-loader/ ./app/
+COPY --chown=${USER} build/extracted/frontend/ ./app/
+COPY --chown=${USER} build/extracted/application/ ./app/
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-XshowSettings:vm","-XX:MaxRAMPercentage=95","-jar","./app.jar"]
+ENTRYPOINT ["java","-XshowSettings:vm","-XX:MaxRAMPercentage=95","-cp","./app","org.springframework.boot.loader.JarLauncher"]

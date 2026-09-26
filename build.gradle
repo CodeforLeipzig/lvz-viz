@@ -31,8 +31,36 @@ springBoot {
 }
 
 bootJar {
-  launchScript()
+  // identical inputs give identical files, so unchanged image layers keep their digest
+  preserveFileTimestamps = false
+  reproducibleFileOrder = true
 }
+
+// unpacks the boot jar into one directory per image layer, named like Spring Boot's layertools,
+// so Dockerfile.dev can copy dependencies and application code into separate layers
+task extractBootJar(type: Sync) {
+  description = 'Extracts the boot jar into build/extracted, split into image layers.'
+  def jar = zipTree(bootJar.archiveFile)
+  into(layout.buildDirectory.dir('extracted'))
+  from(jar) {
+    include 'BOOT-INF/lib/**'
+    into 'dependencies'
+  }
+  from(jar) {
+    include 'org/**'
+    into 'spring-boot-loader'
+  }
+  from(jar) {
+    include 'BOOT-INF/classes/static/**'
+    into 'frontend'
+  }
+  from(jar) {
+    exclude 'BOOT-INF/lib/**', 'org/**', 'BOOT-INF/classes/static/**'
+    into 'application'
+  }
+}
+
+bootJar.finalizedBy extractBootJar
 
 configurations.implementation {
   exclude group: "org.hamcrest"

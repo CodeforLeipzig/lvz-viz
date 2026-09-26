@@ -6,7 +6,7 @@
 .vscode
 bin
 build
-!build/libs/*.jar
+!build/extracted
 data
 gradle
 **/node_modules

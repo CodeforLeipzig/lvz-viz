@@ -49,7 +49,12 @@ docker compose build
 docker compose up -d
 ```
 
+The dev image doesn't build the app itself, it copies the unpacked jar from `build/extracted`.
+Build the jar with Gradle first, otherwise the image contains outdated files or the build fails.
+
 ```bash
+# build the jar and unpack it into build/extracted
+./gradlew assemble -PlocalBuild=true
 # build services and start containers with dev profile
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```

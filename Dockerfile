@@ -1,6 +1,6 @@
-FROM node:22.20.0-slim AS build-frontend
+FROM node:24.16.0-slim AS build-frontend
 
-RUN npm install -g pnpm@10.27.0
+RUN npm install -g pnpm@11.24.0
 
 # see https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
 ENV USER=node

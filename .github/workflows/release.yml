@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22]
+        node-version: [24.16]
 
     steps:
       - uses: actions/checkout@v6
@@ -22,7 +22,7 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 11
 
       - uses: actions/setup-node@v6
         with:

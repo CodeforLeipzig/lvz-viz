@@ -14,14 +14,14 @@ jobs:
         working-directory: ./frontend
     strategy:
       matrix:
-        node-version: [22]
+        node-version: [24.16]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 11
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
         with:
@@ -30,5 +30,5 @@ jobs:
           cache-dependency-path: ./frontend/pnpm-lock.yaml
       - name: Install and Build
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
           pnpm build:prod

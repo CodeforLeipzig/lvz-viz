@@ -27,22 +27,22 @@ We recommend the usage of [The Software Development Kit Manager](https://sdkman.
 
 ### Node and pnpm
 
-* `node 22.20.0` or higher
+* `node 24.16.0` or higher
 
 We recommend the usage of [Node Version Manager](https://github.com/nvm-sh/nvm).
 
-* `pnpm 10.27.0` or higher
+* `pnpm 11.24.0` or higher
 
 Check out the [installation instructions](https://pnpm.io/installation).
 
 ### Angular CLI
 
-* `@angular/cli 21.2.5` or higher
+* `@angular/cli 22.1.8` or higher
 
 Install @angular/cli by running:
 
 ```bash
-pnpm install -g @angular/cli@21
+pnpm install -g @angular/cli@22
 ```
 
 ### Docker (when running services within docker)

@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Title } from '@angular/platform-browser';
+import { version } from '../../package.json';
 import { environment } from '../environments/environment';
 import { Search } from './features/search/search';
 import { Statistic } from './features/statistic/statistic';
@@ -18,6 +19,7 @@ export class App {
   readonly #document = inject<Document>(DOCUMENT);
 
   appname: string;
+  readonly version = version;
 
   constructor() {
     this.appname = environment.appname;

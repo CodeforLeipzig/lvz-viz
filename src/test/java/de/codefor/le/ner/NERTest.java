@@ -17,7 +17,7 @@ class NERTest {
     @Test
     void initUnspecificLocations() {
         assertThat(ner.getUnspecificLocations())
-            .contains("Leipzig", "Dresdens")
+            .contains("Leipzig", "Dresdens", "Sachsens", "Nordrhein-Westfalen")
             .doesNotContain("# federal states", "");
     }
 

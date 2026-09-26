@@ -23,13 +23,21 @@ Straße
 Süden
 Westen
 
-# federal states
+# federal states and variations
 Bayern
+Bayerns
 Brandenburg
+Brandenburgs
 Niedersachsen
+Niedersachsens
+Nordrhein-Westfalen
+Nordrhein-Westfalens
 Sachsen
 Sachsen-Anhalt
+Sachsen-Anhalts
+Sachsens
 Thüringen
+Thüringens
 
 # countries
 Afghanistan

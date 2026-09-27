@@ -15,6 +15,11 @@ import { Content } from './models/content.model';
 import { PagedResponse } from './models/paged-response.model';
 import { SearchService } from "./search.service";
 
+/**
+ * Mirrors Elasticsearch's default index.max_result_window: the backend only pages through the first results of a query.
+ */
+export const MAX_RESULT_WINDOW = 10_000;
+
 @Component({
   selector: 'app-search',
   templateUrl: './search.html',
@@ -71,6 +76,8 @@ export class Search implements OnInit, AfterViewInit {
   readonly totalElements = computed(
     () => this.searchResource.isLoading() ? this.#lastSnapshot().totalElements : this.searchResource.value()?.totalElements ?? 0
   );
+
+  readonly paginatorLength = computed(() => Math.min(this.totalElements(), MAX_RESULT_WINDOW));
 
   constructor() {
     // Observe breakpoints and update isSmallSize signal

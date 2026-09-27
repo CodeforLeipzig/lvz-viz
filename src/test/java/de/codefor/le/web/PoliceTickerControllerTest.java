@@ -23,6 +23,13 @@ class PoliceTickerControllerTest {
     }
 
     @Test
+    void getxBeyondResultWindow() {
+        final var result = controller.getx(PageRequest.of(PoliceTickerController.MAX_RESULT_WINDOW / 5, 5));
+        assertThat(result).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
+    }
+
+    @Test
     void getLocations() {
         assertThat(controller.getLocations("Lindenau")).isEmpty();
         assertThat(controller.getLocations("Zentrum")).isEmpty();
@@ -33,6 +40,19 @@ class PoliceTickerControllerTest {
         final var result = controller.search("term", PageRequest.of(0, 1));
         assertThat(result).isNotNull();
         assertThat(result.getNumberOfElements()).isZero();
+    }
+
+    @Test
+    void searchBeyondResultWindow() {
+        final var result = controller.search("term", PageRequest.of(PoliceTickerController.MAX_RESULT_WINDOW / 5, 5));
+        assertThat(result).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
+    }
+
+    @Test
+    void searchPartlyBeyondResultWindow() {
+        final var result = controller.search("term", PageRequest.of(PoliceTickerController.MAX_RESULT_WINDOW / 3, 3));
+        assertThat(result).isEmpty();
     }
 
     @Test

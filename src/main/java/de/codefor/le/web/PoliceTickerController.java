@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -45,6 +46,11 @@ public class PoliceTickerController {
 
     private static final String DATE_PUBLISHED = "datePublished";
 
+    /**
+     * Mirrors Elasticsearch's default {@code index.max_result_window}: {@code from + size} of a query must not exceed it.
+     */
+    static final int MAX_RESULT_WINDOW = 10_000;
+
     private final PoliceTickerRepository policeTickerRepository;
 
     private final ElasticsearchRestTemplate elasticsearchTemplate;
@@ -53,7 +59,8 @@ public class PoliceTickerController {
 
     @GetMapping(value = "/getx")
     public Page<PoliceTicker> getx(@PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED) final Pageable pageable) {
-        return policeTickerRepository.findAll(pageable);
+        return exceedsResultWindow(pageable) ? emptyPage(pageable, policeTickerRepository.count())
+                : policeTickerRepository.findAll(pageable);
     }
 
     @PostMapping(value = "/extractlocations")
@@ -69,11 +76,14 @@ public class PoliceTickerController {
     public Page<PoliceTicker> search(@RequestParam final String query,
             @PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED) final Pageable pageable) {
         logger.debug("search query: {}", query);
-        return query.isEmpty() ? getx(pageable)
-                : elasticsearchTemplate.queryForPage(
-                        new NativeSearchQueryBuilder().withPageable(pageable)
-                                .withQuery(createFulltextSearchQueryBuilder(splitIntoTerms(query))).build(),
-                        PoliceTicker.class);
+        if (query.isEmpty()) {
+            return getx(pageable);
+        }
+        final var searchQuery = new NativeSearchQueryBuilder().withPageable(pageable)
+                .withQuery(createFulltextSearchQueryBuilder(splitIntoTerms(query))).build();
+        return exceedsResultWindow(pageable)
+                ? emptyPage(pageable, elasticsearchTemplate.count(searchQuery, PoliceTicker.class))
+                : elasticsearchTemplate.queryForPage(searchQuery, PoliceTicker.class);
     }
 
     @GetMapping(value = "/searchbetween")
@@ -111,6 +121,18 @@ public class PoliceTickerController {
         final var minus7days = DateTime.now().minusDays(7);
         logger.debug("last7days: fromDate {}, toDate {}", minus7days, now);
         return new DateTime[] { minus7days, now };
+    }
+
+    /**
+     * Elasticsearch rejects pages reaching beyond {@link #MAX_RESULT_WINDOW}, so paging is limited to the first results.
+     */
+    private static boolean exceedsResultWindow(final Pageable pageable) {
+        return pageable.isPaged() && pageable.getOffset() + pageable.getPageSize() > MAX_RESULT_WINDOW;
+    }
+
+    private static Page<PoliceTicker> emptyPage(final Pageable pageable, final long total) {
+        logger.debug("page {} exceeds result window of {}, return empty page", pageable, MAX_RESULT_WINDOW);
+        return new PageImpl<>(Collections.emptyList(), pageable, total);
     }
 
     private static List<String> splitIntoTerms(final String query) {

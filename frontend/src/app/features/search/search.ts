@@ -6,6 +6,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SplitAreaComponent, SplitComponent } from 'angular-split';
 import * as L from 'leaflet';
@@ -18,7 +19,7 @@ import { SearchService } from "./search.service";
   selector: 'app-search',
   templateUrl: './search.html',
   styleUrl: './search.css',
-  imports: [MatFormFieldModule, MatInputModule, MatPaginatorModule, MatTableModule, SplitAreaComponent, SplitComponent, DatePipe],
+  imports: [MatFormFieldModule, MatInputModule, MatPaginatorModule, MatSortModule, MatTableModule, SplitAreaComponent, SplitComponent, DatePipe],
   providers: [
     // { provide: SearchService, useClass: SearchServiceMock }
   ],
@@ -44,7 +45,7 @@ export class Search implements OnInit, AfterViewInit {
   displayedColumns = signal<string[]>(['title', 'publication']);
   readonly page = signal(0);
   readonly size = signal(5);
-  readonly sort = signal('');
+  readonly sort = signal('datePublished,desc');
   readonly query = signal<string | undefined>(undefined);
   #lastSnapshot = signal<PagedResponse<Content>>({ content: [], totalElements: 0 });
 
@@ -166,6 +167,11 @@ export class Search implements OnInit, AfterViewInit {
 
   onPageChange(event: PageEvent) {
     this.page.set(event.pageIndex);
+  }
+
+  onSortChange(event: Sort) {
+    this.page.set(0);
+    this.sort.set(`datePublished,${event.direction || 'desc'}`);
   }
 
   /**

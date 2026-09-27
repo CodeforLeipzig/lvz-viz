@@ -187,12 +187,16 @@ public class LvzPoliceTickerCrawler {
         return result;
     }
 
-    private static boolean shouldSkipUrl(final String detailLink) {
+    @VisibleForTesting
+    static boolean shouldSkipUrl(final String detailLink) {
         if (!detailLink.startsWith(LVZ_BASE_URL)) {
             logger.debug("article not from policeticker - skip it");
             return true;
         } else if (detailLink.matches("(.*)Blitzer(.*)-in-Leipzig(.*)")) {
             logger.debug("recurring speed control article - skip it");
+            return true;
+        } else if (detailLink.contains("/polizeiticker-leipzig-aktuelle-polizeimeldungen-")) {
+            logger.debug("recurring daily police ticker summary - skip it");
             return true;
         }
         return false;

@@ -21,4 +21,15 @@ describe('Search', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should sort by newest publication by default', () => {
+    expect(component.sort()).toBe('datePublished,desc');
+  });
+
+  it('should sort by oldest publication and reset to first page', () => {
+    component.page.set(3);
+    component.onSortChange({ active: 'publication', direction: 'asc' });
+    expect(component.sort()).toBe('datePublished,asc');
+    expect(component.page()).toBe(0);
+  });
 });

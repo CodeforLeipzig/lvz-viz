@@ -22,5 +22,5 @@
   "scripts": {
     "start": "concurrently \"export SPRING_PROFILES_ACTIVE=local && ./gradlew bootRun\" \"cd frontend && pnpm start\""
   },
-  "version": "2.7.0"
+  "version": "2.8.0"
 }

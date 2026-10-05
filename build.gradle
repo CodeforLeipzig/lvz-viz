@@ -70,7 +70,7 @@ repositories {
   mavenCentral()
 }
 dependencies {
-  def seleniumVersion = '4.49.0'
+  def seleniumVersion = '4.50.0'
   implementation "io.github.bonigarcia:webdrivermanager:6.4.0",
                  "com.google.guava:guava:33.7.2-jre",
                  "org.jsoup:jsoup:1.23.2",

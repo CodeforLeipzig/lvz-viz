@@ -52,8 +52,10 @@
   "scripts": {
     "build:dev": "ng lint && ng build --configuration=development",
     "build:prod": "ng lint && ng build",
+    "lint": "ng lint",
     "mock": "json-server --watch db.json",
-    "start": "ng serve -o --configuration=development"
+    "start": "ng serve -o --configuration=development",
+    "test": "ng test --watch=false"
   },
   "version": "2.8.0"
 }

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -31,7 +32,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.slf4j.LoggerFactory;
 import org.springframework.mock.env.MockEnvironment;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 
 import de.codefor.le.model.PoliceTicker;
 
@@ -181,11 +189,64 @@ class LvzPoliceTickerDetailViewCrawlerTest {
                 .hasMessageContaining("article headline not found");
     }
 
+    @Test
+    void executeTakesMissingMetaOfPaidArticleFromJsonLd() throws Exception {
+        final String pageSource;
+        try (var in = getClass().getResourceAsStream("/crawler/paid-article-without-article-meta.html")) {
+            pageSource = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        final var url = BASE_URL + "/wie-messerstecher-muhamad-m-aus-psychiatrie-bei-leipzig-floh-I7GKLGTYP5DARM45QQ6MEYVYEA.html";
+
+        final var ticker = articleCrawlerShowing(pageSource).execute(url).get();
+
+        assertThat(ticker.getTitle()).isEqualTo("Interne Untersuchung: So floh Muhamad M. aus der Psychiatrie bei Leipzig");
+        assertThat(ticker.getSnippet()).startsWith("Nach der Flucht des Messerstechers Muhamad M.");
+        assertThat(ticker.getArticle()).isNull();
+        assertThat(ticker.getCopyright()).isEqualTo("LVZ");
+        assertThat(ticker.getDatePublished()).isEqualTo(getDate(LocalDateTime.of(2026, 10, 6, 18, 0)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "Leipziger Volkszeitung, LVZ",
+            "' Leipziger Volkszeitung ', LVZ",
+            "Dresdner Neueste Nachrichten, Dresdner Neueste Nachrichten"
+    })
+    void shortenPublisher(final String publisher, final String expected) {
+        assertThat(LvzPoliceTickerDetailViewCrawler.shortenPublisher(publisher)).isEqualTo(expected);
+    }
+
+    @Test
+    void executeWarnsOnceAboutMissingCopyright() throws Exception {
+        final var appender = new ListAppender<ILoggingEvent>();
+        final var logger = (Logger) LoggerFactory.getLogger(LvzPoliceTickerDetailViewCrawler.class);
+        appender.start();
+        logger.addAppender(appender);
+        try {
+            articleCrawlerShowing("<html><body><div class=\"ArticleHeadstyled__ArticleHeadHeadlineContainer-sc-1\">"
+                    + "<h2 class=\"Headlinestyled__Headline-sc-1\">Title</h2></div></body></html>").execute(BASE_URL).get();
+        } finally {
+            logger.detachAppender(appender);
+        }
+        assertThat(appender.list).filteredOn(event -> event.getLevel() == Level.WARN)
+                .extracting(ILoggingEvent::getFormattedMessage)
+                .containsOnlyOnce("Element 'copyright' not found for article.");
+    }
+
     private static LvzPoliceTickerDetailViewCrawler crawlerShowing(final String pageSource) {
+        return crawlerShowing(pageSource, Collections.emptyList());
+    }
+
+    /** Like {@link #crawlerShowing(String)}, but the headline is found, so the page gets extracted. */
+    private static LvzPoliceTickerDetailViewCrawler articleCrawlerShowing(final String pageSource) {
+        return crawlerShowing(pageSource, List.of(mock(WebElement.class)));
+    }
+
+    private static LvzPoliceTickerDetailViewCrawler crawlerShowing(final String pageSource, final List<WebElement> headlines) {
         final var factory = mock(CrawlerWebDriverFactory.class);
         final var driver = mock(WebDriver.class);
         when(factory.create()).thenReturn(driver);
-        when(driver.findElements(any(By.class))).thenReturn(Collections.emptyList());
+        when(driver.findElements(any(By.class))).thenReturn(headlines);
         when(driver.getPageSource()).thenReturn(pageSource);
         return new LvzPoliceTickerDetailViewCrawler(factory);
     }

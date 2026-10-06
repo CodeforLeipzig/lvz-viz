@@ -5,6 +5,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -22,6 +24,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
@@ -40,6 +45,7 @@ import lombok.RequiredArgsConstructor;
  * <li>copyright</li>
  * <li>date published</li>
  * </ul>
+ * The date published is taken from the JSON-LD <code>NewsArticle</code> of the page, the copyright falls back to it.
  */
 @Component
 @RequiredArgsConstructor
@@ -50,6 +56,8 @@ public class LvzPoliceTickerDetailViewCrawler implements DisposableBean {
     private static final String LOG_ELEMENT_FOUND = "Element '{}' found with selector '{}' for article.";
 
     private static final String LOG_ELEMENT_NOT_FOUND = "Element '{}' not found for article.";
+
+    private static final String LOG_ELEMENT_FOUND_IN_JSON_LD = "Element '{}' found in JSON-LD for article.";
 
     private static final String ARTICLE_ALSO_READ = "Lesen Sie auch";
 
@@ -62,6 +70,15 @@ public class LvzPoliceTickerDetailViewCrawler implements DisposableBean {
 
     /** The block page may also be embedded as an iframe from the bot detection vendor. */
     private static final String BLOCK_PAGE_IFRAME_SELECTOR = "iframe[src*=captcha-delivery.com]";
+
+    /** Structured data for search engines, also present on paid articles where the visible meta block is missing. */
+    private static final String JSON_LD_SELECTOR = "script[type=application/ld+json]";
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final String LVZ_PUBLISHER_NAME = "Leipziger Volkszeitung";
+
+    private static final String LVZ_PUBLISHER_ABBREVIATION = "LVZ";
 
     private final CrawlerWebDriverFactory webDriverFactory;
 
@@ -171,12 +188,35 @@ public class LvzPoliceTickerDetailViewCrawler implements DisposableBean {
      */
     private static PoliceTicker convertToDataModel(final Document doc) {
         final var dm = new PoliceTicker();
+        final var newsArticle = findNewsArticle(doc);
         extractTitle(doc, dm);
-        extractArticle(doc, dm);
+        extractArticle(doc, dm, newsArticle);
         extractTeaser(doc, dm);
-        extractCopyright(doc, dm, false);
-        extractDatePublished(doc, dm);
+        extractCopyright(doc, dm, newsArticle);
+        extractDatePublished(doc, dm, newsArticle);
         return dm;
+    }
+
+    /**
+     * Finds the JSON-LD block describing the article itself. The page has others too, e.g. for the breadcrumbs.
+     */
+    private static Optional<JsonNode> findNewsArticle(final Document doc) {
+        for (final var script : doc.select(JSON_LD_SELECTOR)) {
+            final JsonNode json;
+            try {
+                json = objectMapper.readTree(script.data());
+            } catch (final JsonProcessingException e) {
+                logger.debug("Skipping unparsable JSON-LD block", e);
+                continue;
+            }
+            final Iterable<JsonNode> candidates = json.isArray() ? json : List.of(json);
+            for (final var node : candidates) {
+                if ("NewsArticle".equals(node.path("@type").asText())) {
+                    return Optional.of(node);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     private static void extractTitle(final Document doc, final PoliceTicker dm) {
@@ -194,36 +234,49 @@ public class LvzPoliceTickerDetailViewCrawler implements DisposableBean {
 
     /**
      * Extracts the copyright information from the given document and updates the provided PoliceTicker object.
-     * If the copyright information cannot be found in the primary location (ArticleMeta section),
-     * the system will automatically search for it in a secondary location at the end of the article.
-     *
-     * @param retry indicates whether the method is retrying with an alternative CSS query
+     * It is searched at the end of the article first, then in the ArticleMeta section. Paid articles have neither,
+     * so the publisher from the JSON-LD is the last resort.
      */
-    private static void extractCopyright(final Document doc, final PoliceTicker dm, final boolean retry) {
+    private static void extractCopyright(final Document doc, final PoliceTicker dm, final Optional<JsonNode> newsArticle) {
         final var copyright = "copyright";
-        final var cssQuery = retry ? "div[class*=ArticleMetastyled__ArticleMeta] > div[class*=Stackstyled__Stack] > address" :
-                "#contentMain p[class*=Editorialstyled__Editorial]";
-        final var elem = doc.selectFirst(cssQuery);
-        if (elem != null) {
-            logger.debug(LOG_ELEMENT_FOUND, copyright, cssQuery);
-            dm.setCopyright(elem.text());
+        for (final var cssQuery : List.of("#contentMain p[class*=Editorialstyled__Editorial]",
+                "div[class*=ArticleMetastyled__ArticleMeta] > div[class*=Stackstyled__Stack] > address")) {
+            final var elem = doc.selectFirst(cssQuery);
+            if (elem != null && elem.hasText()) {
+                logger.debug(LOG_ELEMENT_FOUND, copyright, cssQuery);
+                dm.setCopyright(elem.text());
+                return;
+            }
         }
-        if (Strings.isNullOrEmpty(dm.getCopyright()) && !retry) {
-            extractCopyright(doc, dm, true);
-        }
-        if (Strings.isNullOrEmpty(dm.getCopyright())) {
+        final var publisher = newsArticle.map(node -> node.path("publisher").path("name").asText()).orElse("");
+        if (publisher.isBlank()) {
             logger.warn(LOG_ELEMENT_NOT_FOUND, copyright);
+        } else {
+            logger.debug(LOG_ELEMENT_FOUND_IN_JSON_LD, copyright);
+            dm.setCopyright(shortenPublisher(publisher));
         }
     }
 
     /**
-     * Try to extract the publishing date from a script block.
-     *
-     * @param doc Document
-     * @param dm PoliceTicker
+     * The Editorial line of free articles credits the LVZ by its abbreviation, while the JSON-LD spells it out.
      */
-    private static void extractDatePublished(final Document doc, final PoliceTicker dm) {
+    @VisibleForTesting
+    static String shortenPublisher(final String publisher) {
+        final var name = publisher.trim();
+        return LVZ_PUBLISHER_NAME.equals(name) ? LVZ_PUBLISHER_ABBREVIATION : name;
+    }
+
+    /**
+     * Extracts the publishing date from the JSON-LD, or from the ArticleMeta section if the JSON-LD has none.
+     * Paid articles lack the ArticleMeta section.
+     */
+    private static void extractDatePublished(final Document doc, final PoliceTicker dm, final Optional<JsonNode> newsArticle) {
         final var publishingDate = "datePublished";
+        newsArticle.ifPresent(node -> dm.setDatePublished(extractDate(node.path(publishingDate).asText())));
+        if (dm.getDatePublished() != null) {
+            logger.debug(LOG_ELEMENT_FOUND_IN_JSON_LD, publishingDate);
+            return;
+        }
         final var cssQuery = "div[class*=ArticleMetastyled__ArticleMeta] > div[class*=Stackstyled__Stack] > time";
         final var elem = doc.selectFirst(cssQuery);
         if (elem != null) {
@@ -255,12 +308,12 @@ public class LvzPoliceTickerDetailViewCrawler implements DisposableBean {
         return result;
     }
 
-    private static void extractArticle(final Document doc, final PoliceTicker dm) {
+    private static void extractArticle(final Document doc, final PoliceTicker dm, final Optional<JsonNode> newsArticle) {
         final var article = "article";
         var cssQuery = "article > nav + div + div p";
         extractArticle(doc, dm, cssQuery);
         if (Strings.isNullOrEmpty(dm.getArticle())) {
-            if (doc.selectFirst("title#paid-icon") != null) {
+            if (isPaidContent(doc, newsArticle)) {
                 logger.info(LOG_ELEMENT_NOT_FOUND + " Detected paid content.", article);
             } else {
                 logger.warn(LOG_ELEMENT_NOT_FOUND, article);
@@ -268,6 +321,15 @@ public class LvzPoliceTickerDetailViewCrawler implements DisposableBean {
         } else {
             logger.debug(LOG_ELEMENT_FOUND, article, cssQuery);
         }
+    }
+
+    /**
+     * The paid icon alone is no proof: teasers of related paid articles on a free article carry it as well.
+     */
+    private static boolean isPaidContent(final Document doc, final Optional<JsonNode> newsArticle) {
+        return newsArticle.map(node -> node.get("isAccessibleForFree"))
+                .map(free -> !free.asBoolean())
+                .orElseGet(() -> doc.selectFirst("title#paid-icon") != null);
     }
 
     private static boolean extractArticle(final Document doc, final PoliceTicker dm, final String cssQuery) {

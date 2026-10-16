@@ -33,4 +33,6 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm build:prod
       - name: Test
-        run: pnpm test
+        run: |
+          cp src/environments/environment.ts src/environments/environment.dev.ts
+          pnpm test

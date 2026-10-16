@@ -85,9 +85,9 @@ describe('StatisticService', () => {
     service.fetch(new Date(2021, 11, 20).getTime(), new Date(2021, 11, 27).getTime()).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
-    const mockRequest = httpTestingController.expectOne(
-      './api/searchbetween?from=2021-12-19T23:00:00.000Z&to=2021-12-26T23:00:00.000Z'
-    );
+    const from = new Date(2021, 11, 20).toISOString();
+    const to = new Date(2021, 11, 27).toISOString();
+    const mockRequest = httpTestingController.expectOne(`./api/searchbetween?from=${from}&to=${to}`);
     mockRequest.flush({ content: mockResponse });
   });
 
@@ -104,7 +104,7 @@ describe('StatisticService', () => {
   it('should generate slidersteps from min and max value', () => {
     const minDate = new Date(2021, 11, 1).getTime();
     const maxDate = new Date(2021, 11, 5).getTime();
-    const steps = [1638313200000, 1638399600000, 1638486000000, 1638572400000, 1638658800000];
+    const steps = [1, 2, 3, 4, 5].map((day) => new Date(2021, 11, day).getTime());
     expect(service.generateSliderSteps(minDate, maxDate)).toEqual(steps);
   });
 });

@@ -12,7 +12,7 @@
     "@angular/forms": "22.2.0",
     "@angular/material": "22.2.0",
     "@angular/platform-browser": "22.2.0",
-    "@angular/router": "22.2.0",
+    "@angular/router": "22.2.1",
     "angular-split": "20.0.0",
     "date-fns": "4.4.0",
     "leaflet": "1.9.4",
